@@ -16,22 +16,36 @@ class TestDay:
         t = TimeReporter('9:00 15:00'.split())
         assert str(t.days[today].came) == '09:00:00'
         assert str(t.days[today].went) == '15:00:00'
+        
+        t = TimeReporter('9 15:00'.split())
+        assert str(t.days[today].came) == '09:00:00'
+        assert str(t.days[today].went) == '15:00:00'
+        
+        t = TimeReporter('9 15'.split())
+        assert str(t.days[today].came) == '09:00:00'
+        assert str(t.days[today].went) == '15:00:00'
+        
+        t = TimeReporter('9 15'.split())
+        assert str(t.days[today].came) == '09:00:00'
+        assert str(t.days[today].went) == '15:00:00'
 
     def test_went_before_came(self):
         with pytest.raises(DayError):
             t = TimeReporter('15:00 09:00'.split())
+            
+    def test_whole_day_with_lunch(self):
+        t = TimeReporter('9 15 45min'.split())
+        assert str(t.days[today].came) == '09:00:00'
+        assert str(t.days[today].went) == '15:00:00'
+        assert str(t.days[today].lunch) = '0:45:00'
+        
+     # Plan: instead of creating a TimeReporter object, create a Day object from the command line arguments.
+     # Then add the Day object to the Calendar object loaded by the timereporter. Call TimeReporter as so:
+     # TimeReporter('/path/to/calendar/file' or None, 'command line arguments')
+     # Load a Calendar object from the path, make a Day object from the command line arguments, and then merge the two.
+     # Change the above tests to be tests of the Day class instead.
 
-
-"""Test cases yet to be written: 
-
-En hel dag utan lunch
-t 9 15:00
-t 9:00 15
-t 9:00 34:00 #error
-t 9:00 foo #error
- 
-En hel dag med lunch
-t 9:00 15:00 45m
+"""Test cases yet to be written
  
 Bara lunch
 t 45m
