@@ -18,4 +18,15 @@ def test_error():
         TimeParser.parse('1171')
     with pytest.raises(TimeParserError):
         TimeParser.parse('000000')
+    with pytest.raises(TimeParserError):
+        TimeParser.parse('9 15')  # note: single string, not list
+
+def test_minute():
+    assert TimeParser.parse('34m').isoformat() == '00:34:00'
+    assert TimeParser.parse('3m').isoformat() == '00:03:00'
+    assert TimeParser.parse('34 m').isoformat() == '00:34:00'
+    assert TimeParser.parse('75m').isoformat() == '01:15:00'
+
+    with pytest.raises(TimeParserError):
+        TimeParser.parse('m')
 
