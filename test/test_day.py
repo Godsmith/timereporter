@@ -28,8 +28,9 @@ class TestDay:
         assert str(d.went) == '15:00:00'
 
     def test_went_before_came(self):
-        with pytest.raises(DayError):
-            d = Day('15:00 09:00'.split())
+        d = Day('15:00 09:00'.split())
+        assert str(d.came) == '09:00:00'
+        assert str(d.went) == '15:00:00'
 
     def test_whole_day_with_lunch(self):
         d = Day('9 15 45min'.split())

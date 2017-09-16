@@ -18,7 +18,10 @@ class Day:
         else:
             self._came = TimeParser.parse(args[0])
             if len(args) > 1:
-                self.went = TimeParser.parse(args[1])
+                self._came = TimeParser.parse(args[0])
+                first, second = (TimeParser.parse(args[0]), TimeParser.parse(args[1]))
+                times = sorted([first, second])
+                self._came, self._went = times
             if len(args) > 2:
                 self.lunch = TimeParser.parse(args[2])
 
@@ -52,17 +55,10 @@ class Day:
     @came.setter
     def came(self, value):
         self._came = value
-        self._validate()
 
     @went.setter
     def went(self, value):
         self._went = value
-        self._validate()
-
-    def _validate(self):
-        if self._came and self._went:
-            if self._came > self._went:
-                raise DayError(f'Arrival time {self._came} cannot be after leave time {self._went}')
 
 
 
