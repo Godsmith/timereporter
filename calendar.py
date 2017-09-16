@@ -1,12 +1,15 @@
 from datetime import date
+from collections import defaultdict
+from day import Day
+
 
 class Calendar:
+    today = date.today()
 
     def __init__(self):
-        self.days = {}
+        self.days = defaultdict(Day)
 
-    def add(self, day):
-        today = date.today().isoformat()
-        if today in self.days:
-            day = day + self.days[today]
-        self.days[today] = day
+    def add(self, day, date_=today):
+        if not date_ in self.days:
+            self.days[date_] = Day()
+        self.days[date_] = self.days[date_] + day

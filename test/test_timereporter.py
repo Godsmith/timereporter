@@ -13,17 +13,6 @@ class TestTimeReporter:
  
  
  
-Bara went
-t 15:00 # came before
- 
-Felmeddelande när ändra men ospecificerat
-t 15:00 # came and went before. Error, "came or went?"
- 
-Ändra came
-t came 08:45
- 
-Ändra went 
-t went 15:15
  
 Visa
 t show week

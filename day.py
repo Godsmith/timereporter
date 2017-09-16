@@ -1,14 +1,18 @@
 from timeparser import TimeParser
+from datetime import datetime, date
 
 
 class Day:
-    def __init__(self, args):
+    def __init__(self, args=None):
         self._came = self._went = self.lunch = None
+
+        if args is None or len(args) == 0:
+            return
 
         to_delete = len(args)
         for i in range(len(args)):
             if args[i] == 'm' or args[i] == 'min':
-                args[i-1] = args[i-1] + 'm'
+                args[i - 1] = args[i - 1] + 'm'
                 to_delete = i
         args = args[0:to_delete] + args[to_delete:]
 
@@ -29,23 +33,46 @@ class Day:
         if not isinstance(other, Day):
             raise DayAddError('Cannot add Day to another class')
 
-        if self.came:
-            if other.came:
-                raise DayAddError('Both days have arrival time')
-        if self.went:
-            if other.went:
-                raise DayAddError('Both days have exit time')
+        if self.came == self.went == self.lunch is None:
+            return other
 
-        elif (other.came and not self.came):
-            self.came = other.came
+        if other.lunch:
+            self.lunch = other.lunch
 
+        if other.came and other.went:
+            (self.came, self.went) = (other.came, other.went)
+            return self
+
+        if not other.came and not other.went:
+            return self
+
+        new_times = [other.came, other.went]
+        new_times.remove(None)
+        new_time = new_times[0]
+        if self.came and self.went:
+            if self._difference(new_time, self.came) < self._difference(new_time, self.went):
+                self.came = new_time
+            else:
+                self.went = new_time
+            return self
+
+        all_times = [self.came, self.went, other.came, other.went]
+        all_times = [t for t in all_times if t is not None]
+        self.came, self.went = sorted(all_times)
         return self
 
+    def __eq__(self, other):
+        return (self.came, self.went, self.lunch) == (other.came, other.went, other.lunch)
 
+    def __repr__(self):
+        return f'Day({self.came}-{self.went}, {self.lunch})'
 
+    @classmethod
+    def _difference(cls, time1, time2):
+        return abs(datetime.combine(date.min, time1) - datetime.combine(date.min, time2))
 
     @property
-    def came(self ):
+    def came(self):
         return self._came
 
     @property
@@ -61,9 +88,9 @@ class Day:
         self._went = value
 
 
-
 class DayError(Exception):
     pass
+
 
 class DayAddError(Exception):
     pass
