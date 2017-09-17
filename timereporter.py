@@ -1,8 +1,8 @@
 import sys
-from workcalendar import Calendar
 from datetime import datetime
 
 from day import Day
+from workcalendar import Calendar
 
 
 class TimeReporter:
@@ -11,7 +11,6 @@ class TimeReporter:
 
         if self.is_date(args[0]):
             self.c.add(Day(args[1:]), self.date_from_string(args[0]))
-
 
         self.offset = 0
         if args == 'show last week'.split():
@@ -27,9 +26,11 @@ class TimeReporter:
             return True
         except ValueError:
             return False
+
     @classmethod
     def date_from_string(cls, s):
         return datetime.strptime(s, '%Y-%m-%d').date()
+
 
 if __name__ == '__main__':
     t = TimeReporter(sys.argv[1:])
