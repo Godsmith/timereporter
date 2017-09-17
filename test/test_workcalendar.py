@@ -1,6 +1,6 @@
-from datetime import date, time
+from datetime import date, time, timedelta
 
-from calendar import Calendar
+from workcalendar import Calendar
 from day import Day
 
 today = date.today()
@@ -78,10 +78,51 @@ class TestToday:
         c.add(Day('8 18 45m'.split()))
         assert c.days[today] == Day('8 18 45m'.split())
 
+    def test_came_text(self):
+        c = Calendar()
+        c.add(Day('came 08:00'.split()))
+        assert c.days[today] == Day('8'.split())
+
+    def test_went_text(self):
+        c = Calendar()
+        c.add(Day('came 08:00'.split()))
+        c.add(Day('went 17:00'.split()))
+        assert c.days[today] == Day('8 17'.split())
+
+    def test_lunch_text(self):
+        c = Calendar()
+        c.add(Day('lunch 45 min'.split()))
+        assert c.days[today] == Day('45m'.split())
+
 
 class TestSpecificDay:
-    def test_add_to_nothing(self):
+    def test_add_basic(self):
         c = Calendar()
         c.add(Day(''.split()), date(2017, 9, 16))
         c.add(Day('8 18 45m'.split()))
         assert c.days[today] == Day('8 18 45m'.split())
+
+class TestShow:
+    def test_empty(self):
+        c = Calendar()
+        s = c.show_week()
+        assert 'Monday' in s
+        assert 'Friday' in s
+
+    def test_added(self):
+        c = Calendar()
+        c.add(Day('8 18 45m'.split()), date(2017, 9, 13))
+        s = c.show_week()
+        assert '08:00' in s
+        assert '18:00' in s
+        assert '00:45' in s
+        assert 'Came' in s
+        assert 'Went' in s
+        assert 'Lunch' in s
+
+    def test_show_last_week(self):
+        c = Calendar()
+        last_monday = str(today + timedelta(days=-today.weekday(), weeks=-1))
+        s = c.show_week(-1)
+        assert last_monday in s
+

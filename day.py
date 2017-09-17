@@ -9,12 +9,23 @@ class Day:
         if args is None or len(args) == 0:
             return
 
+        # Change 45 min and 45 m to 45m
         to_delete = len(args)
         for i in range(len(args)):
             if args[i] == 'm' or args[i] == 'min':
                 args[i - 1] = args[i - 1] + 'm'
                 to_delete = i
         args = args[0:to_delete] + args[to_delete:]
+
+        if args[0] == 'came':
+            self.came = TimeParser.parse(args[1])
+            return
+        elif args[0] == 'went':
+            self.went = TimeParser.parse(args[1])
+            return
+        elif args[0] == 'lunch':
+            self.lunch = TimeParser.parse(args[1])
+            return
 
         (success, minutes) = TimeParser.try_parse_minutes(args[0])
         if success:
