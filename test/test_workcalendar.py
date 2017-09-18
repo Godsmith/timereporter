@@ -1,7 +1,7 @@
 from datetime import date, time, timedelta
 
-from workcalendar import Calendar
 from day import Day
+from workcalendar import Calendar
 
 today = date.today()
 
@@ -111,7 +111,8 @@ class TestShow:
 
     def test_added(self):
         c = Calendar()
-        c.add(Day('8 18 45m'.split()), date(2017, 9, 13))
+        wednesday = today + timedelta(days=-today.weekday() + 2)
+        c.add(Day('8 18 45m'.split()), wednesday)
         s = c.show_week()
         assert '08:00' in s
         assert '18:00' in s

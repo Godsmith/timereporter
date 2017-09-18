@@ -1,3 +1,4 @@
+import os
 import sys
 from datetime import datetime
 
@@ -7,10 +8,14 @@ from workcalendar import Calendar
 
 class TimeReporter:
     def __init__(self, args):
-        self.c = Calendar()
+        self.c = Calendar()  # load from file here
 
         if self.is_date(args[0]):
-            self.c.add(Day(args[1:]), self.date_from_string(args[0]))
+            d = Day(args[1:])
+            self.c.add(d, self.date_from_string(args[0]))
+            with open(os.environ['TIMEREPORTER_FILE'], 'a') as f:
+                f.write(str(d) + '\n')
+
 
         self.offset = 0
         if args == 'show last week'.split():

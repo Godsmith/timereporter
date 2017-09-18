@@ -1,21 +1,40 @@
+import os
 from datetime import date, timedelta
+
+import pytest
 
 from timereporter import TimeReporter
 
 today = date.today()
 
+
+@pytest.fixture(scope='module')
+def temp_logfile(tmpdir_factory):
+    fn = tmpdir_factory.mktemp('data').join('timereporter.log')
+    before = dict(os.environ)
+    os.environ['TIMEREPORTER_FILE'] = str(fn)
+    yield fn
+    os.environ = before
+
+
+@pytest.mark.usefixtures('temp_logfile')
 class TestTimeReporter:
     def test_show_last_week(self):
         t = TimeReporter('show last week'.split())
-        s = t.show_week()
         last_monday = str(today + timedelta(days=-today.weekday(), weeks=-1))
-        assert last_monday in s
+        assert last_monday in t.show_week()
 
     def test_add_came(self):
-        t = TimeReporter('2017-09-13 9'.split())
-        s = t.show_week()
-        assert '09:00' in s
+        wednesday = str(today + timedelta(days=-today.weekday() + 2))
+        t = TimeReporter([wednesday, '9'])
+        assert '09:00' in t.show_week()
 
+    def test_report_twice(self):
+        wednesday = str(today + timedelta(days=-today.weekday() + 2))
+        TimeReporter([wednesday, '9'])
+        t = TimeReporter([wednesday, '9'])
+        assert '09:00' in t.show_week()
+        assert '18:00' in t.show_week()
 
 
 """Test cases yet to be written
@@ -23,10 +42,7 @@ class TestTimeReporter:
  
  
  
-Andra dagar
-t yesterday came 09:00
 t sep 9 came 09:00
-t yesterday 09:00 15:00
  
 Projekt
 t project new EPG Program
