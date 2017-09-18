@@ -1,5 +1,6 @@
-from timeparser import TimeParser
 from datetime import datetime, date
+
+from timeparser import TimeParser
 
 
 class Day:
@@ -77,6 +78,10 @@ class Day:
 
     def __repr__(self):
         return f'Day({self.came}-{self.went}, {self.lunch})'
+
+    def to_log_file_string(self):
+        values = [str(v).replace(':00', '') for v in (self.came, self.went, self.lunch)]
+        return ' '.join(values)
 
     @classmethod
     def _difference(cls, time1, time2):

@@ -1,14 +1,25 @@
-from datetime import date, timedelta
 from collections import defaultdict
-from day import Day
+from datetime import date, timedelta, datetime
+
 from tabulate import tabulate
+
+from day import Day
 
 
 class Calendar:
     today = date.today()
 
-    def __init__(self):
+    def __init__(self, path=None):
         self.days = defaultdict(Day)
+        if path:
+            with open(path) as f:
+                for line in f.readlines():
+                    args = line.split()
+                    args = [arg for arg in args if arg != 'None']
+                    day = Day(args[1:])
+                    date_ = datetime.strptime(args[0], '%Y-%m-%d').date()
+                    self.add(day, date_)
+
 
     def add(self, day, date_=today):
         if not date_ in self.days:

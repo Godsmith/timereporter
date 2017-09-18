@@ -11,6 +11,7 @@ today = date.today()
 @pytest.fixture(scope='module')
 def temp_logfile(tmpdir_factory):
     fn = tmpdir_factory.mktemp('data').join('timereporter.log')
+    fn.write('')
     before = dict(os.environ)
     os.environ['TIMEREPORTER_FILE'] = str(fn)
     yield fn
@@ -32,7 +33,7 @@ class TestTimeReporter:
     def test_report_twice(self):
         wednesday = str(today + timedelta(days=-today.weekday() + 2))
         TimeReporter([wednesday, '9'])
-        t = TimeReporter([wednesday, '9'])
+        t = TimeReporter([wednesday, '18'])
         assert '09:00' in t.show_week()
         assert '18:00' in t.show_week()
 
