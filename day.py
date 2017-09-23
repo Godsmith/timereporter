@@ -1,13 +1,17 @@
 from collections import defaultdict
 from datetime import datetime, date, timedelta
+from typing import List
 
 from timeparser import TimeParser
 
 
 class Day:
-    def __init__(self, args=None):
+    def __init__(self, args: List[str] = None, project_name: str = None, project_time: str = None):
         self._came = self._went = self.lunch = None
         self._projects = defaultdict(timedelta)
+
+        if project_name:
+            self._projects[project_name] = TimeParser.parse(project_time)
 
         if args is None or len(args) == 0:
             return

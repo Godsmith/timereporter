@@ -3,7 +3,7 @@ from datetime import time
 
 class TimeParser():
     @classmethod
-    def parse(cls, str_):
+    def parse(cls, str_: str):
         (success, minutes) = cls.try_parse_minutes(str_)
         if success:
             return minutes

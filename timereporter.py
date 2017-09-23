@@ -9,7 +9,7 @@ from workcalendar import Calendar
 
 
 class TimeReporter:
-    def __init__(self, args):
+    def __init__(self, args: list):
         self.show_week_offset = 0
 
         if not 'TIMEREPORTER_FILE' in os.environ:
@@ -36,7 +36,6 @@ class TimeReporter:
             if self.is_date(args[0]):
                 d = Day(args[1:])
                 self.c.add(d, self.date_from_string(args[0]))
-                pickle.dump(self.c, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
             if args[0] == 'project':
                 self.handle_project(args[1:])
 
@@ -44,17 +43,18 @@ class TimeReporter:
         if args == 'show last week'.split():
             self.show_week_offset = -1
 
+        pickle.dump(self.c, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
+
     def handle_project(self, args):
         if args[0] == 'new':
             project_name = ' '.join(args[1:])
-            self.add_project(project_name)
+            self.c.add_project(project_name)
         else:
             project_name = ' '.join(args[:-1])
             if not project_name in self.c.projects:
-                print(f'Error: Project "{project_name}" does not exist.')
-
-    def add_project(self, project_name):
-        self.c.add_project(project_name)
+                raise ProjectNameDoesNotExistError(f'Error: Project "{project_name}" does not exist.')
+            else:
+                self.c.add(Day(project_name=project_name, project_time=args[-1]))
 
     def show_week(self):
         return self.c.show_week(self.show_week_offset)
@@ -72,9 +72,16 @@ class TimeReporter:
         return datetime.strptime(s, '%Y-%m-%d').date()
 
 
+class ProjectNameDoesNotExistError(Exception):
+    pass
+
 def main():
-    t = TimeReporter(sys.argv[1:])
-    print(t.show_week())
+    try:
+        t = TimeReporter(sys.argv[1:])
+        print(t.show_week())
+    except ProjectNameDoesNotExistError as e:
+        print(e)
+
 
 if __name__ == '__main__':
     main()

@@ -1,9 +1,12 @@
+import functools
 import os
 from datetime import date, timedelta
 
 import pytest
 
+import timereporter
 from timereporter import TimeReporter, main
+from workcalendar import Calendar
 
 today = date.today()
 
@@ -44,7 +47,18 @@ class TestTimeReporter:
 class TestWithoutEnvironmentVariable:
     def test_show_last_week(self):
         with pytest.raises(EnvironmentError):
-            TimeReporter('9')
+            TimeReporter('9'.split())
+
+
+def mockdate(f):
+    @functools.wraps(f)
+    def test_new_function(args):
+        temp = Calendar.today
+        Calendar.today = lambda x: date(2017, 9, 20)
+        f(args)
+        Calendar.today = temp
+
+    return test_new_function
 
 
 @pytest.mark.usefixtures('temp_logfile')
@@ -53,15 +67,22 @@ class TestProject:
         t = TimeReporter('project new EPG Program'.split())
         assert 'EPG Program' in t.show_week()
 
-    def test_project_not_existing_error(self, capsys):
-        TimeReporter('project EPG Program 9'.split())
-        out, _ = capsys.readouterr()
-        assert 'Error: Project "EPG Program" does not exist.' in out
+    def test_project_not_existing_error(self):
+        with pytest.raises(timereporter.ProjectNameDoesNotExistError):
+            TimeReporter('project EPG Program 9'.split())
 
+    @mockdate
     def test_report_time_today(self):
         TimeReporter('project new EPG Program'.split())
-        t = TimeReporter('project EPG Program 9')
+        t = TimeReporter('project EPG Program 9'.split())
+        s = t.show_week()
         assert '9:00' in t.show_week()
+
+        # def test_update_time_today(self):
+        #     TimeReporter('project new EPG Program'.split())
+        #     t = TimeReporter('project EPG Program 9'.split())
+        #     assert '9:00' in t.show_week()
+
 
 """Test cases yet to be written
  
