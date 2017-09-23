@@ -48,6 +48,10 @@ class TimeReporter:
         if args[0] == 'new':
             project_name = ' '.join(args[1:])
             self.add_project(project_name)
+        else:
+            project_name = ' '.join(args[:-1])
+            if not project_name in self.c.projects:
+                print(f'Error: Project "{project_name}" does not exist.')
 
     def add_project(self, project_name):
         self.c.add_project(project_name)

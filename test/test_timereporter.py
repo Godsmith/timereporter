@@ -53,6 +53,16 @@ class TestProject:
         t = TimeReporter('project new EPG Program'.split())
         assert 'EPG Program' in t.show_week()
 
+    def test_project_not_existing_error(self, capsys):
+        TimeReporter('project EPG Program 9'.split())
+        out, _ = capsys.readouterr()
+        assert 'Error: Project "EPG Program" does not exist.' in out
+
+    def test_report_time_today(self):
+        TimeReporter('project new EPG Program'.split())
+        t = TimeReporter('project EPG Program 9')
+        assert '9:00' in t.show_week()
+
 """Test cases yet to be written
  
  
@@ -61,7 +71,6 @@ class TestProject:
 t sep 9 came 09:00
  
 Projekt
-t project new EPG Program
 t project EPG Program 1h
 t project EP 1h # short form/autocomplete
 # many projects same autocompletion
