@@ -1,4 +1,5 @@
 import os
+import pickle
 import sys
 from datetime import datetime
 from subprocess import call
@@ -26,14 +27,16 @@ class TimeReporter:
             print('Please close and reopen your console window for the environment variable change to take effect.')
             exit()
 
-        self.c = Calendar(os.environ['TIMEREPORTER_FILE'])  # load from file here
+        try:
+            self.c = pickle.load(open(os.environ['TIMEREPORTER_FILE'], 'rb'))  # load from file here
+        except EOFError:
+            self.c = Calendar()
 
         if len(args) > 0:
             if self.is_date(args[0]):
                 d = Day(args[1:])
                 self.c.add(d, self.date_from_string(args[0]))
-                with open(os.environ['TIMEREPORTER_FILE'], 'a') as f:
-                    f.write(f'{args[0]} {d.to_log_file_string()}\n')
+                pickle.dump(self.c, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
             if args[0] == 'project':
                 self.handle_project(args[1:])
 
