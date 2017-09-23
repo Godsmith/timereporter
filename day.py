@@ -1,4 +1,5 @@
-from datetime import datetime, date
+from collections import defaultdict
+from datetime import datetime, date, timedelta
 
 from timeparser import TimeParser
 
@@ -6,6 +7,7 @@ from timeparser import TimeParser
 class Day:
     def __init__(self, args=None):
         self._came = self._went = self.lunch = None
+        self._projects = defaultdict(timedelta)
 
         if args is None or len(args) == 0:
             return
@@ -94,6 +96,10 @@ class Day:
     @property
     def went(self):
         return self._went
+
+    @property
+    def projects(self):
+        return self._projects
 
     @came.setter
     def came(self, value):

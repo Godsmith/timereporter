@@ -46,11 +46,11 @@ class TimeReporter:
 
     def handle_project(self, args):
         if args[0] == 'new':
-            project_name = ''.join(args[1:])
+            project_name = ' '.join(args[1:])
             self.add_project(project_name)
 
     def add_project(self, project_name):
-        pass
+        self.c.add_project(project_name)
 
     def show_week(self):
         return self.c.show_week(self.show_week_offset)
