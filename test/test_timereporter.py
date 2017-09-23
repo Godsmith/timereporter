@@ -55,8 +55,10 @@ def mockdate(f):
     def test_new_function(args):
         temp = Calendar.today
         Calendar.today = lambda x: date(2017, 9, 20)
-        f(args)
-        Calendar.today = temp
+        try:
+            f(args)
+        finally:
+            Calendar.today = temp
 
     return test_new_function
 
@@ -75,14 +77,27 @@ class TestProject:
     def test_report_time_today(self):
         TimeReporter('project new EPG Program'.split())
         t = TimeReporter('project EPG Program 9'.split())
-        s = t.show_week()
         assert '9:00' in t.show_week()
 
-        # def test_update_time_today(self):
-        #     TimeReporter('project new EPG Program'.split())
-        #     t = TimeReporter('project EPG Program 9'.split())
-        #     assert '9:00' in t.show_week()
+    @mockdate
+    def test_update_time_today(self):
+        TimeReporter('project new EPG Program'.split())
+        TimeReporter('project EPG Program 9'.split())
+        t = TimeReporter('project EPG Program 10'.split())
+        assert '10:00' in t.show_week()
 
+    @mockdate
+    def test_report_time_short_form(self):
+        TimeReporter('project new EPG Program'.split())
+        t = TimeReporter('project EP 9'.split())
+        assert '9:00' in t.show_week()
+
+    @mockdate
+    def test_report_time_short_form_ambiguity(self):
+        TimeReporter('project new EPG Program'.split())
+        TimeReporter('project new EPG Maintenance'.split())
+        with pytest.raises(timereporter.AmbiguousProjectNameError):
+            TimeReporter('project EP 9'.split())
 
 """Test cases yet to be written
  
@@ -92,9 +107,6 @@ class TestProject:
 t sep 9 came 09:00
  
 Projekt
-t project EPG Program 1h
-t project EP 1h # short form/autocomplete
-# many projects same autocompletion
 t project EP yesterday 1h
 t project EP 1.5h yesterday
 t project EP 1,5h yesterday

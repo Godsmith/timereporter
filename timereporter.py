@@ -39,7 +39,6 @@ class TimeReporter:
             if args[0] == 'project':
                 self.handle_project(args[1:])
 
-
         if args == 'show last week'.split():
             self.show_week_offset = -1
 
@@ -51,10 +50,15 @@ class TimeReporter:
             self.c.add_project(project_name)
         else:
             project_name = ' '.join(args[:-1])
-            if not project_name in self.c.projects:
+            project_name_matches = [p for p in self.c.projects if project_name in p]
+            if not project_name_matches:
                 raise ProjectNameDoesNotExistError(f'Error: Project "{project_name}" does not exist.')
+            elif len(project_name_matches) > 1:
+                raise AmbiguousProjectNameError(
+                    f'Error: Ambiguous project name abbreviation "{project_name}" '
+                    f'matches all of {", ".join(project_name_matches)}.')
             else:
-                self.c.add(Day(project_name=project_name, project_time=args[-1]))
+                self.c.add(Day(project_name=project_name_matches[0], project_time=args[-1]))
 
     def show_week(self):
         return self.c.show_week(self.show_week_offset)
@@ -75,11 +79,16 @@ class TimeReporter:
 class ProjectNameDoesNotExistError(Exception):
     pass
 
+
+class AmbiguousProjectNameError(Exception):
+    pass
+
+
 def main():
     try:
         t = TimeReporter(sys.argv[1:])
         print(t.show_week())
-    except ProjectNameDoesNotExistError as e:
+    except Exception as e:
         print(e)
 
 
