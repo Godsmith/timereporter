@@ -32,19 +32,27 @@ class TimeReporter:
         except EOFError:
             self.c = Calendar()
 
-        if len(args) > 0:
-            if self.is_date(args[0]):
-                d = Day(args[1:])
-                self.c.add(d, self.date_from_string(args[0]))
-            if args[0] == 'project':
-                self.handle_project(args[1:])
+        for i, arg in enumerate(args):
+            if self.is_date(arg):
+                date_ = self.date_from_string(args[0])
+                args = args[:i] + args[i + 1:]
+                break
+        else:
+            date_ = None
 
         if args == 'show last week'.split():
             self.show_week_offset = -1
+        elif args[0] == 'project':
+            self.handle_project(args[1:], date_)
+        else:
+            d = Day(args)
+            self.c.add(d, date_)
+
+
 
         pickle.dump(self.c, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
 
-    def handle_project(self, args):
+    def handle_project(self, args, date_):
         if args[0] == 'new':
             project_name = ' '.join(args[1:])
             self.c.add_project(project_name)
@@ -58,10 +66,12 @@ class TimeReporter:
                     f'Error: Ambiguous project name abbreviation "{project_name}" '
                     f'matches all of {", ".join(project_name_matches)}.')
             else:
-                self.c.add(Day(project_name=project_name_matches[0], project_time=args[-1]))
+                self.c.add(Day(project_name=project_name_matches[0], project_time=args[-1]), date_)
 
-    def show_week(self):
-        return self.c.show_week(self.show_week_offset)
+    def show_week(self, offset=None):
+        if not offset:
+            offset = self.show_week_offset
+        return self.c.show_week(offset)
 
     @classmethod
     def is_date(cls, date_text):

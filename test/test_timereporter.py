@@ -99,6 +99,12 @@ class TestProject:
         with pytest.raises(timereporter.AmbiguousProjectNameError):
             TimeReporter('project EP 9'.split())
 
+    @mockdate
+    def test_report_time_specific_date(self):
+        TimeReporter('project new EPG Program'.split())
+        t = TimeReporter('2017-09-14 project EP 9'.split())
+        assert '9:00' in t.show_week(-1)
+
 """Test cases yet to be written
  
  

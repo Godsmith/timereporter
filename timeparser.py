@@ -9,7 +9,8 @@ class TimeParser():
             return minutes
 
         if not re.match('^\d{1,2}:?\d?\d?$', str_):
-            raise TimeParserError(f'Time {str_} must be on the form H, HH:MM, H:MM, HHMM, HMM, M m, MM m, M min or MM min')
+            raise TimeParserError(
+                f'Time "{str_}" must be on the form H, HH:MM, H:MM, HHMM, HMM, M m, MM m, M min or MM min')
         if len(str_) > 2:
             minutes = int(str_[-2:])
             if len(str_.replace(':','')) == 4:
