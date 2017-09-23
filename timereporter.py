@@ -13,19 +13,7 @@ class TimeReporter:
         self.show_week_offset = 0
 
         if not 'TIMEREPORTER_FILE' in os.environ:
-            DEFAULT_PATH = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
-            print('Environment variable TIMEREPORTER_FILE not set')
-            answer = input(f'Use default path {DEFAULT_PATH}? (y/n)')
-            if answer.lower().strip() == 'y':
-                call(['setx', 'TIMEREPORTER_FILE', DEFAULT_PATH])
-            elif answer.lower().strip() == 'n':
-                answer = input('Input desired path:')
-                call(['setx', 'TIMEREPORTER_FILE', answer])
-            else:
-                print('Please type either y or n.')
-                exit()
-            print('Please close and reopen your console window for the environment variable change to take effect.')
-            exit()
+            self.fix_environment_variable()
 
         try:
             self.c = pickle.load(open(os.environ['TIMEREPORTER_FILE'], 'rb'))  # load from file here
@@ -51,6 +39,21 @@ class TimeReporter:
 
 
         pickle.dump(self.c, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
+
+    def fix_environment_variable(self):
+        DEFAULT_PATH = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
+        print('Environment variable TIMEREPORTER_FILE not set')
+        answer = input(f'Use default path {DEFAULT_PATH}? (y/n)')
+        if answer.lower().strip() == 'y':
+            call(['setx', 'TIMEREPORTER_FILE', DEFAULT_PATH])
+        elif answer.lower().strip() == 'n':
+            answer = input('Input desired path:')
+            call(['setx', 'TIMEREPORTER_FILE', answer])
+        else:
+            print('Please type either y or n.')
+            exit()
+        print('Please close and reopen your console window for the environment variable change to take effect.')
+        exit()
 
     def handle_project(self, args, date_):
         if args[0] == 'new':
