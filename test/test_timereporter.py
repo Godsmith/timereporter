@@ -3,12 +3,12 @@ from datetime import date, timedelta
 
 import pytest
 
-from timereporter import TimeReporter
+from timereporter import TimeReporter, main
 
 today = date.today()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture
 def temp_logfile(tmpdir_factory):
     fn = tmpdir_factory.mktemp('data').join('timereporter.log')
     fn.write('')
@@ -20,6 +20,9 @@ def temp_logfile(tmpdir_factory):
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestTimeReporter:
+    def test_no_argument_throws_no_error(self):
+        main()
+
     def test_show_last_week(self):
         t = TimeReporter('show last week'.split())
         last_monday = str(today + timedelta(days=-today.weekday(), weeks=-1))
@@ -37,6 +40,17 @@ class TestTimeReporter:
         assert '09:00' in t.show_week()
         assert '18:00' in t.show_week()
 
+
+class TestWithoutEnvironmentVariable:
+    def test_show_last_week(self):
+        with pytest.raises(EnvironmentError):
+            TimeReporter('9')
+
+
+class TestProject:
+    def test_basic(self):
+        t = TimeReporter('project new EPG Program'.split())
+        assert 'EPG Program' in t.show_week()
 
 """Test cases yet to be written
  

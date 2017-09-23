@@ -55,6 +55,9 @@ class TimeReporter:
         return datetime.strptime(s, '%Y-%m-%d').date()
 
 
-if __name__ == '__main__':
+def main():
     t = TimeReporter(sys.argv[1:])
     print(t.show_week())
+
+if __name__ == '__main__':
+    main()
