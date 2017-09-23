@@ -34,10 +34,20 @@ class TimeReporter:
                 self.c.add(d, self.date_from_string(args[0]))
                 with open(os.environ['TIMEREPORTER_FILE'], 'a') as f:
                     f.write(f'{args[0]} {d.to_log_file_string()}\n')
+            if args[0] == 'project':
+                self.handle_project(args[1:])
 
 
         if args == 'show last week'.split():
             self.show_week_offset = -1
+
+    def handle_project(self, args):
+        if args[0] == 'new':
+            project_name = ''.join(args[1:])
+            self.add_project(project_name)
+
+    def add_project(self, project_name):
+        pass
 
     def show_week(self):
         return self.c.show_week(self.show_week_offset)

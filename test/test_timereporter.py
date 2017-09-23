@@ -47,10 +47,10 @@ class TestWithoutEnvironmentVariable:
             TimeReporter('9')
 
 
-class TestProject:
-    def test_basic(self):
-        t = TimeReporter('project new EPG Program'.split())
-        assert 'EPG Program' in t.show_week()
+# class TestProject:
+#     def test_basic(self):
+#         t = TimeReporter('project new EPG Program'.split())
+#         assert 'EPG Program' in t.show_week()
 
 """Test cases yet to be written
  
