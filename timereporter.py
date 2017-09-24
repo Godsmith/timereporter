@@ -1,7 +1,7 @@
 import os
 import pickle
 import sys
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from subprocess import call
 
 from day import Day
@@ -20,13 +20,15 @@ class TimeReporter:
         except EOFError:
             self.c = Calendar()
 
-        for i, arg in enumerate(args):
-            if self.is_date(arg):
-                date_ = self.date_from_string(args[0])
-                args = args[:i] + args[i + 1:]
-                break
+        dates = list(date for date in map(self.to_date, args) if date is not None)
+        if len(dates) > 1:
+            raise RecursionError  # TODO: better error and test
+        elif len(dates) == 1:
+            date_ = dates[0]
         else:
             date_ = None
+
+        args = [arg for arg in args if self.to_date(arg) is None]
 
         if args == 'show last week'.split():
             self.show_week_offset = -1
@@ -36,9 +38,18 @@ class TimeReporter:
             d = Day(args)
             self.c.add(d, date_)
 
-
-
         pickle.dump(self.c, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
+
+    @classmethod
+    def to_date(cls, s: str) -> date:
+        if cls.is_date(s):
+            return datetime.strptime(s, '%Y-%m-%d').date()
+        elif s == 'yesterday':
+            return cls.today() - timedelta(days=1)
+
+    @classmethod
+    def today(self):  # TODO: unite this with the method with the same name in Calendar
+        return date.today()
 
     def fix_environment_variable(self):
         DEFAULT_PATH = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
