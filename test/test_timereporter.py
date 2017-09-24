@@ -1,4 +1,3 @@
-import functools
 import os
 from datetime import date, timedelta
 
@@ -9,6 +8,21 @@ from timereporter import TimeReporter, main
 from workcalendar import Calendar
 
 today = date.today()
+
+
+def mockdate(year=2017, month=9, day=20):  # @mockdate(args) -> f = mockdate(args)(f) -> f = wrap(f) -> f = wrapped_f
+    def wrap(f):
+        def wrapped_function(args):
+            temp = Calendar.today
+            Calendar.today = lambda x: date(year, month, day)
+            try:
+                f(args)
+            finally:
+                Calendar.today = temp
+
+        return wrapped_function
+
+    return wrap
 
 
 @pytest.fixture
@@ -43,24 +57,21 @@ class TestTimeReporter:
         assert '09:00' in t.show_week()
         assert '18:00' in t.show_week()
 
+    @mockdate(2017, 9, 19)
+    def test_came_yesterday_monday(self):
+        t = TimeReporter('9 yesterday'.split())
+        assert '09:00' in t.show_week()
+
+    @mockdate(2017, 9, 18)
+    def test_came_yesterday_sunday(self):
+        t = TimeReporter('9 yesterday'.split())
+        assert '09:00' not in t.show_week()
+
 
 class TestWithoutEnvironmentVariable:
     def test_show_last_week(self):
         with pytest.raises(EnvironmentError):
             TimeReporter('9'.split())
-
-
-def mockdate(f):
-    @functools.wraps(f)
-    def test_new_function(args):
-        temp = Calendar.today
-        Calendar.today = lambda x: date(2017, 9, 20)
-        try:
-            f(args)
-        finally:
-            Calendar.today = temp
-
-    return test_new_function
 
 
 @pytest.mark.usefixtures('temp_logfile')
@@ -104,6 +115,7 @@ class TestProject:
         TimeReporter('project new EPG Program'.split())
         t = TimeReporter('2017-09-14 project EP 9'.split())
         assert '9:00' in t.show_week(-1)
+
 
 """Test cases yet to be written
  
