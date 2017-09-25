@@ -71,6 +71,11 @@ class TestTimeReporter:
         t = TimeReporter('yesterday 9'.split())
         assert '09:00' in t.show_week()
 
+    @mockdate(2017, 9, 19)
+    def test_multiple_dates(self):
+        with pytest.raises(timereporter.MultipleDateException):
+            TimeReporter('yesterday 2017-09-18 9'.split())
+
 
 class TestWithoutEnvironmentVariable:
     def test_show_last_week(self):
