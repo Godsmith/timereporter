@@ -8,23 +8,19 @@ from day import Day
 
 class Calendar:
     def __init__(self):
+        self.today = date.today()
         self.days = defaultdict(Day)
         self.projects = []
 
-    @classmethod
-    def today(self):
-        return date.today()
-
     def add(self, day, date_=None):
         if not date_:
-            date_ = self.today()
+            date_ = self.today
         if not date_ in self.days:
             self.days[date_] = Day()
         self.days[date_] = self.days[date_] + day
 
     def show_week(self, offset=0):
-        today = self.today()
-        closest_monday = today + timedelta(days=-today.weekday(), weeks=offset)
+        closest_monday = self.today + timedelta(days=-self.today.weekday(), weeks=offset)
 
         days = []
         came_times = []

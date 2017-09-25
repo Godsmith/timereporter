@@ -19,6 +19,7 @@ class TimeReporter:
             self.c = pickle.load(open(os.environ['TIMEREPORTER_FILE'], 'rb'))  # load from file here
         except EOFError:
             self.c = Calendar()
+        self.c.today = self.today()  # Overide whatever date we got from the pickle
 
         dates = list(date for date in map(self.to_date, args) if date is not None)
         if len(dates) > 1:
@@ -48,7 +49,7 @@ class TimeReporter:
             return cls.today() - timedelta(days=1)
 
     @classmethod
-    def today(self):  # TODO: unite this with the method with the same name in Calendar
+    def today(self):
         return date.today()
 
     def fix_environment_variable(self):

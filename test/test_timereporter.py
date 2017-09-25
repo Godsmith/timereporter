@@ -5,7 +5,6 @@ import pytest
 
 import timereporter
 from timereporter import TimeReporter, main
-from workcalendar import Calendar
 
 today = date.today()
 
@@ -13,15 +12,12 @@ today = date.today()
 def mockdate(year=2017, month=9, day=20):  # @mockdate(args) -> f = mockdate(args)(f) -> f = wrap(f) -> f = wrapped_f
     def wrap(f):
         def wrapped_function(args):
-            # TODO: Fix this duplication
-            temp = Calendar.today
-            temp2 = TimeReporter.today
-            TimeReporter.today = Calendar.today = lambda x=None: date(year, month, day)
+            temp = TimeReporter.today
+            TimeReporter.today = lambda x=None: date(year, month, day)
             try:
                 f(args)
             finally:
-                Calendar.today = temp
-                TimeReporter.today = temp2
+                TimeReporter.today = temp
 
         return wrapped_function
 
