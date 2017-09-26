@@ -1,6 +1,6 @@
 import pytest
 
-from day import Day, DayError
+from day import Day
 from timeparser import TimeParserError
 
 
@@ -41,8 +41,8 @@ class TestDay:
     def test_only_came(self):
         d = Day('9'.split())
         assert str(d.came) == '09:00:00'
-        assert d.went == None
-        assert d.lunch == None
+        assert d.went is None
+        assert d.lunch is None
 
         d = Day('09:00'.split())
         assert str(d.came) == '09:00:00'
@@ -52,8 +52,8 @@ class TestDay:
 
     def test_only_lunch(self):
         d = Day('45min'.split())
-        assert d.came == None
-        assert d.went == None
+        assert d.came is None
+        assert d.went is None
         assert str(d.lunch) == '00:45:00'
 
         d = Day('45m'.split())
@@ -67,13 +67,4 @@ class TestDay:
 
     def test_error(self):
         with pytest.raises(TimeParserError):
-            Day('9 15')
-
-
-
-     # Plan: instead of creating a TimeReporter object, create a Day object from the command line arguments.
-     # Then add the Day object to the Calendar object loaded by the timereporter. Call TimeReporter as so:
-     # TimeReporter('/path/to/calendar/file' or None, 'command line arguments')
-     # Load a Calendar object from the path, make a Day object from the command line arguments, and then merge the two.
-     # Change the above tests to be tests of the Day class instead.
-     # The calendar file could just be a list of Day objects. That would make undo simple.
+            Day('9s3 15'.split())

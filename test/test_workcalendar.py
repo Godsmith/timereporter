@@ -102,6 +102,7 @@ class TestSpecificDay:
         c.add(Day('8 18 45m'.split()))
         assert c.days[today] == Day('8 18 45m'.split())
 
+
 class TestShow:
     def test_empty(self):
         c = Calendar()
@@ -126,4 +127,3 @@ class TestShow:
         last_monday = str(today + timedelta(days=-today.weekday(), weeks=-1))
         s = c.show_week(-1)
         assert last_monday in s
-

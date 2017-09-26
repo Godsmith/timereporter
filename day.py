@@ -1,24 +1,33 @@
+"""Supply the Day class and associated exceptions."""
 from collections import defaultdict
-from datetime import datetime, date, timedelta
-from typing import List
+from datetime import datetime, date, timedelta, time
+from typing import List, Dict
 
 from timeparser import TimeParser
 
 
 class Day:
-    def __init__(self, args: List[str] = None, project_name: str = None, project_time: str = None):
+    """Represent a work day.
+
+    Represent a day wherein the user did certain things like came,
+    went at certain times and worked on specific projects for specific time
+    intervals.
+    """
+
+    def __init__(self, args: List[str] = None, project_name: str = None,
+                 project_time: str = None):
         self._came = self._went = self.lunch = None
         self._projects = defaultdict(timedelta)
 
         if project_name:
             self._projects[project_name] = TimeParser.parse(project_time)
 
-        if args is None or len(args) == 0:
+        if not args:
             return
 
         # Change 45 min and 45 m to 45m
         to_delete = len(args)
-        for i in range(len(args)):
+        for i, _ in enumerate(args):
             if args[i] == 'm' or args[i] == 'min':
                 args[i - 1] = args[i - 1] + 'm'
                 to_delete = i
@@ -41,7 +50,8 @@ class Day:
             self._came = TimeParser.parse(args[0])
             if len(args) > 1:
                 self._came = TimeParser.parse(args[0])
-                first, second = (TimeParser.parse(args[0]), TimeParser.parse(args[1]))
+                first, second = (
+                    TimeParser.parse(args[0]), TimeParser.parse(args[1]))
                 times = sorted([first, second])
                 self._came, self._went = times
             if len(args) > 2:
@@ -68,7 +78,8 @@ class Day:
         new_times.remove(None)
         new_time = new_times[0]
         if self.came and self.went:
-            if self._difference(new_time, self.came) < self._difference(new_time, self.went):
+            if self._difference(new_time, self.came) < self._difference(
+                    new_time, self.went):
                 self.came = new_time
             else:
                 self.went = new_time
@@ -80,43 +91,62 @@ class Day:
         return self
 
     def __eq__(self, other):
-        return (self.came, self.went, self.lunch) == (other.came, other.went, other.lunch)
+        return (self.came, self.went, self.lunch) == (
+            other.came, other.went, other.lunch)
 
     def __repr__(self):
         return f'Day({self.came}-{self.went}, {self.lunch})'
 
-    def to_log_file_string(self):
-        values = [str(v).replace(':00', '') for v in (self.came, self.went, self.lunch)]
-        return ' '.join(values)
-
     @classmethod
     def _difference(cls, time1, time2):
-        return abs(datetime.combine(date.min, time1) - datetime.combine(date.min, time2))
+        return abs(
+            datetime.combine(date.min, time1) - datetime.combine(date.min,
+                                                                 time2))
 
     @property
     def came(self):
+        """At which time the user came to work this day
+
+        :return:
+        """
         return self._came
 
     @property
     def went(self):
+        """At which time the user left for home this day
+
+        :return:
+        """
         return self._went
 
     @property
-    def projects(self):
+    def projects(self) -> Dict[str, timedelta]:
+        """Which projects has been worked on and for how long this day
+
+        :return:
+        """
         return self._projects
 
     @came.setter
-    def came(self, value):
+    def came(self, value: time):
+        """Set at which time the user came to work this day
+
+        :param value:
+        :return:
+        """
         self._came = value
 
     @went.setter
     def went(self, value):
+        """Set at which time the user left for home this day
+
+        :param value:
+        :return:
+        """
         self._went = value
 
 
-class DayError(Exception):
-    pass
-
-
 class DayAddError(Exception):
+    """Raised when trying to add a Day to another class
+    """
     pass
