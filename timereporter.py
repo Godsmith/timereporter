@@ -39,17 +39,23 @@ class TimeReporter:
         elif len(dates) == 1:
             date_ = dates[0]
         else:
-            date_ = None
+            date_ = self.today()
 
         args = [arg for arg in args if self.to_date(arg) is None]
 
-        if args == 'show last week'.split():
-            self.show_week_offset = -1
-        elif args[0] == 'project':
+        done = False
+        if args[0] == 'project':
             self.handle_project(args[1:], date_)
-        else:
+            done = True
+        if 'last' in args:  # TODO: test with last as a word in a project name
+            self.show_week_offset = -1
+            args.remove('last')
+        if args[0] == 'show' and 'week' in args[1:3]:
+            return
+        if not done:
             day = Day(args)
-            self.calendar.add(day, date_)
+            self.calendar.add(day,
+                              date_ + timedelta(weeks=self.show_week_offset))
 
         pickle.dump(self.calendar, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
 

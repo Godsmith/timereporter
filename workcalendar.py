@@ -14,8 +14,8 @@ class Calendar:
     """
 
     def __init__(self):
-        self.today = date.today()
-        self.days = defaultdict(Day)
+        self.today = date.today()  # TODO: try to remove this
+        self.days = defaultdict(Day)  # so that date will always come from out
         self.projects = []
 
     def add(self, day: Day, date_: date = None):
