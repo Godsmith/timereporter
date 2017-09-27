@@ -125,13 +125,16 @@ class TimeReporter:
                                       project_time=args[-1]),
                                   date_)
 
+    def show_day(self):
+        return self.calendar.show_day(self.today())
+
     def show_week(self, offset: int = None):
         """Shows a table overview of the specified week in the terminal.
 
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
         if not offset:
-            offset = self.show_week_offset
+            offset = self.show_week_offset  # TODO: remove this state
         return self.calendar.show_week(offset)
 
     @classmethod

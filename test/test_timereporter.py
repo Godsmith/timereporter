@@ -79,6 +79,14 @@ class TestTimeReporter:
             TimeReporter('yesterday 2017-09-18 9'.split())
 
 
+@pytest.mark.usefixtures('temp_logfile')
+class TestShow:
+    @mockdate(2017, 9, 19)
+    def test_show_day(self):
+        t = TimeReporter(['9'])
+        assert '9:00' in t.show_day()
+
+
 class TestWithoutEnvironmentVariable:
     def test_show_last_week(self):
         with pytest.raises(EnvironmentError):

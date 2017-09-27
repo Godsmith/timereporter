@@ -32,21 +32,36 @@ class Calendar:
             self.days[date_] = Day()
         self.days[date_] = self.days[date_] + day
 
-    def show_week(self, offset=0):
+    def show_day(self, date_: date):
+        """Shows an overview of the specified day in table format.
+
+        :param date_ : the date of the day to show.
+        """
+        return self.show_days(date_, 1)
+
+    def show_week(self, weeks_offset=0):
         """Shows an overview of the current week in table format.
 
-        :param offset: 0 shows the current week, -1 the last week, etc.
+        :param weeks_offset: 0 shows the current week, -1 the last week, etc.
         """
         closest_monday = self.today + timedelta(days=-self.today.weekday(),
-                                                weeks=offset)
+                                                weeks=weeks_offset)
+        return self.show_days(closest_monday, 5)
+
+    def show_days(self, first_day: date, day_count):
+        """Shows a number of days from the calendar in table format.
+
+        :param first_day: the first day to show.
+        :param day_count: the number of days to show, including the first day.
+        """
 
         days = []
         came_times = []
         went_times = []
         lunch_times = []
         project_rows = [[project] for project in self.projects]
-        day = closest_monday
-        for _ in range(5):
+        day = first_day
+        for _ in range(day_count):
             days.append(day)
             came_times.append(self.days[day].came)
             went_times.append(self.days[day].went)
