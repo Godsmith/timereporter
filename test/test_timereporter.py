@@ -98,6 +98,13 @@ class TestTimeReporter:
         assert '01:00' in t.show_week(-1)
         assert '05:00' in t.show_week(-1)
 
+    @mockdate(2017, 9, 19)
+    def test_next_weekday(self):
+        TimeReporter('next monday 1'.split())
+        t = TimeReporter('next friday 5'.split())
+        assert '01:00' in t.show_week(1)
+        assert '05:00' in t.show_week(1)
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:

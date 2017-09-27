@@ -18,7 +18,7 @@ class TimeReporter:
     """
 
     def __init__(self, args: list):
-        self.show_week_offset = 0
+        self.week_offset = 0
 
         if 'TIMEREPORTER_FILE' not in os.environ:
             self.fix_environment_variable()
@@ -48,14 +48,19 @@ class TimeReporter:
             self.handle_project(args[1:], date_)
             done = True
         if 'last' in args:  # TODO: test with last as a word in a project name
-            self.show_week_offset = -1
+            self.week_offset = -1
             args.remove('last')
+        if 'next' in args:  # TODO: test with last as a word in a project name
+            self.week_offset = 1
+            args.remove('next')
         if args[0] == 'show' and 'week' in args[1:3]:
             return
         if not done:
             day = Day(args)
             self.calendar.add(day,
-                              date_ + timedelta(weeks=self.show_week_offset))
+                              date_ + timedelta(weeks=self.week_offset))
+
+        # TODO : test both next and last in the same string, should give error
 
         pickle.dump(self.calendar, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
 
@@ -149,7 +154,7 @@ class TimeReporter:
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
         if not offset:
-            offset = self.show_week_offset  # TODO: remove this state
+            offset = self.week_offset  # TODO: remove this state
         return self.calendar.show_week(offset)
 
     @classmethod
