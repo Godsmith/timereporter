@@ -78,6 +78,19 @@ class TestTimeReporter:
         with pytest.raises(timereporter.MultipleDateException):
             TimeReporter('yesterday 2017-09-18 9'.split())
 
+    @mockdate(2017, 9, 19)
+    def test_weekday(self):
+        TimeReporter('monday 1'.split())
+        TimeReporter('tuesday 2'.split())
+        TimeReporter('wednesday 3'.split())
+        TimeReporter('thursday 4'.split())
+        t = TimeReporter('friday 5'.split())
+        assert '01:00' in t.show_week()
+        assert '02:00' in t.show_week()
+        assert '03:00' in t.show_week()
+        assert '04:00' in t.show_week()
+        assert '05:00' in t.show_week()
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:

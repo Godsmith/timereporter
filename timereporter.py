@@ -65,6 +65,15 @@ class TimeReporter:
         elif str_ == 'yesterday':
             return cls.today() - timedelta(days=1)
 
+        try:
+            index = 'monday tuesday wednesday thursday friday'.split().index(
+                str_)
+            return cls.today() + timedelta(days=-cls.today(
+            ).weekday() + index)
+
+        except ValueError:
+            pass
+
     @classmethod
     def today(cls) -> date:
         """Returns the current day.
