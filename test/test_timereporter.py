@@ -1,9 +1,10 @@
 import os
-from datetime import date, timedelta
+from datetime import date
 
 import pytest
 
 import timereporter
+from mydatetime import timedelta
 from timereporter import TimeReporter, main
 
 today = date.today()
@@ -161,7 +162,7 @@ class TestFlex:
     def test_minus_1(self):
         t = TimeReporter('10 16:45'.split())
         print(t.show_day())
-        assert '-1:00' in t.show_day()
+        assert '-01:00' in t.show_day()
 
 
 class TestWithoutEnvironmentVariable:

@@ -1,7 +1,8 @@
 import pytest
 
+from mydatetime import timedelta
 from timeparser import TimeParser, TimeParserError
-from datetime import timedelta
+
 
 def test_normal():
     assert TimeParser.parse('09:00').isoformat() == '09:00:00'

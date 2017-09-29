@@ -1,8 +1,9 @@
 """Supply the Day class and associated exceptions."""
 from collections import defaultdict
-from datetime import datetime, date, timedelta, time
+from datetime import datetime, date, time
 from typing import List, Dict
 
+from mydatetime import timedelta
 from timeparser import TimeParser
 
 

@@ -1,16 +1,18 @@
 """Supply the TimeParser class and related exceptions
 """
 import re
-from datetime import time, timedelta
+from datetime import time
 from typing import Tuple, Union
+
+from mydatetime import timedelta
 
 
 class TimeParser:
-    """Parses strings on special formats to datetime.time objects
+    """Parses strings on special formats to datetime.* objects
     """
 
     @classmethod
-    def parse(cls, str_: str):
+    def parse(cls, str_: str) -> time:
         """Parses a string on the format specified below to a
         datetime.time object.
 
@@ -45,7 +47,7 @@ class TimeParser:
         return time(hour=hours, minute=minutes)
 
     @classmethod
-    def parse_timedelta(cls, str_: str):
+    def parse_timedelta(cls, str_: str) -> timedelta:
         time_ = cls.parse(str_)
         return timedelta(hours=time_.hour, minutes=time_.minute)
 

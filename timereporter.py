@@ -3,11 +3,12 @@
 import os
 import pickle
 import sys
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 from subprocess import call
 from typing import List
 
 from day import Day
+from mydatetime import timedelta
 from timeparser import TimeParserError
 from workcalendar import Calendar
 

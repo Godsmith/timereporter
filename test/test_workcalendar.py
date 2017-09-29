@@ -1,6 +1,7 @@
-from datetime import date, time, timedelta
+from datetime import date, time
 
 from day import Day
+from mydatetime import timedelta
 from workcalendar import Calendar
 
 today = date.today()

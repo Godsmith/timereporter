@@ -1,11 +1,12 @@
 """Supplies the Calendar class
 """
 from collections import defaultdict
-from datetime import date, timedelta
+from datetime import date
 
 from tabulate import tabulate
 
 from day import Day
+from mydatetime import timedelta
 
 
 class Calendar:
@@ -80,6 +81,7 @@ class Calendar:
             default_project_time = self.WORKING_HOURS_PER_DAY - project_time_sum
             default_project_row.append(default_project_time)
 
+            # TODO: move the working_time and the flex calculations inside Day
             working_time = self.days[date_].working_time
             if working_time:
                 flex = self.days[
