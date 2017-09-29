@@ -146,6 +146,19 @@ class Day:
         """
         self._went = value
 
+    @property
+    def working_time(self) -> timedelta:
+        if self.came and self.went:
+            lunch = self.lunch if self.lunch else timedelta()
+            seconds_at_work = self.to_seconds(self.went) - self.to_seconds(
+                self.came)
+            working_time_excluding_lunch = timedelta(seconds=seconds_at_work)
+            return working_time_excluding_lunch - lunch
+
+    @classmethod
+    def to_seconds(cls, time_: time):
+        return time_.hour * 3600 + time_.minute * 60 + time_.second
+
 
 class DayAddError(Exception):
     """Raised when trying to add a Day to another class

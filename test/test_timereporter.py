@@ -112,6 +112,56 @@ class TestShow:
     def test_show_day(self):
         t = TimeReporter(['9'])
         assert '9:00' in t.show_day()
+        assert 'Tuesday' in t.show_day()
+        assert 'Monday' not in t.show_day()
+
+
+@pytest.mark.usefixtures('temp_logfile')
+class TestDefaultProject:
+    @mockdate(2017, 9, 19)
+    def test_basic(self):
+        t = TimeReporter(['9'])
+        assert 'EPG Program' in t.show_day()
+        assert '7:45' in t.show_day()
+
+    @mockdate(2017, 9, 19)
+    def test_other_projects_exactly_7_45(self):
+        TimeReporter('project new EPG Support'.split())
+        t = TimeReporter('project EPG Support 7:45'.split())
+        assert 'EPG Program' in t.show_day()
+        assert '7:45' in t.show_day()
+        assert '0:00' in t.show_day()
+
+    @mockdate(2017, 9, 19)
+    def test_other_projects_more_than_7_45(self):
+        TimeReporter('project new EPG Support'.split())
+        t = TimeReporter('project EPG Support 12:45'.split())
+        assert 'EPG Program' in t.show_day()
+        assert '0:00' in t.show_day()
+
+
+@pytest.mark.usefixtures('temp_logfile')
+class TestFlex:
+    @mockdate(2017, 9, 19)
+    def test_0(self):
+        t = TimeReporter('10 17:45'.split())
+        assert 'Flex' in t.show_day()
+        assert '0:00' in t.show_day()
+
+@pytest.mark.usefixtures('temp_logfile')
+class TestFlex:
+    @mockdate(2017, 9, 19)
+    def test_plus_1(self):
+        t = TimeReporter('10 18:45'.split())
+        assert '1:00' in t.show_day()
+
+@pytest.mark.usefixtures('temp_logfile')
+class TestFlex:
+    @mockdate(2017, 9, 19)
+    def test_minus_1(self):
+        t = TimeReporter('10 16:45'.split())
+        print(t.show_day())
+        assert '-1:00' in t.show_day()
 
 
 class TestWithoutEnvironmentVariable:
@@ -123,42 +173,42 @@ class TestWithoutEnvironmentVariable:
 @pytest.mark.usefixtures('temp_logfile')
 class TestProject:
     def test_basic(self):
-        t = TimeReporter('project new EPG Program'.split())
+        t = TimeReporter('project new EPG Support'.split())
         assert 'EPG Program' in t.show_week()
 
     def test_project_not_existing_error(self):
         with pytest.raises(timereporter.ProjectNameDoesNotExistError):
-            TimeReporter('project EPG Program 9'.split())
+            TimeReporter('project EPG Support 9'.split())
 
     @mockdate
     def test_report_time_today(self):
-        TimeReporter('project new EPG Program'.split())
-        t = TimeReporter('project EPG Program 9'.split())
+        TimeReporter('project new EPG Support'.split())
+        t = TimeReporter('project EPG Support 9'.split())
         assert '9:00' in t.show_week()
 
     @mockdate
     def test_update_time_today(self):
-        TimeReporter('project new EPG Program'.split())
-        TimeReporter('project EPG Program 9'.split())
-        t = TimeReporter('project EPG Program 10'.split())
+        TimeReporter('project new EPG Support'.split())
+        TimeReporter('project EPG Support 9'.split())
+        t = TimeReporter('project EPG Support 10'.split())
         assert '10:00' in t.show_week()
 
     @mockdate
     def test_report_time_short_form(self):
-        TimeReporter('project new EPG Program'.split())
+        TimeReporter('project new EPG Support'.split())
         t = TimeReporter('project EP 9'.split())
         assert '9:00' in t.show_week()
 
     @mockdate
     def test_report_time_short_form_ambiguity(self):
-        TimeReporter('project new EPG Program'.split())
+        TimeReporter('project new EPG Support'.split())
         TimeReporter('project new EPG Maintenance'.split())
         with pytest.raises(timereporter.AmbiguousProjectNameError):
             TimeReporter('project EP 9'.split())
 
     @mockdate
     def test_report_time_specific_date(self):
-        TimeReporter('project new EPG Program'.split())
+        TimeReporter('project new EPG Support'.split())
         t = TimeReporter('2017-09-14 project EP 9'.split())
         assert '9:00' in t.show_week(-1)
 

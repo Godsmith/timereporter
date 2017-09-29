@@ -12,6 +12,8 @@ class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days
     """
+    WORKING_HOURS_PER_DAY = timedelta(hours=7.75)
+    DEFAULT_PROJECT_NAME = 'EPG Program'
 
     def __init__(self):
         self.today = date.today()  # TODO: try to remove this
@@ -48,36 +50,58 @@ class Calendar:
                                                 weeks=weeks_offset)
         return self.show_days(closest_monday, 5)
 
-    def show_days(self, first_day: date, day_count):
+    def show_days(self, first_date: date, day_count):
         """Shows a number of days from the calendar in table format.
 
-        :param first_day: the first day to show.
+        :param first_date: the first day to show.
         :param day_count: the number of days to show, including the first day.
         """
 
-        days = []
+        dates = []
         came_times = []
         went_times = []
         lunch_times = []
         project_rows = [[project] for project in self.projects]
-        day = first_day
+        default_project_row = [self.DEFAULT_PROJECT_NAME]
+        flex_times = []
+        date_ = first_date
         for _ in range(day_count):
-            days.append(day)
-            came_times.append(self.days[day].came)
-            went_times.append(self.days[day].went)
-            lunch_times.append(self.days[day].lunch)
+            dates.append(date_)
+            came_times.append(self.days[date_].came)
+            went_times.append(self.days[date_].went)
+            lunch_times.append(self.days[date_].lunch)
             for i, project in enumerate(self.projects):
-                project_rows[i].append(self.days[day].projects[project])
-            day = day + timedelta(days=1)
+                project_rows[i].append(self.days[date_].projects[project])
+
+            project_time_sum = sum(self.days[date_].projects.values(),
+                                   timedelta())
+
+            # TODO: non-negative
+            default_project_time = self.WORKING_HOURS_PER_DAY - project_time_sum
+            default_project_row.append(default_project_time)
+
+            working_time = self.days[date_].working_time
+            if working_time:
+                flex = self.days[
+                           date_].working_time - self.WORKING_HOURS_PER_DAY
+            else:
+                flex = None
+            flex_times.append(flex)
+
+            date_ = date_ + timedelta(days=1)
 
         weekdays = 'Monday Tuesday Wednesday Thursday Friday'.split()
 
-        return tabulate([[''] + days,
-                         [''] + weekdays,
+        weekdays_to_show = [weekdays[date_.weekday()] for date_ in dates]
+
+        return tabulate([[''] + dates,
+                         [''] + weekdays_to_show,
                          ['Came'] + came_times,
                          ['Went'] + went_times,
                          ['Lunch'] + lunch_times,
-                         *project_rows])
+                         default_project_row,
+                         *project_rows,
+                         ['Flex'] + flex_times])
 
     def add_project(self, project_name: str):
         """Adds a project with the specified project name to the calendar
