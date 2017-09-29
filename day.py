@@ -20,7 +20,8 @@ class Day:
         self._projects = defaultdict(timedelta)
 
         if project_name:
-            self._projects[project_name] = TimeParser.parse(project_time)
+            self._projects[project_name] = TimeParser.parse_timedelta(
+                project_time)
 
         if not args:
             return

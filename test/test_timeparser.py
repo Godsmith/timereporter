@@ -1,7 +1,7 @@
 import pytest
 
 from timeparser import TimeParser, TimeParserError
-
+from datetime import timedelta
 
 def test_normal():
     assert TimeParser.parse('09:00').isoformat() == '09:00:00'
@@ -24,10 +24,10 @@ def test_error():
 
 
 def test_minute():
-    assert TimeParser.parse('34m').isoformat() == '00:34:00'
-    assert TimeParser.parse('3m').isoformat() == '00:03:00'
-    assert TimeParser.parse('34 m').isoformat() == '00:34:00'
-    assert TimeParser.parse('75m').isoformat() == '01:15:00'
+    assert TimeParser.parse('34m') == timedelta(minutes=34)
+    assert TimeParser.parse('3m') == timedelta(minutes=3)
+    assert TimeParser.parse('34 m') == timedelta(minutes=34)
+    assert TimeParser.parse('75m') == timedelta(hours=1, minutes=15)
 
     with pytest.raises(TimeParserError):
         TimeParser.parse('m')

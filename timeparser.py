@@ -1,7 +1,7 @@
 """Supply the TimeParser class and related exceptions
 """
 import re
-from datetime import time
+from datetime import time, timedelta
 from typing import Tuple, Union
 
 
@@ -45,7 +45,12 @@ class TimeParser:
         return time(hour=hours, minute=minutes)
 
     @classmethod
-    def try_parse_minutes(cls, str_) -> Tuple[bool, Union[time, None]]:
+    def parse_timedelta(cls, str_: str):
+        time_ = cls.parse(str_)
+        return timedelta(hours=time_.hour, minutes=time_.minute)
+
+    @classmethod
+    def try_parse_minutes(cls, str_) -> Tuple[bool, Union[timedelta, None]]:
         """Parses a string specifying a certain number of minutes
         and returns a datetime.time object
 
@@ -59,7 +64,7 @@ class TimeParser:
                 minutes = int(str_.split('m')[0])
                 hours = minutes // 60
                 minutes = minutes % 60
-                return True, time(hour=hours, minute=minutes)
+                return True, timedelta(hours=hours, minutes=minutes)
             except ValueError:
                 pass
         return False, None

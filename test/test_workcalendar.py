@@ -52,7 +52,7 @@ class TestToday:
         c = Calendar()
         c.add(Day('45m'.split()))
         c.add(Day('35m'.split()))
-        assert c.days[today].lunch == time(minute=35)
+        assert c.days[today].lunch == timedelta(minutes=35)
 
     def test_add_came_and_went(self):
         c = Calendar()
@@ -117,7 +117,7 @@ class TestShow:
         s = c.show_week()
         assert '08:00' in s
         assert '18:00' in s
-        assert '00:45' in s
+        assert '0:45' in s
         assert 'Came' in s
         assert 'Went' in s
         assert 'Lunch' in s
