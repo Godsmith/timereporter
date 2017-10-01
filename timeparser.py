@@ -1,10 +1,9 @@
 """Supply the TimeParser class and related exceptions
 """
 import re
-from datetime import time
 from typing import Tuple, Union
 
-from mydatetime import timedelta
+from mydatetime import timedelta, time
 
 
 class TimeParser:

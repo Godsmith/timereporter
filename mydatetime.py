@@ -20,3 +20,11 @@ class timedelta(datetime.timedelta):
         if isinstance(other, timedelta):
             return self.__class__(seconds=self.seconds - other.seconds)
         return NotImplemented
+
+
+class time(datetime.time):
+    def __new__(self, *args, **kwargs):
+        return super().__new__(self, *args, **kwargs)
+
+    def __str__(self):
+        return str(self.hour).zfill(2) + ':' + str(self.minute).zfill(2)
