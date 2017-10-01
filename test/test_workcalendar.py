@@ -128,3 +128,14 @@ class TestShow:
         last_monday = str(today + timedelta(days=-today.weekday(), weeks=-1))
         s = c.show_week(-1)
         assert last_monday in s
+
+    def test_show_week_html(self):
+        c = Calendar()
+        wednesday = today + timedelta(days=-today.weekday() + 2)
+        c.add(Day('8 18 45m'.split()), wednesday)
+        s = c.show_week(table_format='html')
+        assert '08:00' in s
+        assert '18:00' in s
+        assert 'Came' in s
+        assert '<table>' in s
+        print(s)

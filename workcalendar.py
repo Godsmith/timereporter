@@ -42,20 +42,24 @@ class Calendar:
         """
         return self.show_days(date_, 1)
 
-    def show_week(self, weeks_offset=0):
+    def show_week(self, weeks_offset=0, table_format='simple'):
         """Shows an overview of the current week in table format.
 
         :param weeks_offset: 0 shows the current week, -1 the last week, etc.
+        :param table_format: the table format, see
+        https://bitbucket.org/astanin/python-tabulate for the alternatives.
         """
         closest_monday = self.today + timedelta(days=-self.today.weekday(),
                                                 weeks=weeks_offset)
-        return self.show_days(closest_monday, 5)
+        return self.show_days(closest_monday, 5, table_format)
 
-    def show_days(self, first_date: date, day_count):
+    def show_days(self, first_date: date, day_count, table_format='simple'):
         """Shows a number of days from the calendar in table format.
 
         :param first_date: the first day to show.
         :param day_count: the number of days to show, including the first day.
+        :param table_format: the table format, see
+        https://bitbucket.org/astanin/python-tabulate for the alternatives.
         """
 
         dates = []
@@ -103,7 +107,7 @@ class Calendar:
                          ['Lunch'] + lunch_times,
                          default_project_row,
                          *project_rows,
-                         ['Flex'] + flex_times])
+                         ['Flex'] + flex_times], tablefmt=table_format)
 
     def add_project(self, project_name: str):
         """Adds a project with the specified project name to the calendar

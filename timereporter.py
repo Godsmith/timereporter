@@ -3,6 +3,8 @@
 import os
 import pickle
 import sys
+import tempfile
+import webbrowser
 from datetime import datetime, date
 from subprocess import call
 from typing import List
@@ -87,6 +89,13 @@ class TimeReporter:
             pass
 
     @classmethod
+    def webbrowser(cls):
+        """Returns the webbrowser module.
+
+        Useful to mock out when testing webbrowser functionality."""
+        return webbrowser
+
+    @classmethod
     def today(cls) -> date:
         """Returns the current day.
 
@@ -165,6 +174,17 @@ class TimeReporter:
             return True
         except ValueError:
             return False
+
+    def show_week_html(self, offset: int = 0):
+        """Shows a table overview of the specified week in the browser.
+
+        :param offset: 0 shows the current week, -1 shows last week, etc
+        """
+        html = self.calendar.show_week(offset, table_format='html')
+        _, path = tempfile.mkstemp(suffix='.html')
+        with open(path, 'w') as f:
+            f.write(html)
+        self.webbrowser().open(path)
 
 
 class TimeReporterError(Exception):

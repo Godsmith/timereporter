@@ -116,6 +116,23 @@ class TestShow:
         assert 'Tuesday' in t.show_day()
         assert 'Monday' not in t.show_day()
 
+    @mockdate(2017, 9, 19)
+    def test_show_week_html(self):
+        class MockBrowser:
+            def __init__(self):
+                self.url = ''  # type: str
+
+            def open(self, url: str):
+                self.url = url
+
+        mock_browser = MockBrowser()
+        temp = TimeReporter.webbrowser
+        TimeReporter.webbrowser = lambda _: mock_browser
+        t = TimeReporter(['9'])
+        t.show_week_html()
+        assert mock_browser.url.endswith('.html')
+        TimeReporter.webbrowser = temp
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:
@@ -149,12 +166,14 @@ class TestFlex:
         assert 'Flex' in t.show_day()
         assert '0:00' in t.show_day()
 
+
 @pytest.mark.usefixtures('temp_logfile')
 class TestFlex:
     @mockdate(2017, 9, 19)
     def test_plus_1(self):
         t = TimeReporter('10 18:45'.split())
         assert '1:00' in t.show_day()
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestFlex:
