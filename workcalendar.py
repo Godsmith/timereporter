@@ -62,58 +62,51 @@ class Calendar:
         https://bitbucket.org/astanin/python-tabulate for the alternatives.
         """
 
-        dates = []
-        came_times = []
-        went_times = []
-        lunch_times = []
-        project_rows = [[project] for project in self.projects]
-        default_project_row = [self.DEFAULT_PROJECT_NAME]
-        flex_times = []
-        date_ = first_date
-        for _ in range(day_count):
-            dates.append(date_)
-            came_times.append(self.days[date_].came)
-            went_times.append(self.days[date_].went)
-            lunch_times.append(self.days[date_].lunch)
-            for i, project in enumerate(self.projects):
-                project_rows[i].append(self.days[date_].projects[project])
-
-            project_time_sum = sum(self.days[date_].projects.values(),
-                                   timedelta())
-
-            default_project_time = self.WORKING_HOURS_PER_DAY - project_time_sum
-            # Set to 0 hours if less than 0 hours
-            default_project_time = max(default_project_time, timedelta())
-            default_project_row.append(default_project_time)
-
-            # TODO: move the working_time and the flex calculations inside Day
-            working_time = self.days[date_].working_time
-            if working_time:
-                flex = self.days[
-                           date_].working_time - self.WORKING_HOURS_PER_DAY
-            else:
-                flex = None
-            flex_times.append(flex)
-
-            date_ = date_ + timedelta(days=1)
+        dates = [first_date + timedelta(days=i) for i in range(day_count)]
 
         weekdays = 'Monday Tuesday Wednesday Thursday Friday'.split()
-
         weekdays_to_show = [weekdays[date_.weekday()] for date_ in dates]
+
+        came_times = [self.days[date_].came for date_ in dates]
+        went_times = [self.days[date_].went for date_ in dates]
+        lunch_times = [self.days[date_].lunch for date_ in dates]
+
+        project_rows = [[project] for project in self.projects]
+        for i, project in enumerate(self.projects):
+            project_rows[i] = [self.days[date_].projects[project] for date_
+                               in dates]
+
+        default_project_times = [self._default_project_time(date_) for date_ in
+                                 dates]
+
+        flex_times = [self._flex(date_) for date_ in dates]
 
         return tabulate([[''] + dates,
                          [''] + weekdays_to_show,
                          ['Came'] + came_times,
                          ['Went'] + went_times,
                          ['Lunch'] + lunch_times,
-                         default_project_row,
+                         [self.DEFAULT_PROJECT_NAME] + default_project_times,
                          *project_rows,
                          ['Flex'] + flex_times], tablefmt=table_format)
 
+    def _default_project_time(self, date_):
+        project_time_sum = sum(self.days[date_].projects.values(),
+                               timedelta())
+        default_project_time = self.WORKING_HOURS_PER_DAY - project_time_sum
+
+        # Set to 0 hours if less than 0 hours
+        return max(default_project_time, timedelta())
+
+    def _flex(self, date_):
+        working_time = self.days[date_].working_time
+        if working_time:
+            return working_time - self.WORKING_HOURS_PER_DAY
+        else:
+            return None
+
     def add_project(self, project_name: str):
         """Adds a project with the specified project name to the calendar
-
-        TODO: disallow duplicate project
 
         :param project_name:
         """
