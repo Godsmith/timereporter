@@ -153,3 +153,33 @@ class TestShow:
         assert '18:00' in s
         assert 'Came' in s
         assert '<table>' in s
+
+
+class TestUndo:
+    def test_only_came(self):
+        c = Calendar()
+        c.add(Day('9'.split()))
+        assert '09:00' in c.show_week()
+        c.undo()
+        assert '09:00' not in c.show_week()
+
+    def test_came_went_lunch(self):
+        c = Calendar()
+        c.add(Day('9 15 30m'.split()))
+        assert '30' in c.show_week()
+        c.undo()
+        assert '30' not in c.show_week()
+
+    def test_redo(self):
+        c = Calendar()
+        c.add(Day('9 15 30m'.split()))
+        c.undo()
+        c.redo()
+        assert '30' in c.show_week()
+
+    # def test_add_to_day(self):
+    #     c = Calendar()
+    #     c.add(Day('9'.split()))
+    #     c.add(Day('15'.split()))
+    #     assert c.days[today].came == time(9)
+    #     assert c.days[today].went == time(15)

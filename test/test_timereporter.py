@@ -247,17 +247,18 @@ class TestProject:
         assert '9:00' in t.show_week(-1)
 
 
-"""Test cases yet to be written
- 
- 
- 
- 
-t sep 9 came 09:00
- 
-Projekt
-t project EP yesterday 1h
-t project EP 1.5h yesterday
-t project EP 1,5h yesterday
-t project rename EPG Program # ask what to rename it to, press Enter
- 
-Store everything in text file in Dropbox, tab separated CSV?"""
+@pytest.mark.usefixtures('temp_logfile')
+class TestUndo:
+    @mockdate()
+    def test_undo(self):
+        t = TimeReporter('9'.split())
+        assert '9:00' in t.show_week()
+        t = TimeReporter('undo'.split())
+        assert '9:00' not in t.show_week()
+
+    @mockdate()
+    def test_redo(self):
+        TimeReporter('9'.split())
+        TimeReporter('undo'.split())
+        t = TimeReporter('redo'.split())
+        assert '9:00' in t.show_week()

@@ -22,6 +22,7 @@ class Calendar:
     def __init__(self):
         self.today = date.today()
         self.dates_and_days = []
+        self.redo_list = []
         self.days = None
         self.projects = []
 
@@ -124,3 +125,10 @@ class Calendar:
         :param project_name:
         """
         self.projects.append(project_name)
+
+    def undo(self):
+        self.redo_list.append(self.dates_and_days.pop())
+
+    def redo(self):
+        self.dates_and_days.append(self.redo_list.pop())
+

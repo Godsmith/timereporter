@@ -33,6 +33,13 @@ class TimeReporter:
             self.calendar = Calendar()
         self.calendar.today = self.today()  # Override the date from the pickle
 
+        if args == ['undo']:
+            self.calendar.undo()
+            return
+        elif args == ['redo']:
+            self.calendar.redo()
+            return
+
         dates = list(
             date for date in map(self.to_date, args) if date is not None)
         if len(dates) > 1:
