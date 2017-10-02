@@ -50,10 +50,10 @@ class TimeReporter:
         if args[0] == 'project':
             self.handle_project(args[1:], date_)
             done = True
-        if 'last' in args:  # TODO: test with last as a word in a project name
+        if 'last' in args:
             self.week_offset = -1
             args.remove('last')
-        if 'next' in args:  # TODO: test with last as a word in a project name
+        if 'next' in args:
             self.week_offset = 1
             args.remove('next')
         if args[0] == 'show' and 'week' in args[1:3]:

@@ -155,7 +155,6 @@ class TestDefaultProject:
         TimeReporter('project new EPG Support'.split())
         t = TimeReporter('project EPG Support 12:45'.split())
         assert 'EPG Program' in t.show_day()
-        print(t.show_day())
         assert '-05:00' not in t.show_day()
         assert '00:00' in t.show_day()
 
@@ -231,6 +230,12 @@ class TestProject:
     @mockdate()
     def test_report_time_specific_date(self):
         TimeReporter('project new EPG Support'.split())
+        t = TimeReporter('2017-09-14 project EP 9'.split())
+        assert '9:00' in t.show_week(-1)
+
+    @mockdate()
+    def test_project_with_last_in_the_name(self):
+        TimeReporter('project new EPG last Support'.split())
         t = TimeReporter('2017-09-14 project EP 9'.split())
         assert '9:00' in t.show_week(-1)
 

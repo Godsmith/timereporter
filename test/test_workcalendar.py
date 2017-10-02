@@ -138,4 +138,3 @@ class TestShow:
         assert '18:00' in s
         assert 'Came' in s
         assert '<table>' in s
-        print(s)
