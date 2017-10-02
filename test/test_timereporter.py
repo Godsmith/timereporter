@@ -129,7 +129,7 @@ class TestShow:
         temp = TimeReporter.webbrowser
         TimeReporter.webbrowser = lambda _: mock_browser
         t = TimeReporter(['9'])
-        t.show_week_html()
+        TimeReporter('show week html'.split())
         assert mock_browser.url.endswith('.html')
         TimeReporter.webbrowser = temp
 

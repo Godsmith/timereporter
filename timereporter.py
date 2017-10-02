@@ -57,6 +57,8 @@ class TimeReporter:
             self.week_offset = 1
             args.remove('next')
         if args[0] == 'show' and 'week' in args[1:3]:
+            if 'html' in args:
+                self.show_week_html()
             return
         if not done:
             day = Day(args)
@@ -175,11 +177,13 @@ class TimeReporter:
         except ValueError:
             return False
 
-    def show_week_html(self, offset: int = 0):
+    def show_week_html(self, offset: int = None):
         """Shows a table overview of the specified week in the browser.
 
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
+        if not offset:
+            offset = self.week_offset  # TODO: remove this state
         html = self.calendar.show_week(offset, table_format='html')
         _, path = tempfile.mkstemp(suffix='.html')
         with open(path, 'w') as f:
