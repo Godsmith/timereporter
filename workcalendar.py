@@ -81,8 +81,9 @@ class Calendar:
             project_time_sum = sum(self.days[date_].projects.values(),
                                    timedelta())
 
-            # TODO: non-negative
             default_project_time = self.WORKING_HOURS_PER_DAY - project_time_sum
+            # Set to 0 hours if less than 0 hours
+            default_project_time = max(default_project_time, timedelta())
             default_project_row.append(default_project_time)
 
             # TODO: move the working_time and the flex calculations inside Day

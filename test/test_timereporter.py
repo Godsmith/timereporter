@@ -156,7 +156,8 @@ class TestDefaultProject:
         t = TimeReporter('project EPG Support 12:45'.split())
         assert 'EPG Program' in t.show_day()
         print(t.show_day())
-        assert not '-1 day' in t.show_day()
+        assert '-05:00' not in t.show_day()
+        assert '00:00' in t.show_day()
 
 
 
