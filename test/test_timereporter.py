@@ -199,33 +199,33 @@ class TestProject:
         with pytest.raises(timereporter.ProjectNameDoesNotExistError):
             TimeReporter('project EPG Support 9'.split())
 
-    @mockdate
+    @mockdate()
     def test_report_time_today(self):
         TimeReporter('project new EPG Support'.split())
         t = TimeReporter('project EPG Support 9'.split())
         assert '9:00' in t.show_week()
 
-    @mockdate
+    @mockdate()
     def test_update_time_today(self):
         TimeReporter('project new EPG Support'.split())
         TimeReporter('project EPG Support 9'.split())
         t = TimeReporter('project EPG Support 10'.split())
         assert '10:00' in t.show_week()
 
-    @mockdate
+    @mockdate()
     def test_report_time_short_form(self):
         TimeReporter('project new EPG Support'.split())
         t = TimeReporter('project EP 9'.split())
         assert '9:00' in t.show_week()
 
-    @mockdate
+    @mockdate()
     def test_report_time_short_form_ambiguity(self):
         TimeReporter('project new EPG Support'.split())
         TimeReporter('project new EPG Maintenance'.split())
         with pytest.raises(timereporter.AmbiguousProjectNameError):
             TimeReporter('project EP 9'.split())
 
-    @mockdate
+    @mockdate()
     def test_report_time_specific_date(self):
         TimeReporter('project new EPG Support'.split())
         t = TimeReporter('2017-09-14 project EP 9'.split())
