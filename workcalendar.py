@@ -17,7 +17,7 @@ class Calendar:
     DEFAULT_PROJECT_NAME = 'EPG Program'
 
     def __init__(self):
-        self.today = date.today()  # TODO: try to remove this
+        self.today = date.today()
         self.days = defaultdict(Day)  # so that date will always come from out
         self.projects = []
 

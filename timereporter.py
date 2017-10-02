@@ -65,8 +65,6 @@ class TimeReporter:
             self.calendar.add(day,
                               date_ + timedelta(weeks=self.week_offset))
 
-        # TODO : test both next and last in the same string, should give error
-
         pickle.dump(self.calendar, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
 
     @classmethod
@@ -165,7 +163,7 @@ class TimeReporter:
 
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
-        if not offset:
+        if offset is None:
             offset = self.week_offset  # TODO: remove this state
         return self.calendar.show_week(offset)
 
@@ -182,7 +180,7 @@ class TimeReporter:
 
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
-        if not offset:
+        if offset is None:
             offset = self.week_offset  # TODO: remove this state
         html = self.calendar.show_week(offset, table_format='html')
         _, path = tempfile.mkstemp(suffix='.html')
