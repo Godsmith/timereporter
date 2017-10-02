@@ -2,11 +2,14 @@
 """
 from collections import defaultdict
 from datetime import date
+from collections import namedtuple
 
 from tabulate import tabulate
 
 from day import Day
 from mydatetime import timedelta
+
+DateAndDay = namedtuple('DateAndDay', 'date day')
 
 
 class Calendar:
@@ -18,7 +21,8 @@ class Calendar:
 
     def __init__(self):
         self.today = date.today()
-        self.days = defaultdict(Day)  # so that date will always come from out
+        self.dates_and_days = []
+        self.days = None
         self.projects = []
 
     def add(self, day: Day, date_: date = None):
@@ -31,9 +35,10 @@ class Calendar:
         """
         if not date_:
             date_ = self.today
-        if date_ not in self.days:
-            self.days[date_] = Day()
-        self.days[date_] = self.days[date_] + day
+        self.dates_and_days.append(DateAndDay(date_, day))
+        # if date_ not in self.days:
+        #     self.days[date_] = Day()
+        # self.days[date_] = self.days[date_] + day
 
     def show_day(self, date_: date):
         """Shows an overview of the specified day in table format.
@@ -53,6 +58,11 @@ class Calendar:
                                                 weeks=weeks_offset)
         return self.show_days(closest_monday, 5, table_format)
 
+    def _assemble_days(self):
+        self.days = defaultdict(Day)
+        for date_and_day in self.dates_and_days:
+            self.days[date_and_day.date] += date_and_day.day
+
     def show_days(self, first_date: date, day_count, table_format='simple'):
         """Shows a number of days from the calendar in table format.
 
@@ -64,6 +74,8 @@ class Calendar:
 
         dates = [first_date + timedelta(days=i) for i in range(day_count)]
 
+        self._assemble_days()
+
         weekdays = 'Monday Tuesday Wednesday Thursday Friday'.split()
         weekdays_to_show = [weekdays[date_.weekday()] for date_ in dates]
 
@@ -73,7 +85,8 @@ class Calendar:
 
         project_rows = [[project] for project in self.projects]
         for i, project in enumerate(self.projects):
-            project_rows[i] = [self.days[date_].projects[project] for date_
+            project_rows[i] = [self.days[date_].projects[project] for
+                               date_
                                in dates]
 
         default_project_times = [self._default_project_time(date_) for date_ in
