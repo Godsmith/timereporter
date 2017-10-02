@@ -29,7 +29,7 @@ class TimeReporter:
         try:
             self.calendar = pickle.load(
                 open(os.environ['TIMEREPORTER_FILE'], 'rb'))
-        except EOFError:
+        except (EOFError, FileNotFoundError):
             self.calendar = Calendar()
         self.calendar.today = self.today()  # Override the date from the pickle
 
