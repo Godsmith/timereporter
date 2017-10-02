@@ -37,7 +37,7 @@ class TimeReporter:
             date for date in map(self.to_date, args) if date is not None)
         if len(dates) > 1:
             raise MultipleDateException(
-                f'The command contains multiple strings: '
+                f'The command contains multiple date strings: '
                 f'{[str(date_) for date_ in dates]}')
         elif len(dates) == 1:
             date_ = dates[0]
