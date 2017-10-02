@@ -21,6 +21,10 @@ class timedelta(datetime.timedelta):
             return self.__class__(seconds=self.seconds - other.seconds)
         return NotImplemented
 
+    def __add__(self, other):
+        if isinstance(other, timedelta):
+            return self.__class__(seconds=self.seconds + other.seconds)
+        return NotImplemented
 
 class time(datetime.time):
     def __new__(self, *args, **kwargs):

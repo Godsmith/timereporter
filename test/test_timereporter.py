@@ -155,7 +155,9 @@ class TestDefaultProject:
         TimeReporter('project new EPG Support'.split())
         t = TimeReporter('project EPG Support 12:45'.split())
         assert 'EPG Program' in t.show_day()
-        assert '0:00' in t.show_day()
+        print(t.show_day())
+        assert not '-1 day' in t.show_day()
+
 
 
 @pytest.mark.usefixtures('temp_logfile')
