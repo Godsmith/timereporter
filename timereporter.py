@@ -163,8 +163,9 @@ class TimeReporter:
 
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
+        # If offset is None, override the value with the last offset entered
         if offset is None:
-            offset = self.week_offset  # TODO: remove this state
+            offset = self.week_offset
         return self.calendar.show_week(offset)
 
     @classmethod
@@ -180,8 +181,9 @@ class TimeReporter:
 
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
+        # If offset is None, override the value with the last offset entered
         if offset is None:
-            offset = self.week_offset  # TODO: remove this state
+            offset = self.week_offset
         html = self.calendar.show_week(offset, table_format='html')
         _, path = tempfile.mkstemp(suffix='.html')
         with open(path, 'w') as f:
