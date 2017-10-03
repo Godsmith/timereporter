@@ -34,6 +34,9 @@ class TimeReporter:
             self.calendar = Calendar()
         self.calendar.today = self.today()  # Override the date from the pickle
 
+        if not args:
+            return
+
         if args == ['undo']:
             self.calendar.undo()
             done = True
