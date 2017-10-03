@@ -194,8 +194,11 @@ class TestFlex:
 
 class TestWithoutEnvironmentVariable:
     def test_show_last_week(self):
+        osenviron = os.environ
+        os.environ = {'USERPROFILE': osenviron['USERPROFILE']}
         with pytest.raises(EnvironmentError):
             TimeReporter('9'.split())
+        os.environ = osenviron
 
 
 @pytest.mark.usefixtures('temp_logfile')

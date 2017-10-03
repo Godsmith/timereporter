@@ -22,6 +22,7 @@ class TimeReporter:
 
     def __init__(self, args: list):
         self.week_offset = 0
+        done = False
 
         if 'TIMEREPORTER_FILE' not in os.environ:
             self.fix_environment_variable()
@@ -35,10 +36,10 @@ class TimeReporter:
 
         if args == ['undo']:
             self.calendar.undo()
-            return
+            done = True
         elif args == ['redo']:
             self.calendar.redo()
-            return
+            done = True
 
         dates = list(
             date for date in map(self.to_date, args) if date is not None)
@@ -53,7 +54,6 @@ class TimeReporter:
 
         args = [arg for arg in args if self.to_date(arg) is None]
 
-        done = False
         if args[0] == 'project':
             self.handle_project(args[1:], date_)
             done = True
