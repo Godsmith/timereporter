@@ -9,7 +9,6 @@ from timereporter import TimeReporter, main
 
 today = date.today()
 
-
 def mockdate(year=2017, month=9,
              day=20):  # @mockdate(args) -> f = mockdate(args)(f) ->
     # f = wrap(f) -> f = wrapped_f

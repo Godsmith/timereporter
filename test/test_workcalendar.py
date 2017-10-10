@@ -2,10 +2,27 @@ from datetime import date
 
 from day import Day
 from mydatetime import timedelta, time
+from timereporter import TimeReporter
 from workcalendar import Calendar
 
 today = date.today()
 
+
+def mockdate(year=2017, month=9,
+             day=20):  # @mockdate(args) -> f = mockdate(args)(f) ->
+    # f = wrap(f) -> f = wrapped_f
+    def wrap(f):
+        def wrapped_function(args):
+            temp = TimeReporter.today
+            TimeReporter.today = lambda x=None: date(year, month, day)
+            try:
+                f(args)
+            finally:
+                TimeReporter.today = temp
+
+        return wrapped_function
+
+    return wrap
 
 class TestToday:
     def test_add_day(self):
@@ -126,6 +143,7 @@ class TestShow:
         assert 'Monday' in s
         assert 'Friday' in s
 
+    @mockdate()
     def test_added(self):
         c = Calendar()
         wednesday = today + timedelta(days=-today.weekday() + 2)
@@ -144,6 +162,7 @@ class TestShow:
         s = c.show_week(-1)
         assert last_monday in s
 
+    @mockdate()
     def test_show_week_html(self):
         c = Calendar()
         wednesday = today + timedelta(days=-today.weekday() + 2)
@@ -156,6 +175,7 @@ class TestShow:
 
 
 class TestUndo:
+    @mockdate()
     def test_only_came(self):
         c = Calendar()
         c.add(Day('9'.split()))
@@ -163,6 +183,7 @@ class TestUndo:
         c.undo()
         assert '09:00' not in c.show_week()
 
+    @mockdate()
     def test_came_went_lunch(self):
         c = Calendar()
         c.add(Day('9 15 30m'.split()))
@@ -170,6 +191,7 @@ class TestUndo:
         c.undo()
         assert '30' not in c.show_week()
 
+    @mockdate()
     def test_redo(self):
         c = Calendar()
         c.add(Day('9 15 30m'.split()))
