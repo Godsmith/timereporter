@@ -3,12 +3,30 @@
 from collections import defaultdict
 from datetime import date
 
-from camel import Camel
+from camel import Camel, CamelRegistry
 from tabulate import tabulate
+from camel import Camel
 
 from timereporter.day import Day
 from timereporter.camel_registry import camelRegistry
 from timereporter.mydatetime import timedelta
+
+
+class DateAndDay:
+    def __init__(self, date, day):
+        self.date = date
+        self.day = day
+
+
+@camelRegistry.dumper(DateAndDay, 'date_and_day', version=1)
+def _dump_date_and_day(date_and_day):
+    return dict(
+        date=date_and_day.date,
+        day=date_and_day.day
+    )
+
+
+my_types = CamelRegistry()
 
 
 class DateAndDay:
@@ -30,6 +48,8 @@ def _load_date_and_day(data, version):
     return DateAndDay(**data)
 
 
+# TODO: change name of this file to calendar.py back again now that it is not a
+# global name anymore
 class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days
@@ -37,12 +57,13 @@ class Calendar:
     WORKING_HOURS_PER_DAY = timedelta(hours=7.75)
     DEFAULT_PROJECT_NAME = 'EPG Program'
 
-    def __init__(self):
+    def __init__(self, dates_and_days=None, redo_list=None, projects=None):
+        self.dates_and_days = [] if dates_and_days is None else dates_and_days
+        self.redo_list = [] if redo_list is None else redo_list
+        self.projects = [] if projects is None else projects
+        # TODO: this complicates testing.
         self.today = date.today()
-        self.dates_and_days = []
-        self.redo_list = []
         self.days = None
-        self.projects = []
 
     def add(self, day: Day, date_: date = None):
         """Add a day to the calendar.
@@ -106,8 +127,8 @@ class Calendar:
         for i, project in enumerate(self.projects):
             project_rows[i] = [project] + [self.days[date_].projects[project]
                                            for
-                               date_
-                               in dates]
+                                           date_
+                                           in dates]
 
         default_project_times = [self._default_project_time(date_) for date_ in
                                  dates]
@@ -151,3 +172,25 @@ class Calendar:
     def redo(self):
         self.dates_and_days.append(self.redo_list.pop())
 
+    def dump(self):
+        return Camel([camelRegistry]).dump(self)
+
+    @classmethod
+    def load(cls, data, version=1):
+        return Camel([camelRegistry]).load(data)
+
+
+@camelRegistry.dumper(Calendar, 'calendar', version=1)
+def _dump_calendar(calendar):
+    return dict(
+        dates_and_days=calendar.dates_and_days,
+        redo_list=calendar.redo_list,
+        projects=calendar.projects
+    )
+
+
+@camelRegistry.loader('calendar', version=1)
+def _load_calendar(data, version):
+    return Calendar(dates_and_days=data['dates_and_days'],
+                    redo_list=data['redo_list'],
+                    projects=data['projects'])

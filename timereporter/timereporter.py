@@ -28,9 +28,13 @@ class TimeReporter:
             self.fix_environment_variable()
 
         try:
-            self.calendar = pickle.load(
-                open(os.environ['TIMEREPORTER_FILE'], 'rb'))
-        except (EOFError, FileNotFoundError):
+            path = os.environ['TIMEREPORTER_FILE']
+            with open(path, 'rb') as f:
+                data = f.read().decode('utf-8')
+                self.calendar = Calendar.load(data)
+                if not isinstance(self.calendar, Calendar):
+                    raise UnreadableCamelFileException
+        except (EOFError, FileNotFoundError, UnreadableCamelFileException):
             self.calendar = Calendar()
         self.calendar.today = self.today()  # Override the date from the pickle
 
@@ -75,7 +79,9 @@ class TimeReporter:
             self.calendar.add(day,
                               date_ + timedelta(weeks=self.week_offset))
 
-        pickle.dump(self.calendar, open(os.environ['TIMEREPORTER_FILE'], 'wb'))
+        with open(os.environ['TIMEREPORTER_FILE'], 'w') as f:
+            data = self.calendar.dump()
+            f.write(data)
 
     @classmethod
     def to_date(cls, str_: str) -> date:
@@ -223,6 +229,10 @@ class MultipleDateException(TimeReporterError):
     """Raised when multiple strings that can be parsed as a date are detected
     in a command
     """
+    pass
+
+
+class UnreadableCamelFileException(TimeReporterError):
     pass
 
 

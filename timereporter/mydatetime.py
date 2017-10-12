@@ -28,9 +28,38 @@ class timedelta(datetime.timedelta):
             return self.__class__(seconds=self.seconds + other.seconds)
         return NotImplemented
 
+
+@camelRegistry.dumper(timedelta, 'timedelta', version=1)
+def _dump_timedelta(timedelta_):
+    return dict(
+        seconds=timedelta_.seconds
+    )
+
+
+@camelRegistry.loader('timedelta', version=1)
+def _load_timedelta(data, version):
+    return timedelta(seconds=data['seconds'])
+
+
 class time(datetime.time):
     def __new__(self, *args, **kwargs):
         return super().__new__(self, *args, **kwargs)
 
     def __str__(self):
         return str(self.hour).zfill(2) + ':' + str(self.minute).zfill(2)
+
+
+@camelRegistry.dumper(time, 'time', version=1)
+def _dump_time(time_):
+    return dict(
+        hour=time_.hour,
+        minute=time_.minute
+    )
+
+
+@camelRegistry.loader('time', version=1)
+def _load_time(data, version):
+    return time(
+        data['hour'],
+        data['minute']
+    )

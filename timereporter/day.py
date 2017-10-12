@@ -6,6 +6,7 @@ from typing import List, Dict
 from timereporter.camel_registry import camelRegistry
 from timereporter.timeparser import TimeParser
 from timereporter.mydatetime import timedelta, time
+from timereporter.camel_registry import camelRegistry
 
 
 class Day:
@@ -166,3 +167,22 @@ class DayAddError(Exception):
     """Raised when trying to add a Day to another class
     """
     pass
+
+@camelRegistry.dumper(Day, 'day', version=1)
+def _dump_date_and_day(day):
+    return dict(
+        came=day.came,
+        went=day.went,
+        lunch=day.lunch,
+        projects=day._projects
+    )
+
+
+@camelRegistry.loader('day', version=1)
+def _load_date_and_day(data, version):
+    day = Day()
+    day.came = data['came']
+    day.went = data['went']
+    day.lunch = data['lunch']
+    day._projects = data['projects']
+    return day

@@ -1,5 +1,7 @@
 import os
 from datetime import date
+import pytest
+import os
 
 from timereporter.mydatetime import timedelta, time
 from timereporter.workcalendar import Calendar
@@ -25,6 +27,17 @@ def mockdate(year=2017, month=9,
         return wrapped_function
 
     return wrap
+
+
+@pytest.fixture
+def temp_logfile(tmpdir_factory):
+    fn = tmpdir_factory.mktemp('data').join('timereporter.log')
+    fn.write('')
+    before = dict(os.environ)
+    os.environ['TIMEREPORTER_FILE'] = str(fn)
+    yield fn
+    os.environ = before
+
 
 class TestToday:
     def test_add_day(self):
@@ -180,7 +193,9 @@ class TestUndo:
     @mockdate()
     def test_only_came(self):
         c = Calendar()
+        c.today = date(2017, 9, 20)
         c.add(Day('9'.split()))
+        print(c.show_week())
         assert '09:00' in c.show_week()
         c.undo()
         assert '09:00' not in c.show_week()
@@ -188,6 +203,7 @@ class TestUndo:
     @mockdate()
     def test_came_went_lunch(self):
         c = Calendar()
+        c.today = date(2017, 9, 20)
         c.add(Day('9 15 30m'.split()))
         assert '30' in c.show_week()
         c.undo()
@@ -196,17 +212,11 @@ class TestUndo:
     @mockdate()
     def test_redo(self):
         c = Calendar()
+        c.today = date(2017, 9, 20)
         c.add(Day('9 15 30m'.split()))
         c.undo()
         c.redo()
         assert '30' in c.show_week()
-
-    # def test_add_to_day(self):
-    #     c = Calendar()
-    #     c.add(Day('9'.split()))
-    #     c.add(Day('15'.split()))
-    #     assert c.days[today].came == time(9)
-    #     assert c.days[today].went == time(15)
 
 
 class TestProject:
@@ -221,3 +231,24 @@ class TestProject:
         assert '08:00' in s
 
 
+class TestSerialization:
+    def test_time(self):
+        c = Calendar()
+        c.add(Day('9 15'.split()))
+        data = c.dump()
+        c2 = Calendar.load(data)
+        c2._assemble_days()
+        assert c2.days[today].came == time(9)
+        assert c2.days[today].went == time(15)
+
+    def test_project(self):
+        c = Calendar()
+        c.today = date(2017, 9, 20)
+        c.add(Day(project_name='EPG Support', project_time='08:00'))
+        c.add_project('EPG Support')
+        data = c.dump()
+        c2 = Calendar.load(data)
+        c2.today = date(2017, 9, 20)
+        s = c2.show_week()
+        assert 'EPG Support' in s
+        assert '08:00' in s
