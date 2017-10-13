@@ -8,5 +8,5 @@ setup(
     license='',
     author='Filip',
     author_email='',
-    description=''
+    description='', requires=['camel', 'tabulate']
 )
