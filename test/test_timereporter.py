@@ -4,8 +4,9 @@ from datetime import date
 import pytest
 
 import timereporter
-from mydatetime import timedelta
-from timereporter import TimeReporter, main
+from timereporter.timereporter import TimeReporter, main, \
+MultipleDateException, ProjectNameDoesNotExistError, AmbiguousProjectNameError
+from timereporter.mydatetime import timedelta
 
 today = date.today()
 
@@ -75,7 +76,7 @@ class TestTimeReporter:
 
     @mockdate(2017, 9, 19)
     def test_multiple_dates(self):
-        with pytest.raises(timereporter.MultipleDateException):
+        with pytest.raises(MultipleDateException):
             TimeReporter('yesterday 2017-09-18 9'.split())
 
     @mockdate(2017, 9, 19)
@@ -207,7 +208,7 @@ class TestProject:
         assert 'EPG Program' in t.show_week()
 
     def test_project_not_existing_error(self):
-        with pytest.raises(timereporter.ProjectNameDoesNotExistError):
+        with pytest.raises(ProjectNameDoesNotExistError):
             TimeReporter('project EPG Support 9'.split())
 
     @mockdate()
@@ -233,7 +234,7 @@ class TestProject:
     def test_report_time_short_form_ambiguity(self):
         TimeReporter('project new EPG Support'.split())
         TimeReporter('project new EPG Maintenance'.split())
-        with pytest.raises(timereporter.AmbiguousProjectNameError):
+        with pytest.raises(AmbiguousProjectNameError):
             TimeReporter('project EP 9'.split())
 
     @mockdate()

@@ -1,7 +1,7 @@
 import pytest
+from timereporter.timeparser import TimeParserError
 
-from day import Day
-from timeparser import TimeParserError
+from timereporter.day import Day
 
 
 class TestDay:

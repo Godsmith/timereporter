@@ -3,8 +3,9 @@ from collections import defaultdict
 from datetime import datetime, date
 from typing import List, Dict
 
-from mydatetime import timedelta, time
-from timeparser import TimeParser
+from timereporter.timeparser import TimeParser
+
+from timereporter.mydatetime import timedelta, time
 
 
 class Day:

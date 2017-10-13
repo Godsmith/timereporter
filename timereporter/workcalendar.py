@@ -1,13 +1,13 @@
 """Supplies the Calendar class
 """
 from collections import defaultdict
-from datetime import date
 from collections import namedtuple
+from datetime import date
 
+from timereporter.mydatetime import timedelta
 from tabulate import tabulate
 
-from day import Day
-from mydatetime import timedelta
+from timereporter.day import Day
 
 DateAndDay = namedtuple('DateAndDay', 'date day')
 

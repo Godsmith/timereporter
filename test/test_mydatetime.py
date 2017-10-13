@@ -1,4 +1,4 @@
-from mydatetime import timedelta, time
+from timereporter.mydatetime import timedelta, time
 
 
 class TestTimeDelta:

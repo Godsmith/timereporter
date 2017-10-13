@@ -1,9 +1,10 @@
 from datetime import date
 
-from day import Day
-from mydatetime import timedelta, time
-from timereporter import TimeReporter
-from workcalendar import Calendar
+from timereporter.mydatetime import timedelta, time
+from timereporter.workcalendar import Calendar
+
+from timereporter.timereporter import TimeReporter
+from timereporter.day import Day
 
 today = date.today()
 

@@ -9,10 +9,11 @@ from datetime import datetime, date
 from subprocess import call
 from typing import List
 
-from day import Day
-from mydatetime import timedelta
-from timeparser import TimeParserError
-from workcalendar import Calendar
+from timereporter.mydatetime import timedelta
+from timereporter.timeparser import TimeParserError
+from timereporter.workcalendar import Calendar
+
+from timereporter.day import Day
 
 
 class TimeReporter:

@@ -1,7 +1,7 @@
 import pytest
+from timereporter.timeparser import TimeParser, TimeParserError
 
-from mydatetime import timedelta
-from timeparser import TimeParser, TimeParserError
+from timereporter.mydatetime import timedelta
 
 
 def test_normal():
