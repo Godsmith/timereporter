@@ -1,5 +1,7 @@
 import datetime
 
+from timereporter.camel_registry import camelRegistry
+
 
 class timedelta(datetime.timedelta):
     def __new__(self, *args, **kwargs):

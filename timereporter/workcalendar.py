@@ -1,15 +1,33 @@
 """Supplies the Calendar class
 """
 from collections import defaultdict
-from collections import namedtuple
 from datetime import date
 
-from timereporter.mydatetime import timedelta
+from camel import Camel
 from tabulate import tabulate
 
 from timereporter.day import Day
+from timereporter.camel_registry import camelRegistry
+from timereporter.mydatetime import timedelta
 
-DateAndDay = namedtuple('DateAndDay', 'date day')
+
+class DateAndDay:
+    def __init__(self, date, day):
+        self.date = date
+        self.day = day
+
+
+@camelRegistry.dumper(DateAndDay, 'date_and_day', version=1)
+def _dump_date_and_day(date_and_day):
+    return dict(
+        date=date_and_day.date,
+        day=date_and_day.day
+    )
+
+
+@camelRegistry.loader('date_and_day', version=1)
+def _load_date_and_day(data, version):
+    return DateAndDay(**data)
 
 
 class Calendar:

@@ -3,12 +3,12 @@ from datetime import date
 
 import pytest
 
-import timereporter
-from timereporter.timereporter import TimeReporter, main, \
-MultipleDateException, ProjectNameDoesNotExistError, AmbiguousProjectNameError
 from timereporter.mydatetime import timedelta
+from timereporter.timereporter import TimeReporter, MultipleDateException, \
+    main, AmbiguousProjectNameError, ProjectNameDoesNotExistError
 
 today = date.today()
+
 
 def mockdate(year=2017, month=9,
              day=20):  # @mockdate(args) -> f = mockdate(args)(f) ->
@@ -114,6 +114,7 @@ class TestTimeReporter:
         assert '01:00' in t.show_week(1)
         assert '05:00' in t.show_week(1)
 
+
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:
     @mockdate(2017, 9, 19)
@@ -164,7 +165,6 @@ class TestDefaultProject:
         assert 'EPG Program' in t.show_day()
         assert '-05:00' not in t.show_day()
         assert '00:00' in t.show_day()
-
 
 
 @pytest.mark.usefixtures('temp_logfile')

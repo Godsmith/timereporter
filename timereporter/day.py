@@ -3,8 +3,8 @@ from collections import defaultdict
 from datetime import datetime, date
 from typing import List, Dict
 
+from timereporter.camel_registry import camelRegistry
 from timereporter.timeparser import TimeParser
-
 from timereporter.mydatetime import timedelta, time
 
 
