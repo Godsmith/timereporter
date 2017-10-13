@@ -2,6 +2,7 @@ import pytest
 from timereporter.timeparser import TimeParserError
 
 from timereporter.day import Day
+from timereporter.mydatetime import timedelta
 
 
 class TestDay:
@@ -64,6 +65,10 @@ class TestDay:
 
         d = Day('45min'.split())
         assert str(d.lunch) == '00:45'
+
+    def test_project(self):
+        d = Day(project_name='EPG Support', project_time='08:00')
+        assert d.projects['EPG Support'] == timedelta(hours=8)
 
     def test_error(self):
         with pytest.raises(TimeParserError):

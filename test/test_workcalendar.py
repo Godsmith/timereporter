@@ -206,3 +206,17 @@ class TestUndo:
     #     c.add(Day('15'.split()))
     #     assert c.days[today].came == time(9)
     #     assert c.days[today].went == time(15)
+
+
+class TestProject:
+    @mockdate()
+    def test_basic(self):
+        c = Calendar()
+        c.today = date(2017, 9, 20)
+        c.add(Day(project_name='EPG Support', project_time='08:00'))
+        c.add_project('EPG Support')
+        s = c.show_week()
+        print(s)
+        assert '08:00' in s
+
+
