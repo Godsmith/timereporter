@@ -216,7 +216,7 @@ class TestProject:
         c.add(Day(project_name='EPG Support', project_time='08:00'))
         c.add_project('EPG Support')
         s = c.show_week()
-        print(s)
+        assert 'EPG Support' in s
         assert '08:00' in s
 
 

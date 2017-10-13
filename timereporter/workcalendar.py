@@ -86,7 +86,8 @@ class Calendar:
 
         project_rows = [[project] for project in self.projects]
         for i, project in enumerate(self.projects):
-            project_rows[i] = [self.days[date_].projects[project] for
+            project_rows[i] = [project] + [self.days[date_].projects[project]
+                                           for
                                date_
                                in dates]
 
