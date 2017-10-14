@@ -193,13 +193,14 @@ class TestFlex:
 
 
 class TestWithoutEnvironmentVariable:
+    @mockdate(2017, 9, 19)
     def test_show_last_week(self):
         osenviron = os.environ
         os.environ = {'USERPROFILE': osenviron['USERPROFILE']}
-        with pytest.raises(EnvironmentError):
-            TimeReporter('9'.split())
+        t = TimeReporter('9'.split())
         os.environ = osenviron
 
+        assert '9:00' in t.show_day()
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestProject:

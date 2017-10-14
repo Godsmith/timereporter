@@ -1,12 +1,10 @@
 """Supply the TimeReporter class, associated exceptions, and a main() method
 """
 import os
-import pickle
 import sys
 import tempfile
 import webbrowser
 from datetime import datetime, date
-from subprocess import call
 from typing import List
 
 from timereporter.day import Day
@@ -14,6 +12,7 @@ from timereporter.mydatetime import timedelta
 from timereporter.timeparser import TimeParserError
 from timereporter.workcalendar import Calendar
 
+TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 
 class TimeReporter:
     """Act as a user interface towards the Calendar class,
@@ -23,18 +22,19 @@ class TimeReporter:
     def __init__(self, args: list):
         self.week_offset = 0
         done = False
-
-        if 'TIMEREPORTER_FILE' not in os.environ:
-            self.fix_environment_variable()
+        if TIMEREPORTER_FILE in os.environ:
+            path = os.environ[TIMEREPORTER_FILE]
+        else:
+            path = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
 
         try:
-            path = os.environ['TIMEREPORTER_FILE']
             with open(path, 'rb') as f:
                 data = f.read().decode('utf-8')
                 self.calendar = Calendar.load(data)
                 if not isinstance(self.calendar, Calendar):
                     raise UnreadableCamelFileException
         except (EOFError, FileNotFoundError, UnreadableCamelFileException):
+            print('File not found, creating new file at')
             self.calendar = Calendar()
         self.calendar.today = self.today()  # Override the date from the pickle
 
@@ -79,7 +79,7 @@ class TimeReporter:
             self.calendar.add(day,
                               date_ + timedelta(weeks=self.week_offset))
 
-        with open(os.environ['TIMEREPORTER_FILE'], 'w') as f:
+        with open(path, 'w') as f:
             data = self.calendar.dump()
             f.write(data)
 
@@ -121,28 +121,6 @@ class TimeReporter:
         """
         return date.today()
 
-    @classmethod
-    def fix_environment_variable(cls):
-        """Prompts the user to set the environment variable used for this
-        program.
-
-        Currently only works on Windows due to it utilizing the "setx" command.
-        """
-        default_path = \
-            f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
-        print('Environment variable TIMEREPORTER_FILE not set')
-        answer = input(f'Use default path {default_path}? (y/n)')
-        if answer.lower().strip() == 'y':
-            call(['setx', 'TIMEREPORTER_FILE', default_path])
-        elif answer.lower().strip() == 'n':
-            answer = input('Input desired path:')
-            call(['setx', 'TIMEREPORTER_FILE', answer])
-        else:
-            print('Please type either y or n.')
-            exit()
-        print('Please close and reopen your console window for '
-              'the environment variable change to take effect.')
-        exit()
 
     def handle_project(self, args: List[str], date_: date):
         """Does something project-related with the supplied arguments, like
