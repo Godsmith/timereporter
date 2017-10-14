@@ -8,5 +8,9 @@ setup(
     license='',
     author='Filip',
     author_email='',
-    description='', requires=['camel', 'tabulate']
+    description='',
+    requires=[
+        'camel',
+        'tabulate'
+    ]
 )
