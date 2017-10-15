@@ -5,7 +5,8 @@ import pytest
 
 from timereporter.mydatetime import timedelta
 from timereporter.timereporter import TimeReporter, MultipleDateException, \
-    main, AmbiguousProjectNameError, ProjectNameDoesNotExistError
+    AmbiguousProjectNameError, ProjectNameDoesNotExistError
+from timereporter.__main__ import main
 
 today = date.today()
 

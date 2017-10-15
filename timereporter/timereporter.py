@@ -1,7 +1,6 @@
 """Supply the TimeReporter class, associated exceptions, and a main() method
 """
 import os
-import sys
 import tempfile
 import webbrowser
 from datetime import datetime, date
@@ -214,15 +213,5 @@ class UnreadableCamelFileException(TimeReporterError):
     pass
 
 
-def main():
-    """The main entrypoint of the program
-    """
-    try:
-        time_reporter = TimeReporter(sys.argv[1:])
-        print(time_reporter.show_week())
-    except (TimeParserError, TimeReporterError) as err:
-        print(err)
 
 
-if __name__ == '__main__':
-    main()
