@@ -73,3 +73,23 @@ class TestDay:
     def test_error(self):
         with pytest.raises(TimeParserError):
             Day('9s3 15'.split())
+
+
+class TestAdd:
+    def test_new_object_is_created(self):
+        d1 = Day()
+        d2 = Day()
+        d3 = d1 + d2
+        assert d3 is not d1
+        assert d3 is not d2
+
+    def test_add_empty_with_came_went_and_lunch(self):
+        d1 = Day('9 17 45m'.split())
+        d2 = Day()
+        assert d1 + d2 == Day('9 17 45m'.split())
+
+    def test_add_came_went_and_lunch_with_empty(self):
+        d1 = Day()
+        d2 = Day('9 17 45m'.split())
+        assert d1 + d2 == Day('9 17 45m'.split())
+

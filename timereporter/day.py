@@ -2,8 +2,8 @@
 from collections import defaultdict
 from datetime import datetime, date
 from typing import List, Dict
+from copy import deepcopy
 
-from timereporter.camel_registry import camelRegistry
 from timereporter.timeparser import TimeParser
 from timereporter.mydatetime import timedelta, time
 from timereporter.camel_registry import camelRegistry
@@ -64,35 +64,42 @@ class Day:
     def __add__(self, other):
         if not isinstance(other, Day):
             raise DayAddError('Cannot add Day to another class')
+        new_day = Day()
 
-        if self.came == self.went == self.lunch is None:
-            return other
+        new_day.lunch = other.lunch if other.lunch else self.lunch
 
-        if other.lunch:
-            self.lunch = other.lunch
+        new_day._projects = self.projects.copy()
+        new_day._projects.update(other.projects)
 
         if other.came and other.went:
-            (self.came, self.went) = (other.came, other.went)
-            return self
-
-        if not other.came and not other.went:
-            return self
-
-        new_times = [other.came, other.went]
-        new_times.remove(None)
-        new_time = new_times[0]
-        if self.came and self.went:
-            if self._difference(new_time, self.came) < self._difference(
-                    new_time, self.went):
-                self.came = new_time
+            new_day.came = other.came
+            new_day.went = other.went
+        elif other.went:
+            new_day.came = self.came
+            new_day.went = other.went
+        elif not other.came and not other.went:
+            new_day.came = self.came
+            new_day.went = self.went
+        else:
+            if not self.came:
+                new_day.came = other.came
+                new_day.went = self.went
+            elif not self.went:
+                new_day.came = self.came
+                new_day.went = other.came
             else:
-                self.went = new_time
-            return self
+                if self._difference(other.came, self.came) < self._difference(
+                                            other.came, self.went):
+                                    new_day.came = other.came
+                                    new_day.went = self.went
+                else:
+                    new_day.came = self.came
+                    new_day.went = other.came
 
-        all_times = [self.came, self.went, other.came, other.went]
-        all_times = [t for t in all_times if t is not None]
-        self.came, self.went = sorted(all_times)
-        return self
+        if new_day.came and new_day.went and new_day.came > new_day.went:
+            new_day.came, new_day.went = new_day.went, new_day.came
+
+        return new_day
 
     def __eq__(self, other):
         return (self.came, self.went, self.lunch) == (
@@ -167,6 +174,7 @@ class DayAddError(Exception):
     """Raised when trying to add a Day to another class
     """
     pass
+
 
 @camelRegistry.dumper(Day, 'day', version=1)
 def _dump_date_and_day(day):

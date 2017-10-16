@@ -227,6 +227,22 @@ class TestProject:
         assert '10:00' in t.show_week()
 
     @mockdate()
+    def test_add_came_and_then_report_time_today(self):
+        TimeReporter('came 7'.split())
+        TimeReporter('project new EPG Support'.split())
+        t = TimeReporter('project EPG Support 9'.split())
+        assert '9:00' in t.show_week()
+
+    @mockdate()
+    def test_report_time_on_two_projects(self):
+        TimeReporter('project new EPG Support'.split())
+        TimeReporter('project new EPG Maintenance'.split())
+        TimeReporter('project EPG Support 9'.split())
+        t = TimeReporter('project EPG Maintenance 8'.split())
+        assert '9:00' in t.show_week()
+        assert '8:00' in t.show_week()
+
+    @mockdate()
     def test_report_time_short_form(self):
         TimeReporter('project new EPG Support'.split())
         t = TimeReporter('project EP 9'.split())

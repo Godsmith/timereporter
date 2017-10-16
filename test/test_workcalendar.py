@@ -195,7 +195,6 @@ class TestUndo:
         c = Calendar()
         c.today = date(2017, 9, 20)
         c.add(Day('9'.split()))
-        print(c.show_week())
         assert '09:00' in c.show_week()
         c.undo()
         assert '09:00' not in c.show_week()
