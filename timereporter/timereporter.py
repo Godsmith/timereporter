@@ -8,15 +8,16 @@ from typing import List
 
 from timereporter.day import Day
 from timereporter.mydatetime import timedelta
-from timereporter.timeparser import TimeParserError
 from timereporter.workcalendar import Calendar
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
+
 
 class TimeReporter:
     """Act as a user interface towards the Calendar class,
     parsing input and handling environment issues
     """
+    default_path = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
 
     def __init__(self, args=None):
         if args is None:
@@ -26,17 +27,23 @@ class TimeReporter:
         if TIMEREPORTER_FILE in os.environ:
             path = os.environ[TIMEREPORTER_FILE]
         else:
-            path = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
-
+            path = self.default_path
         try:
-            with open(path, 'rb') as f:
-                data = f.read().decode('utf-8')
+            with open(path, 'r') as f:
+                data = f.read()
                 self.calendar = Calendar.load(data)
                 if not isinstance(self.calendar, Calendar):
-                    raise UnreadableCamelFileException
-        except (EOFError, FileNotFoundError, UnreadableCamelFileException):
-            print('File not found, creating new file at')
-            self.calendar = Calendar()
+                    raise UnreadableCamelFileException(
+                        f'File found at {path} not readable. Remove it to '
+                        f'create a new one.')
+        except FileNotFoundError:
+            if self._can_file_be_created_at(path):
+                self.calendar = Calendar()
+            else:
+                raise DirectoryDoesNotExistError(
+                    f'The directory for the specified path {path} does not exist. '
+                    f'Specify a custom path by setting the %TIMEREPORTER_FILE% '
+                    f'environment variable.')
         self.calendar.today = self.today()  # Override the date from the pickle
 
         if not args:
@@ -85,6 +92,15 @@ class TimeReporter:
             f.write(data)
 
     @classmethod
+    def _can_file_be_created_at(cls, path):
+        try:
+            with open(path, 'w'):
+                pass
+            return True
+        except FileNotFoundError:
+            return False
+
+    @classmethod
     def to_date(cls, str_: str) -> date:
         """Parses a string to a datetime.date.
 
@@ -121,7 +137,6 @@ class TimeReporter:
         :return: a datetime.date object for the current day.
         """
         return date.today()
-
 
     def handle_project(self, args: List[str], date_: date):
         """Does something project-related with the supplied arguments, like
@@ -215,5 +230,5 @@ class UnreadableCamelFileException(TimeReporterError):
     pass
 
 
-
-
+class DirectoryDoesNotExistError(TimeReporterError):
+    pass

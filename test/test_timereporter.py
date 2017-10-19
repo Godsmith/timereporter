@@ -5,7 +5,8 @@ import pytest
 
 from timereporter.mydatetime import timedelta
 from timereporter.timereporter import TimeReporter, MultipleDateException, \
-    AmbiguousProjectNameError, ProjectNameDoesNotExistError
+    AmbiguousProjectNameError, ProjectNameDoesNotExistError, \
+    DirectoryDoesNotExistError, UnreadableCamelFileException
 from timereporter.__main__ import main
 
 today = date.today()
@@ -31,7 +32,6 @@ def mockdate(year=2017, month=9,
 @pytest.fixture
 def temp_logfile(tmpdir_factory):
     fn = tmpdir_factory.mktemp('data').join('timereporter.log')
-    fn.write('')
     before = dict(os.environ)
     os.environ['TIMEREPORTER_FILE'] = str(fn)
     yield fn
@@ -194,14 +194,34 @@ class TestFlex:
 
 
 class TestWithoutEnvironmentVariable:
-    @mockdate(2017, 9, 19)
-    def test_show_last_week(self):
+    @pytest.fixture
+    def empty_os_environ(self):
         osenviron = os.environ
         os.environ = {'USERPROFILE': osenviron['USERPROFILE']}
-        t = TimeReporter('9'.split())
+        yield
         os.environ = osenviron
 
+    def test_existing_directory_no_file(self, empty_os_environ, tmpdir):
+        TimeReporter.default_path = tmpdir.join('timereporter.log')
+
+        t = TimeReporter('9'.split())
+
         assert '9:00' in t.show_day()
+
+    def test_unreadable_file(self, empty_os_environ, tmpdir):
+        file = tmpdir.join('timereporter.log')
+        file.write('')
+        TimeReporter.default_path = tmpdir.join('timereporter.log')
+
+        with pytest.raises(UnreadableCamelFileException):
+            TimeReporter('9'.split())
+
+    def test_not_working_path(self, empty_os_environ):
+        TimeReporter.default_path = "C:\\does\\not\\exist"
+
+        with pytest.raises(DirectoryDoesNotExistError):
+            TimeReporter('9'.split())
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestProject:

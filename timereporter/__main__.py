@@ -1,7 +1,7 @@
 import sys
 
-from timereporter.timereporter import TimeReporter, TimeParserError, \
-    TimeReporterError
+from timereporter.timereporter import TimeReporter, TimeReporterError
+from timereporter.timeparser import TimeParserError
 
 
 def main():
