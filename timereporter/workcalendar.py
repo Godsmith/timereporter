@@ -34,6 +34,12 @@ class DateAndDay:
         self.date = date
         self.day = day
 
+    def __repr__(self):
+        return f'DateAndDay({self.date}, {self.day})'
+
+    def __str__(self):
+        return self.__repr__()
+
 
 @camelRegistry.dumper(DateAndDay, 'date_and_day', version=1)
 def _dump_date_and_day(date_and_day):
