@@ -2,7 +2,7 @@ import pytest
 from timereporter.timeparser import TimeParserError
 
 from timereporter.day import Day
-from timereporter.mydatetime import timedelta
+from timereporter.mydatetime import time, timedelta
 
 
 class TestDay:
@@ -93,3 +93,22 @@ class TestAdd:
         d2 = Day('9 17 45m'.split())
         assert d1 + d2 == Day('9 17 45m'.split())
 
+
+class TestFormatCorrection:
+    def test_day_fix_wrong_lunch_format(self):
+        d = Day('lunch 01:00'.split())
+        assert d.lunch == timedelta(minutes=60)
+
+    def test_day_fix_wrong_came_error(self):
+        d = Day('came 45m'.split())
+        assert d.came == time(hour=0, minute=45)
+
+
+class TestTo:
+    def test_to_time(self):
+        assert Day._to_time(timedelta(hours=5, minutes=37)) == time(hour=5,
+                                                                    minute=37)
+
+    def test_to_timedelta(self):
+        assert Day._to_timedelta(time(hour=5, minute=37)) == timedelta(
+            seconds=5 * 3600 + 37 * 60)

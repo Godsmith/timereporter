@@ -7,6 +7,7 @@ from copy import deepcopy
 from timereporter.timeparser import TimeParser
 from timereporter.mydatetime import timedelta, time
 from timereporter.camel_registry import camelRegistry
+from typing import Union
 
 
 class Day:
@@ -19,7 +20,7 @@ class Day:
 
     def __init__(self, args: List[str] = None, project_name: str = None,
                  project_time: str = None):
-        self._came = self._went = self.lunch = None
+        self._came = self._went = self._lunch = None
         self._projects = defaultdict(timedelta)
 
         if project_name:
@@ -89,9 +90,9 @@ class Day:
                 new_day.went = other.came
             else:
                 if self._difference(other.came, self.came) < self._difference(
-                                            other.came, self.went):
-                                    new_day.came = other.came
-                                    new_day.went = self.went
+                        other.came, self.went):
+                    new_day.came = other.came
+                    new_day.went = self.went
                 else:
                     new_day.came = self.came
                     new_day.went = other.came
@@ -107,6 +108,25 @@ class Day:
 
     def __repr__(self):
         return f'Day({self.came}-{self.went}, {self.lunch})'
+
+    @classmethod
+    def _to_time(cls, t: Union[time, timedelta, None]) -> Union[time, None]:
+        if t is None:
+            return None
+        if isinstance(t, time):
+            return t
+        hour = t.seconds // 3600
+        minute = (t.seconds - hour * 3600) // 60
+        return time(hour=hour, minute=minute)
+
+    @classmethod
+    def _to_timedelta(cls, t: Union[time, timedelta, None]) -> Union[
+        timedelta, None]:
+        if t is None:
+            return None
+        if isinstance(t, timedelta):
+            return t
+        return timedelta(seconds=t.hour * 3600 + t.minute * 60)
 
     @classmethod
     def _difference(cls, time1, time2):
@@ -131,6 +151,10 @@ class Day:
         return self._went
 
     @property
+    def lunch(self):
+        return self._lunch
+
+    @property
     def projects(self) -> Dict[str, timedelta]:
         """Which projects has been worked on and for how long this day
 
@@ -145,7 +169,7 @@ class Day:
         :param value:
         :return:
         """
-        self._came = value
+        self._came = self._to_time(value)
 
     @went.setter
     def went(self, value):
@@ -154,7 +178,11 @@ class Day:
         :param value:
         :return:
         """
-        self._went = value
+        self._went = self._to_time(value)
+
+    @lunch.setter
+    def lunch(self, value):
+        self._lunch = self._to_timedelta(value)
 
     @property
     def working_time(self) -> timedelta:
@@ -174,6 +202,10 @@ class DayAddError(Exception):
     """Raised when trying to add a Day to another class
     """
     pass
+
+
+class DayLoadingError(Exception):
+    """Raised when trying to load a Day with the wrong types"""
 
 
 @camelRegistry.dumper(Day, 'day', version=1)
