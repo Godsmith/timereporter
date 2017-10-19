@@ -18,7 +18,9 @@ class TimeReporter:
     parsing input and handling environment issues
     """
 
-    def __init__(self, args: list):
+    def __init__(self, args=None):
+        if args is None:
+            args = []
         self.week_offset = 0
         done = False
         if TIMEREPORTER_FILE in os.environ:
