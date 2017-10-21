@@ -1,5 +1,6 @@
 import os
 from datetime import date
+import decorator
 
 import pytest
 
@@ -12,21 +13,29 @@ from timereporter.__main__ import main
 today = date.today()
 
 
-def mockdate(year=2017, month=9,
-             day=20):  # @mockdate(args) -> f = mockdate(args)(f) ->
-    # f = wrap(f) -> f = wrapped_f
-    def wrap(f):
-        def wrapped_function(args):
+def mockdate(year=2017, month=9, day=20):
+    """Sets Timereporter.today to a custom date.
+
+    Decorator with arguments is a bit confusing; this is what happens:
+    @mockdate(args) -> f = mockdate(args)(f) -> f = deco(f) -> f = wrapper
+
+    I had to use decorator.decorator to be able to use pytest fixtures, see
+    https://stackoverflow.com/questions/19614658/how-do-i-make-pytest-
+    fixtures-work-with-decorated-functions
+    """
+
+    def deco(func):
+        def wrapper(func, *args, **kwargs):
             temp = TimeReporter.today
             TimeReporter.today = lambda x=None: date(year, month, day)
             try:
-                f(args)
+                func(*args, **kwargs)
             finally:
                 TimeReporter.today = temp
 
-        return wrapped_function
+        return decorator.decorator(wrapper, func)
 
-    return wrap
+    return deco
 
 
 @pytest.fixture
