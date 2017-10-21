@@ -127,15 +127,8 @@ class TestTimeReporter:
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:
-    @mockdate(2017, 9, 19)
-    def test_show_day(self):
-        t = TimeReporter(['9'])
-        assert '9:00' in t.show_day()
-        assert 'Tuesday' in t.show_day()
-        assert 'Monday' not in t.show_day()
-
-    @mockdate(2017, 9, 19)
-    def test_show_week_html(self):
+    @pytest.fixture
+    def mock_browser(self):
         class MockBrowser:
             def __init__(self):
                 self.url = ''  # type: str
@@ -146,10 +139,23 @@ class TestShow:
         mock_browser = MockBrowser()
         temp = TimeReporter.webbrowser
         TimeReporter.webbrowser = lambda _: mock_browser
+        yield mock_browser
+        TimeReporter.webbrowser = temp
+
+    @mockdate(2017, 9, 19)
+    def test_show_day(self):
         t = TimeReporter(['9'])
+        assert '9:00' in t.show_day()
+        assert 'Tuesday' in t.show_day()
+        assert 'Monday' not in t.show_day()
+
+    @mockdate(2017, 9, 19)
+    def test_show_week_html(self, mock_browser):
+        TimeReporter(['9:15'])
         TimeReporter('show week html'.split())
         assert mock_browser.url.endswith('.html')
-        TimeReporter.webbrowser = temp
+        # with open(mock_browser.url) as f:
+        #     assert '9,25' in
 
 
 @pytest.mark.usefixtures('temp_logfile')
@@ -210,6 +216,7 @@ class TestWithoutEnvironmentVariable:
         yield
         os.environ = osenviron
 
+    @mockdate(2017, 9, 19)
     def test_existing_directory_no_file(self, empty_os_environ, tmpdir):
         TimeReporter.default_path = tmpdir.join('timereporter.log')
 
