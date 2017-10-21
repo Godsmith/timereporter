@@ -1,42 +1,11 @@
-import os
 from datetime import date
-import pytest
-import os
 
 from timereporter.mydatetime import timedelta, time
 from timereporter.workcalendar import Calendar
-
-from timereporter.timereporter import TimeReporter
 from timereporter.day import Day
+from conftest import mockdate
 
 today = date.today()
-
-
-def mockdate(year=2017, month=9,
-             day=20):  # @mockdate(args) -> f = mockdate(args)(f) ->
-    # f = wrap(f) -> f = wrapped_f
-    def wrap(f):
-        def wrapped_function(args):
-            temp = TimeReporter.today
-            TimeReporter.today = lambda x=None: date(year, month, day)
-            try:
-                f(args)
-            finally:
-                TimeReporter.today = temp
-
-        return wrapped_function
-
-    return wrap
-
-
-@pytest.fixture
-def temp_logfile(tmpdir_factory):
-    fn = tmpdir_factory.mktemp('data').join('timereporter.log')
-    fn.write('')
-    before = dict(os.environ)
-    os.environ['TIMEREPORTER_FILE'] = str(fn)
-    yield fn
-    os.environ = before
 
 
 class TestToday:
