@@ -139,6 +139,10 @@ class TestDefaultProject:
         assert '-05:00' not in t.show_day()
         assert '00:00' in t.show_day()
 
+    def test_working_time_less_than_working_time_per_day(self):
+        t = TimeReporter('9 16'.split())
+        assert '07:00' in t.show_day()
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestFlex:
