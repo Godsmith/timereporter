@@ -9,7 +9,7 @@ setup(
     author='Filip',
     author_email='',
     description='',
-    requires=[
+    install_requires=[
         'camel',
         'tabulate'
     ]
