@@ -14,13 +14,13 @@ class Day:
     """Represent a work day.
 
     Represent a day wherein the user did certain things like came,
-    went at certain times and worked on specific projects for specific time
+    left at certain times and worked on specific projects for specific time
     intervals.
     """
 
     def __init__(self, args: List[str] = None, project_name: str = None,
                  project_time: str = None):
-        self._came = self._went = self._lunch = None
+        self._came = self._left = self._lunch = None
         self._projects = defaultdict(timedelta)
 
         if project_name:
@@ -41,8 +41,8 @@ class Day:
         if args[0] == 'came':
             self.came = TimeParser.parse(args[1])
             return
-        elif args[0] == 'went':
-            self.went = TimeParser.parse(args[1])
+        elif args[0] == 'left':
+            self.left = TimeParser.parse(args[1])
             return
         elif args[0] == 'lunch':
             self.lunch = TimeParser.parse(args[1])
@@ -58,7 +58,7 @@ class Day:
                 first, second = (
                     TimeParser.parse(args[0]), TimeParser.parse(args[1]))
                 times = sorted([first, second])
-                self._came, self._went = times
+                self._came, self._left = times
             if len(args) > 2:
                 self.lunch = TimeParser.parse(args[2])
 
@@ -72,42 +72,42 @@ class Day:
         new_day._projects = self.projects.copy()
         new_day._projects.update(other.projects)
 
-        if other.came and other.went:
+        if other.came and other.left:
             new_day.came = other.came
-            new_day.went = other.went
-        elif other.went:
+            new_day.left = other.left
+        elif other.left:
             new_day.came = self.came
-            new_day.went = other.went
-        elif not other.came and not other.went:
+            new_day.left = other.left
+        elif not other.came and not other.left:
             new_day.came = self.came
-            new_day.went = self.went
+            new_day.left = self.left
         else:
             if not self.came:
                 new_day.came = other.came
-                new_day.went = self.went
-            elif not self.went:
+                new_day.left = self.left
+            elif not self.left:
                 new_day.came = self.came
-                new_day.went = other.came
+                new_day.left = other.came
             else:
                 if self._difference(other.came, self.came) < self._difference(
-                        other.came, self.went):
+                        other.came, self.left):
                     new_day.came = other.came
-                    new_day.went = self.went
+                    new_day.left = self.left
                 else:
                     new_day.came = self.came
-                    new_day.went = other.came
+                    new_day.left = other.came
 
-        if new_day.came and new_day.went and new_day.came > new_day.went:
-            new_day.came, new_day.went = new_day.went, new_day.came
+        if new_day.came and new_day.left and new_day.came > new_day.left:
+            new_day.came, new_day.left = new_day.left, new_day.came
 
         return new_day
 
     def __eq__(self, other):
-        return (self.came, self.went, self.lunch) == (
-            other.came, other.went, other.lunch)
+        return (self.came, self.left, self.lunch) == (
+            other.came, other.left, other.lunch)
 
     def __repr__(self):
-        return f'Day({self.came}-{self.went}, {self.lunch})'
+        return f'Day({self.came}-{self.left}, {self.lunch})'
 
     @classmethod
     def _to_time(cls, t: Union[time, timedelta, None]) -> Union[time, None]:
@@ -143,12 +143,12 @@ class Day:
         return self._came
 
     @property
-    def went(self):
+    def left(self):
         """At which time the user left for home this day
 
         :return:
         """
-        return self._went
+        return self._left
 
     @property
     def lunch(self):
@@ -171,14 +171,14 @@ class Day:
         """
         self._came = self._to_time(value)
 
-    @went.setter
-    def went(self, value):
+    @left.setter
+    def left(self, value):
         """Set at which time the user left for home this day
 
         :param value:
         :return:
         """
-        self._went = self._to_time(value)
+        self._left = self._to_time(value)
 
     @lunch.setter
     def lunch(self, value):
@@ -186,9 +186,9 @@ class Day:
 
     @property
     def working_time(self) -> timedelta:
-        if self.came and self.went:
+        if self.came and self.left:
             lunch = self.lunch if self.lunch else timedelta()
-            seconds_at_work = self.to_seconds(self.went) - self.to_seconds(
+            seconds_at_work = self.to_seconds(self.left) - self.to_seconds(
                 self.came)
             working_time_excluding_lunch = timedelta(seconds=seconds_at_work)
             return working_time_excluding_lunch - lunch
@@ -214,7 +214,7 @@ class DayLoadingError(Exception):
 def _dump_date_and_day(day):
     return dict(
         came=day.came,
-        went=day.went,
+        left=day.left,
         lunch=day.lunch,
         projects=day._projects
     )
@@ -224,7 +224,10 @@ def _dump_date_and_day(day):
 def _load_date_and_day(data, version):
     day = Day()
     day.came = data['came']
-    day.went = data['went']
+    if 'left' in data:
+        day.left = data['left']
+    else:
+        day.left = data['went']
     day.lunch = data['lunch']
     day._projects = data['projects']
     return day

@@ -13,7 +13,7 @@ class TestToday:
         c.add(Day('9 15'.split()))
         c._assemble_days()
         assert c.days[today].came == time(9)
-        assert c.days[today].went == time(15)
+        assert c.days[today].left == time(15)
 
     def test_add_to_day(self):
         c = Calendar()
@@ -21,7 +21,7 @@ class TestToday:
         c.add(Day('15'.split()))
         c._assemble_days()
         assert c.days[today].came == time(9)
-        assert c.days[today].went == time(15)
+        assert c.days[today].left == time(15)
 
     def test_add_to_day_inverse_order(self):
         c = Calendar()
@@ -29,7 +29,7 @@ class TestToday:
         c.add(Day('9'.split()))
         c._assemble_days()
         assert c.days[today].came == time(9)
-        assert c.days[today].went == time(15)
+        assert c.days[today].left == time(15)
 
     def test_overwrite_all(self):
         c = Calendar()
@@ -37,7 +37,7 @@ class TestToday:
         c.add(Day('8 14'.split()))
         c._assemble_days()
         assert c.days[today].came == time(8)
-        assert c.days[today].went == time(14)
+        assert c.days[today].left == time(14)
 
     def test_overwrite_closest(self):
         c = Calendar()
@@ -45,7 +45,7 @@ class TestToday:
         c.add(Day('13'.split()))
         c._assemble_days()
         assert c.days[today].came == time(9)
-        assert c.days[today].went == time(13)
+        assert c.days[today].left == time(13)
 
     def test_overwrite_closest2(self):
         c = Calendar()
@@ -53,7 +53,7 @@ class TestToday:
         c.add(Day('11'.split()))
         c._assemble_days()
         assert c.days[today].came == time(11)
-        assert c.days[today].went == time(15)
+        assert c.days[today].left == time(15)
 
     def test_overwrite_lunch(self):
         c = Calendar()
@@ -62,14 +62,14 @@ class TestToday:
         c._assemble_days()
         assert c.days[today].lunch == timedelta(minutes=35)
 
-    def test_add_came_and_went(self):
+    def test_add_came_and_left(self):
         c = Calendar()
         c.add(Day('45m'.split()))
         c.add(Day('8 15'.split()))
         c._assemble_days()
         assert c.days[today] == Day('8 15 45m'.split())
 
-    def test_change_came_and_went(self):
+    def test_change_came_and_left(self):
         c = Calendar()
         c.add(Day('9 16 45m'.split()))
         c.add(Day('8 15'.split()))
@@ -96,10 +96,10 @@ class TestToday:
         c._assemble_days()
         assert c.days[today] == Day('8'.split())
 
-    def test_went_text(self):
+    def test_left_text(self):
         c = Calendar()
         c.add(Day('came 08:00'.split()))
-        c.add(Day('went 17:00'.split()))
+        c.add(Day('left 17:00'.split()))
         c._assemble_days()
         assert c.days[today] == Day('8 17'.split())
 
@@ -135,7 +135,7 @@ class TestShow:
         assert '18:00' in s
         assert '0:45' in s
         assert 'Came' in s
-        assert 'Went' in s
+        assert 'Left' in s
         assert 'Lunch' in s
 
     def test_show_last_week(self):
@@ -164,7 +164,7 @@ class TestUndo:
         c.undo()
         assert '09:00' not in c.show_week()
 
-    def test_came_went_lunch(self):
+    def test_came_left_lunch(self):
         c = Calendar()
         c.today = date(2017, 9, 20)
         c.add(Day('9 15 30m'.split()))
@@ -200,7 +200,7 @@ class TestSerialization:
         c2 = Calendar.load(data)
         c2._assemble_days()
         assert c2.days[today].came == time(9)
-        assert c2.days[today].went == time(15)
+        assert c2.days[today].left == time(15)
 
     def test_project(self):
         c = Calendar()

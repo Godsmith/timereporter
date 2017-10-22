@@ -113,7 +113,7 @@ class Calendar:
         weekdays_to_show = [weekdays[date_.weekday()] for date_ in dates]
 
         came_times = [self.days[date_].came for date_ in dates]
-        went_times = [self.days[date_].went for date_ in dates]
+        leave_times = [self.days[date_].left for date_ in dates]
         lunch_times = [self.days[date_].lunch for date_ in dates]
 
         project_rows = [[project] for project in self.projects]
@@ -137,7 +137,7 @@ class Calendar:
         return tabulate([[''] + dates,
                          [''] + weekdays_to_show,
                          ['Came'] + came_times,
-                         ['Went'] + went_times,
+                         ['Left'] + leave_times,
                          ['Lunch'] + lunch_times,
                          [self.DEFAULT_PROJECT_NAME] + default_project_times,
                          *project_rows,
