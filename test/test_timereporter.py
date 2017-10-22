@@ -32,11 +32,11 @@ class TestTimeReporter:
         assert '09:00' in t.show_day()
         assert '18:00' in t.show_day()
 
-    # def test_report_then_came_shall_overwrite_came(self):
-    #     TimeReporter(['9'])
-    #     t = TimeReporter('came 10')
-    #     assert not '9:00' in t.show_day()
-    #     assert '10:00' in t.show_day()
+    def test_report_then_came_shall_overwrite_came(self):
+        TimeReporter(['9'])
+        t = TimeReporter('came 10')
+        assert not '9:00' in t.show_day()
+        assert '10:00' in t.show_day()
 
     def test_came_yesterday_monday(self):
         t = TimeReporter('9 yesterday')

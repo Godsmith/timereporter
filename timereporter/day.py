@@ -22,7 +22,7 @@ class Day:
                  args: Union[List[str], str] = None,
                  project_name: str = None,
                  project_time: str = None):
-        self._came = self._left = self._lunch = None
+        self._came = self._left = self._came_or_left = self._lunch = None
         self._projects = defaultdict(timedelta)
 
         if project_name:
@@ -57,7 +57,7 @@ class Day:
         if success:
             self.lunch = minutes
         else:
-            self._came = TimeParser.parse(args[0])
+            self._came_or_left = TimeParser.parse(args[0])
             if len(args) > 1:
                 self._came = TimeParser.parse(args[0])
                 first, second = (
@@ -77,22 +77,19 @@ class Day:
         new_day._projects = self.projects.copy()
         new_day._projects.update(other.projects)
 
-        if other.came and other.left:
-            new_day.came = other.came
-            new_day.left = other.left
-        elif other.left:
-            new_day.came = self.came
-            new_day.left = other.left
-        elif not other.came and not other.left:
-            new_day.came = self.came
-            new_day.left = self.left
-        else:
-            if not self.came:
-                new_day.came = other.came
-                new_day.left = self.left
+        new_day._came = other._came if other._came else self._came
+        new_day._left = other._left if other._left else self._left
+
+        if other.came_or_left:
+            if self.came_or_left:
+                new_day.came, new_day.left = sorted([self.came_or_left,
+                                                     other.came_or_left])
+            elif not self.came and not self.left:
+                new_day._came_or_left = other.came_or_left
+            elif not self.came:
+                new_day.came = other.came_or_left
             elif not self.left:
-                new_day.came = self.came
-                new_day.left = other.came
+                new_day.left = other.came_or_left
             else:
                 if self._difference(other.came, self.came) < self._difference(
                         other.came, self.left):
@@ -101,9 +98,6 @@ class Day:
                 else:
                     new_day.came = self.came
                     new_day.left = other.came
-
-        if new_day.came and new_day.left and new_day.came > new_day.left:
-            new_day.came, new_day.left = new_day.left, new_day.came
 
         return new_day
 
@@ -145,6 +139,8 @@ class Day:
 
         :return:
         """
+        if not self._came and self._came_or_left:
+            return self._came_or_left
         return self._came
 
     @property
@@ -154,6 +150,11 @@ class Day:
         :return:
         """
         return self._left
+
+    @property
+    def came_or_left(self):
+        if not self._came and not self._left:
+            return self._came_or_left
 
     @property
     def lunch(self):
@@ -218,8 +219,9 @@ class DayLoadingError(Exception):
 @camelRegistry.dumper(Day, 'day', version=1)
 def _dump_date_and_day(day):
     return dict(
-        came=day.came,
+        came=day._came,
         left=day.left,
+        came_or_left=day._came_or_left,
         lunch=day.lunch,
         projects=day._projects
     )
@@ -233,6 +235,8 @@ def _load_date_and_day(data, version):
         day.left = data['left']
     else:
         day.left = data['went']
+    if 'came_or_left' in data:
+        day._came_or_left = data['came_or_left']
     day.lunch = data['lunch']
     day._projects = data['projects']
     return day
