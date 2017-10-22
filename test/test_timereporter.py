@@ -108,11 +108,14 @@ class TestShow:
         assert 'Monday' not in t.show_day()
 
     def test_show_week_html(self, mock_browser):
-        TimeReporter(['9:15'])
+        TimeReporter('9 16'.split())
         TimeReporter('show week html'.split())
         assert mock_browser.url.endswith('.html')
-        # with open(mock_browser.url) as f:
-        #     assert '9,25' in
+        with open(mock_browser.url) as f:
+            s = f.read()
+            print(s)
+            assert '7,75' in s
+            assert not '23,25' in s # Negative flex should show correctly
 
 
 @pytest.mark.usefixtures('temp_logfile')

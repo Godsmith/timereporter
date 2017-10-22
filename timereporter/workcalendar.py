@@ -78,7 +78,8 @@ class Calendar:
         """
         return self.show_days(date_, 1)
 
-    def show_week(self, weeks_offset=0, table_format='simple'):
+    def show_week(self, weeks_offset=0, table_format='simple',
+                  timedelta_conversion_function=lambda x: x):
         """Shows an overview of the current week in table format.
 
         :param weeks_offset: 0 shows the current week, -1 the last week, etc.
@@ -87,14 +88,15 @@ class Calendar:
         """
         closest_monday = self.today + timedelta(days=-self.today.weekday(),
                                                 weeks=weeks_offset)
-        return self.show_days(closest_monday, 5, table_format)
+        return self.show_days(closest_monday, 5, table_format, timedelta_conversion_function)
 
     def _assemble_days(self):
         self.days = defaultdict(Day)
         for date_and_day in self.dates_and_days:
             self.days[date_and_day.date] += date_and_day.day
 
-    def show_days(self, first_date: date, day_count, table_format='simple'):
+    def show_days(self, first_date: date, day_count, table_format='simple',
+                  timedelta_conversion_function=lambda x: x):
         """Shows a number of days from the calendar in table format.
 
         :param first_date: the first day to show.
@@ -116,15 +118,21 @@ class Calendar:
 
         project_rows = [[project] for project in self.projects]
         for i, project in enumerate(self.projects):
-            project_rows[i] = [project] + [self.days[date_].projects[project]
+            project_rows[i] = [project] + [
+                timedelta_conversion_function(self.days[date_].projects[
+                                                  project])
                                            for
                                            date_
                                            in dates]
 
-        default_project_times = [self._default_project_time(date_) for date_ in
+        default_project_times = [timedelta_conversion_function(
+            self._default_project_time(date_)) for
+                                 date_ in
                                  dates]
 
-        flex_times = [self._flex(date_) for date_ in dates]
+        flex_times = [timedelta_conversion_function(self._flex(date_)) for
+                                                    date_ in dates]
+
 
         return tabulate([[''] + dates,
                          [''] + weekdays_to_show,

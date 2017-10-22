@@ -7,7 +7,7 @@ from datetime import datetime, date
 from typing import List
 
 from timereporter.day import Day
-from timereporter.mydatetime import timedelta
+from timereporter.mydatetime import timedelta, timedeltaDecimal
 from timereporter.workcalendar import Calendar
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
@@ -194,7 +194,8 @@ class TimeReporter:
         # If offset is None, override the value with the last offset entered
         if offset is None:
             offset = self.week_offset
-        html = self.calendar.show_week(offset, table_format='html')
+        html = self.calendar.show_week(offset, table_format='html',
+                                       timedelta_conversion_function=timedeltaDecimal.from_timedelta)
         _, path = tempfile.mkstemp(suffix='.html')
         with open(path, 'w') as f:
             f.write(html)

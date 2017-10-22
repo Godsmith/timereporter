@@ -1,4 +1,4 @@
-from timereporter.mydatetime import timedelta, time
+from timereporter.mydatetime import timedelta, time, timedeltaDecimal
 
 
 class TestTimeDelta:
@@ -18,3 +18,21 @@ class TestTimeDelta:
 class TestTime:
     def test_basic(self):
         assert str(time(hour=7, minute=45)) == '07:45'
+
+
+class TestTimeDeltaDecimal:
+    def test_basic(self):
+        assert str(timedeltaDecimal(seconds=3600 + 3600 * 0.25)) == '1,25'
+
+    def test_negative(self):
+        assert str(timedeltaDecimal(seconds=-3600)) == '-1,00'
+
+    def test_convert_from_timedelta(self):
+        td = timedelta(seconds=3600 + 3600 * 0.25)
+        tdd = timedeltaDecimal.from_timedelta(td)
+        assert str(tdd) == '1,25'
+
+    def test_convert_from_timedelta_negative(self):
+        td = timedelta(seconds=-3600 - 3600 * 0.25)
+        tdd = timedeltaDecimal.from_timedelta(td)
+        assert str(tdd) == '-1,25'

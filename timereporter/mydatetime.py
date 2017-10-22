@@ -63,3 +63,25 @@ def _load_time(data, version):
         data['hour'],
         data['minute']
     )
+
+
+class timedeltaDecimal(timedelta):
+    def __new__(self, *args, **kwargs):
+        return super().__new__(self, *args, **kwargs)
+
+    def __str__(self):
+        hours_colon_minutes = super().__str__()
+        if hours_colon_minutes[0] == '-':
+            sign = -1
+            hours_colon_minutes = hours_colon_minutes[1:]
+        else:
+            sign = 1
+        hours, minutes = map(int, hours_colon_minutes.split(':'))
+        hoursDecimal = sign * float(hours + minutes / 60)
+        return f'{hoursDecimal:.2f}'.replace('.', ',')
+
+    @classmethod
+    def from_timedelta(cls, td):
+        if td is None:
+            return None
+        return cls(days=td.days, seconds=td.seconds)
