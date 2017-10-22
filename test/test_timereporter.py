@@ -22,19 +22,18 @@ class TestTimeReporter:
             weeks=-1))
         assert last_monday in t.show_week()
 
-    def test_add_came(self):
-        wednesday = str(TimeReporter.today() + timedelta(
-            days=-TimeReporter.today().weekday() + 2))
-        t = TimeReporter([wednesday, '9'])
+    def test_report_once(self):
+        t = TimeReporter(['9'])
         assert '09:00' in t.show_week()
 
     def test_report_twice(self):
-        wednesday = str(TimeReporter.today() + timedelta(
-            days=-TimeReporter.today().weekday() + 2))
-        TimeReporter([wednesday, '9'])
-        t = TimeReporter([wednesday, '18'])
-        assert '09:00' in t.show_week()
-        assert '18:00' in t.show_week()
+        TimeReporter(['9'])
+        t = TimeReporter(['18'])
+        assert '09:00' in t.show_day()
+        assert '18:00' in t.show_day()
+
+    def test_report_then_came_shall_overwrite_came(self):
+        pass
 
     def test_came_yesterday_monday(self):
         t = TimeReporter('9 yesterday'.split())
