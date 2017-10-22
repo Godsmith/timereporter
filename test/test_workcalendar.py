@@ -3,7 +3,6 @@ from datetime import date
 from timereporter.mydatetime import timedelta, time
 from timereporter.workcalendar import Calendar
 from timereporter.day import Day
-from conftest import mockdate
 
 today = date.today()
 
@@ -127,7 +126,6 @@ class TestShow:
         assert 'Monday' in s
         assert 'Friday' in s
 
-    @mockdate()
     def test_added(self):
         c = Calendar()
         wednesday = today + timedelta(days=-today.weekday() + 2)
@@ -146,7 +144,6 @@ class TestShow:
         s = c.show_week(-1)
         assert last_monday in s
 
-    @mockdate()
     def test_show_week_html(self):
         c = Calendar()
         wednesday = today + timedelta(days=-today.weekday() + 2)
@@ -159,7 +156,6 @@ class TestShow:
 
 
 class TestUndo:
-    @mockdate()
     def test_only_came(self):
         c = Calendar()
         c.today = date(2017, 9, 20)
@@ -168,7 +164,6 @@ class TestUndo:
         c.undo()
         assert '09:00' not in c.show_week()
 
-    @mockdate()
     def test_came_went_lunch(self):
         c = Calendar()
         c.today = date(2017, 9, 20)
@@ -177,7 +172,6 @@ class TestUndo:
         c.undo()
         assert '30' not in c.show_week()
 
-    @mockdate()
     def test_redo(self):
         c = Calendar()
         c.today = date(2017, 9, 20)
@@ -188,7 +182,6 @@ class TestUndo:
 
 
 class TestProject:
-    @mockdate()
     def test_basic(self):
         c = Calendar()
         c.today = date(2017, 9, 20)

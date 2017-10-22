@@ -1,33 +1,29 @@
-import decorator
 from datetime import date
 import pytest
 import os
 
 from timereporter.timereporter import TimeReporter
 
-def mockdate(year=2017, month=9, day=20):
-    """Sets Timereporter.today to a custom date.
 
-    Decorator with arguments is a bit confusing; this is what happens:
-    @mockdate(args) -> f = mockdate(args)(f) -> f = deco(f) -> f = wrapper
+@pytest.fixture(autouse=True)
+def mockdate_tuesday():
+    temp = TimeReporter.today
+    TimeReporter.today = lambda x=None: date(2017, 9, 19)
+    try:
+        yield
+    finally:
+        TimeReporter.today = temp
 
-    I had to use decorator.decorator to be able to use pytest fixtures, see
-    https://stackoverflow.com/questions/19614658/how-do-i-make-pytest-
-    fixtures-work-with-decorated-functions
-    """
 
-    def deco(func):
-        def wrapper(func, *args, **kwargs):
-            temp = TimeReporter.today
-            TimeReporter.today = lambda x=None: date(year, month, day)
-            try:
-                func(*args, **kwargs)
-            finally:
-                TimeReporter.today = temp
+@pytest.fixture
+def mockdate_monday():
+    temp = TimeReporter.today
+    TimeReporter.today = lambda x=None: date(2017, 9, 18)
+    try:
+        yield
+    finally:
+        TimeReporter.today = temp
 
-        return decorator.decorator(wrapper, func)
-
-    return deco
 
 @pytest.fixture
 def temp_logfile(tmpdir_factory):
@@ -36,6 +32,7 @@ def temp_logfile(tmpdir_factory):
     os.environ['TIMEREPORTER_FILE'] = str(fn)
     yield fn
     os.environ = before
+
 
 @pytest.fixture
 def custom_log_path():
@@ -46,4 +43,3 @@ def custom_log_path():
 
     yield fn
     os.environ = before
-
