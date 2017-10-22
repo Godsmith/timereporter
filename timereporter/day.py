@@ -192,6 +192,8 @@ class Day:
                 self.came)
             working_time_excluding_lunch = timedelta(seconds=seconds_at_work)
             return working_time_excluding_lunch - lunch
+        else:
+            return timedelta()
 
     @classmethod
     def to_seconds(cls, time_: time):

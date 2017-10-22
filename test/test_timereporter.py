@@ -114,16 +114,16 @@ class TestShow:
         with open(mock_browser.url) as f:
             s = f.read()
             print(s)
-            assert '7,75' in s
+            assert '7,00' in s
             assert not '23,25' in s # Negative flex should show correctly
 
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:
-    def test_basic(self):
-        t = TimeReporter(['9'])
+    def test_working_time_more_than_working_time_per_day(self):
+        t = TimeReporter('9 18'.split())
         assert 'EPG Program' in t.show_day()
-        assert '7:45' in t.show_day()
+        assert '9:00' in t.show_day()
 
     def test_other_projects_exactly_7_45(self):
         TimeReporter('project new EPG Support'.split())

@@ -146,7 +146,8 @@ class Calendar:
     def _default_project_time(self, date_):
         project_time_sum = sum(self.days[date_].projects.values(),
                                timedelta())
-        default_project_time = self.WORKING_HOURS_PER_DAY - project_time_sum
+
+        default_project_time = self.days[date_].working_time - project_time_sum
 
         # Set to 0 hours if less than 0 hours
         return max(default_project_time, timedelta())
