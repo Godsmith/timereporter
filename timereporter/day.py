@@ -18,7 +18,9 @@ class Day:
     intervals.
     """
 
-    def __init__(self, args: List[str] = None, project_name: str = None,
+    def __init__(self,
+                 args: Union[List[str], str] = None,
+                 project_name: str = None,
                  project_time: str = None):
         self._came = self._left = self._lunch = None
         self._projects = defaultdict(timedelta)
@@ -29,6 +31,9 @@ class Day:
 
         if not args:
             return
+
+        if isinstance(args, str):
+            args = args.split()
 
         # Change 45 min and 45 m to 45m
         to_delete = len(args)

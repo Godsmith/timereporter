@@ -22,6 +22,8 @@ class TimeReporter:
     def __init__(self, args=None):
         if args is None:
             args = []
+        if isinstance(args, str):
+            args = args.split()
         self.week_offset = 0
         done = False
         if TIMEREPORTER_FILE in os.environ:

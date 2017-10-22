@@ -7,63 +7,63 @@ from timereporter.mydatetime import time, timedelta
 
 class TestDay:
     def test_no_lunch(self):
-        d = Day('09:00 15:00'.split())
+        d = Day('09:00 15:00')
         assert str(d.came) == '09:00'
         assert str(d.left) == '15:00'
 
     def test_different_formatting(self):
-        d = Day('9:00 15:00'.split())
+        d = Day('9:00 15:00')
         assert str(d.came) == '09:00'
         assert str(d.left) == '15:00'
 
-        d = Day('9 15:00'.split())
+        d = Day('9 15:00')
         assert str(d.came) == '09:00'
         assert str(d.left) == '15:00'
 
-        d = Day('9 15'.split())
+        d = Day('9 15')
         assert str(d.came) == '09:00'
         assert str(d.left) == '15:00'
 
-        d = Day('9 15'.split())
+        d = Day('9 15')
         assert str(d.came) == '09:00'
         assert str(d.left) == '15:00'
 
     def test_left_before_came(self):
-        d = Day('15:00 09:00'.split())
+        d = Day('15:00 09:00')
         assert str(d.came) == '09:00'
         assert str(d.left) == '15:00'
 
     def test_whole_day_with_lunch(self):
-        d = Day('9 15 45min'.split())
+        d = Day('9 15 45min')
         assert str(d.came) == '09:00'
         assert str(d.left) == '15:00'
         assert str(d.lunch) == '00:45'
 
     def test_only_came(self):
-        d = Day('9'.split())
+        d = Day('9')
         assert str(d.came) == '09:00'
         assert d.left is None
         assert d.lunch is None
 
-        d = Day('09:00'.split())
+        d = Day('09:00')
         assert str(d.came) == '09:00'
 
-        d = Day('9:00'.split())
+        d = Day('9:00')
         assert str(d.came) == '09:00'
 
     def test_only_lunch(self):
-        d = Day('45min'.split())
+        d = Day('45min')
         assert d.came is None
         assert d.left is None
         assert str(d.lunch) == '00:45'
 
-        d = Day('45m'.split())
+        d = Day('45m')
         assert str(d.lunch) == '00:45'
 
-        d = Day('45 m'.split())
+        d = Day('45 m')
         assert str(d.lunch) == '00:45'
 
-        d = Day('45min'.split())
+        d = Day('45min')
         assert str(d.lunch) == '00:45'
 
     def test_project(self):
@@ -72,7 +72,7 @@ class TestDay:
 
     def test_error(self):
         with pytest.raises(TimeParserError):
-            Day('9s3 15'.split())
+            Day('9s3 15')
 
 
 class TestAdd:
@@ -84,23 +84,28 @@ class TestAdd:
         assert d3 is not d2
 
     def test_add_empty_with_came_left_and_lunch(self):
-        d1 = Day('9 17 45m'.split())
+        d1 = Day('9 17 45m')
         d2 = Day()
-        assert d1 + d2 == Day('9 17 45m'.split())
+        assert d1 + d2 == Day('9 17 45m')
 
     def test_add_came_left_and_lunch_with_empty(self):
         d1 = Day()
-        d2 = Day('9 17 45m'.split())
-        assert d1 + d2 == Day('9 17 45m'.split())
+        d2 = Day('9 17 45m')
+        assert d1 + d2 == Day('9 17 45m')
+
+    def test_add_unspecified_and_then_came_should_overwrite_came(self):
+        d1 = Day('9')
+        d2 = Day('9 17 45m')
+        assert d1 + d2 == Day('9 17 45m')
 
 
 class TestFormatCorrection:
     def test_day_fix_wrong_lunch_format(self):
-        d = Day('lunch 01:00'.split())
+        d = Day('lunch 01:00')
         assert d.lunch == timedelta(minutes=60)
 
     def test_day_fix_wrong_came_error(self):
-        d = Day('came 45m'.split())
+        d = Day('came 45m')
         assert d.came == time(hour=0, minute=45)
 
 
