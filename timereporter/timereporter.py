@@ -17,7 +17,7 @@ class TimeReporter:
     """Act as a user interface towards the Calendar class,
     parsing input and handling environment issues
     """
-    default_path = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.log'
+    default_path = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.yaml'
 
     def __init__(self, args=None):
         if args is None:

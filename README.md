@@ -14,12 +14,12 @@ Python 3.6, Windows (currently).
 python setup.py install
 ```
 
-The default path of the `timereporter.log` file that stores the calendar data
-is `%USERPROFILE%\Dropbox\timereporter.log`. To change this, set the
+The default path of the `timereporter.yaml` file that stores the calendar data
+is `%USERPROFILE%\Dropbox\timereporter.yaml`. To change this, set the
 TIMEREPORTER_FILE environment variable to the new path, e.g.
 
 ```
-setx TIMEREPORTER_FILE "C:\mypath\timereporter.log"
+setx TIMEREPORTER_FILE "C:\mypath\timereporter.yaml"
 ```
 
 It is recommended to set an alias for `python -m timereporter`, e.g. in .bashrc:

@@ -27,7 +27,7 @@ def mockdate_monday():
 
 @pytest.fixture
 def temp_logfile(tmpdir_factory):
-    fn = tmpdir_factory.mktemp('data').join('timereporter.log')
+    fn = tmpdir_factory.mktemp('data').join('timereporter.yaml')
     before = dict(os.environ)
     os.environ['TIMEREPORTER_FILE'] = str(fn)
     yield fn

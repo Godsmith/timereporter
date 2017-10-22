@@ -175,16 +175,16 @@ class TestWithoutEnvironmentVariable:
         os.environ = osenviron
 
     def test_existing_directory_no_file(self, empty_os_environ, tmpdir):
-        TimeReporter.default_path = tmpdir.join('timereporter.log')
+        TimeReporter.default_path = tmpdir.join('timereporter.yaml')
 
         t = TimeReporter('9'.split())
 
         assert '9:00' in t.show_day()
 
     def test_unreadable_file(self, empty_os_environ, tmpdir):
-        file = tmpdir.join('timereporter.log')
+        file = tmpdir.join('timereporter.yaml')
         file.write('')
-        TimeReporter.default_path = tmpdir.join('timereporter.log')
+        TimeReporter.default_path = tmpdir.join('timereporter.yaml')
 
         with pytest.raises(UnreadableCamelFileException):
             TimeReporter('9'.split())
