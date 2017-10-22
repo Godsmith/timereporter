@@ -1,7 +1,9 @@
 from datetime import date
+import pytest
 
 from timereporter.mydatetime import timedelta, time
-from timereporter.workcalendar import Calendar
+from timereporter.workcalendar import Calendar, NothingToUndoError, \
+    NothingToRedoError
 from timereporter.day import Day
 
 today = date.today()
@@ -172,13 +174,25 @@ class TestUndo:
         c.undo()
         assert '30' not in c.show_week()
 
-    def test_redo(self):
+    def test_nothing_to_undo(self):
+        c = Calendar()
+        with pytest.raises(NothingToUndoError):
+            c.undo()
+
+
+class TestRedo:
+    def test_basic(self):
         c = Calendar()
         c.today = date(2017, 9, 20)
         c.add(Day('9 15 30m'.split()))
         c.undo()
         c.redo()
         assert '30' in c.show_week()
+
+    def test_nothing_to_redo(self):
+        c = Calendar()
+        with pytest.raises(NothingToRedoError):
+            c.redo()
 
 
 class TestProject:

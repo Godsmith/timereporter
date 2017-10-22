@@ -88,7 +88,8 @@ class Calendar:
         """
         closest_monday = self.today + timedelta(days=-self.today.weekday(),
                                                 weeks=weeks_offset)
-        return self.show_days(closest_monday, 5, table_format, timedelta_conversion_function)
+        return self.show_days(closest_monday, 5, table_format,
+                              timedelta_conversion_function)
 
     def _assemble_days(self):
         self.days = defaultdict(Day)
@@ -121,18 +122,17 @@ class Calendar:
             project_rows[i] = [project] + [
                 timedelta_conversion_function(self.days[date_].projects[
                                                   project])
-                                           for
-                                           date_
-                                           in dates]
+                for
+                date_
+                in dates]
 
         default_project_times = [timedelta_conversion_function(
             self._default_project_time(date_)) for
-                                 date_ in
-                                 dates]
+            date_ in
+            dates]
 
         flex_times = [timedelta_conversion_function(self._flex(date_)) for
-                                                    date_ in dates]
-
+                      date_ in dates]
 
         return tabulate([[''] + dates,
                          [''] + weekdays_to_show,
@@ -167,10 +167,16 @@ class Calendar:
         self.projects.append(project_name)
 
     def undo(self):
-        self.redo_list.append(self.dates_and_days.pop())
+        try:
+            self.redo_list.append(self.dates_and_days.pop())
+        except IndexError:
+            raise NothingToUndoError('Error: nothing to undo.')
 
     def redo(self):
-        self.dates_and_days.append(self.redo_list.pop())
+        try:
+            self.dates_and_days.append(self.redo_list.pop())
+        except IndexError:
+            raise NothingToRedoError('Error: nothing to redo.')
 
     def dump(self):
         return Camel([camelRegistry]).dump(self)
@@ -194,3 +200,15 @@ def _load_calendar(data, version):
     return Calendar(dates_and_days=data['dates_and_days'],
                     redo_list=data['redo_list'],
                     projects=data['projects'])
+
+
+class CalendarError(Exception):
+    pass
+
+
+class NothingToUndoError(CalendarError):
+    pass
+
+
+class NothingToRedoError(CalendarError):
+    pass
