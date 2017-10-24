@@ -8,14 +8,10 @@ class timedelta(datetime.timedelta):
         return super().__new__(self, *args, **kwargs)
 
     def __str__(self):
-        if self.days == -1:
-            sign = '-'
-            seconds = 60 * 60 * 24 - self.seconds
-        else:
-            sign = ''
-            seconds = self.seconds
-        hours = seconds // 3600
-        minutes = (seconds % 3600) // 60
+        seconds = self.seconds + self.days * 60 * 60 * 24
+        hours = abs(seconds) // 3600
+        minutes = (abs(seconds) % 3600) // 60
+        sign = '-' if seconds < 0 else ''
         return sign + str(hours).zfill(2) + ':' + str(minutes).zfill(2)
 
     def __sub__(self, other):
@@ -24,8 +20,11 @@ class timedelta(datetime.timedelta):
         return NotImplemented
 
     def __add__(self, other):
+        if other is None:
+            return self
         if isinstance(other, timedelta):
-            return self.__class__(seconds=self.seconds + other.seconds)
+            return self.__class__(seconds=self.seconds + other.seconds,
+                                  days=self.days + other.days)
         return NotImplemented
 
     def __mul__(self, other):

@@ -80,7 +80,7 @@ class Calendar:
 
     def show_week(self, weeks_offset=0, table_format='simple',
                   timedelta_conversion_function=lambda x: x, flex_multiplier=1,
-                  show_earned_flex=True):
+                  show_earned_flex=True, show_sum=False):
         """Shows an overview of the current week in table format.
 
         :param weeks_offset: 0 shows the current week, -1 the last week, etc.
@@ -92,7 +92,8 @@ class Calendar:
         return self.show_days(closest_monday, 5, table_format,
                               timedelta_conversion_function,
                               flex_multiplier=flex_multiplier,
-                              show_earned_flex=show_earned_flex)
+                              show_earned_flex=show_earned_flex,
+                              show_sum=show_sum)
 
     def _assemble_days(self):
         self.days = defaultdict(Day)
@@ -101,7 +102,7 @@ class Calendar:
 
     def show_days(self, first_date: date, day_count, table_format='simple',
                   timedelta_conversion_function=lambda x: x,
-                  flex_multiplier=1, show_earned_flex=True):
+                  flex_multiplier=1, show_earned_flex=True, show_sum=False):
         """Shows a number of days from the calendar in table format.
 
         :param first_date: the first day to show.
@@ -121,19 +122,20 @@ class Calendar:
         leave_times = [self.days[date_].left for date_ in dates]
         lunch_times = [self.days[date_].lunch for date_ in dates]
 
+        sum_ = timedelta()
         project_rows = [[project] for project in self.projects]
         for i, project in enumerate(self.projects):
-            project_rows[i] = [project] + [
+            project_times = [
                 timedelta_conversion_function(self.days[date_].projects[
-                                                  project])
-                for
-                date_
-                in dates]
+                                                  project]) for date_ in dates]
+            project_rows[i] = [project] + project_times
+            sum_ += sum(project_times, timedelta())
 
         default_project_times = [timedelta_conversion_function(
             self._default_project_time(date_)) for
             date_ in
             dates]
+        sum_ += sum(default_project_times, timedelta())
 
         flex_times = [self._flex(date_) for date_ in dates]
         flex_times = [timedelta_conversion_function(flex) for flex in
@@ -145,8 +147,14 @@ class Calendar:
             flex_times = list(
                 map(lambda x: None if x is None or x <= timedelta() else x,
                     flex_times))
+        sum_ += sum(flex_times, timedelta())
 
-        return tabulate([[''] + dates,
+        if show_sum:
+            sum_cell = ['Sum: %s' % timedelta_conversion_function(sum_)]
+        else:
+            sum_cell = ['']
+
+        return tabulate([sum_cell + dates,
                          [''] + weekdays_to_show,
                          ['Came'] + came_times,
                          ['Left'] + leave_times,

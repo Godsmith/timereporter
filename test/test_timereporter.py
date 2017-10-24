@@ -88,21 +88,6 @@ class TestTimeReporter:
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:
-    @pytest.fixture
-    def mock_browser(self):
-        class MockBrowser:
-            def __init__(self):
-                self.url = ''  # type: str
-
-            def open(self, url: str):
-                self.url = url
-
-        mock_browser = MockBrowser()
-        temp = TimeReporter.webbrowser
-        TimeReporter.webbrowser = lambda _: mock_browser
-        yield mock_browser
-        TimeReporter.webbrowser = temp
-
     def test_show_day(self):
         t = TimeReporter(['9'])
         assert '9:00' in t.show_day()
@@ -116,11 +101,11 @@ class TestShow:
         assert mock_browser.url.endswith('.html')
         with open(mock_browser.url) as f:
             s = f.read()
-            print(s)
             assert '7,00' in s
             assert '0,75' in s  # Used flex should be positive
             assert not '23,25' in s  # Used flex should show correctly
             assert not '0,25' in s  # Earned flex should not show
+            assert '15,75' in s  # Sum of times
 
 
 @pytest.mark.usefixtures('temp_logfile')

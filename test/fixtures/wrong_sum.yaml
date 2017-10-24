@@ -1,0 +1,105 @@
+!calendar;1
+dates_and_days:
+- !date_and_day;1
+  date: 2017-10-14
+  day: !day;1
+    came: !time;1
+      hour: 9
+      minute: 0
+    came_or_left: null
+    left: null
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: &id001 !type;1
+        module: timereporter.mydatetime
+        name: timedelta
+      dict_: {}
+- !date_and_day;1
+  date: 2017-10-23
+  day: !day;1
+    came: !time;1
+      hour: 8
+      minute: 45
+    came_or_left: !time;1
+      hour: 8
+      minute: 45
+    left: !time;1
+      hour: 17
+      minute: 0
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
+- !date_and_day;1
+  date: 2017-10-23
+  day: !day;1
+    came: null
+    came_or_left: null
+    left: null
+    lunch: !timedelta;1
+      seconds: 3600
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
+- !date_and_day;1
+  date: 2017-10-27
+  day: !day;1
+    came: null
+    came_or_left: null
+    left: null
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_:
+        Parental Leave: !timedelta;1
+          seconds: 27900
+- !date_and_day;1
+  date: 2017-10-24
+  day: !day;1
+    came: !time;1
+      hour: 7
+      minute: 0
+    came_or_left: null
+    left: null
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
+- !date_and_day;1
+  date: 2017-10-24
+  day: !day;1
+    came: !time;1
+      hour: 7
+      minute: 0
+    came_or_left: null
+    left: null
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
+- !date_and_day;1
+  date: 2017-10-24
+  day: !day;1
+    came: null
+    came_or_left: null
+    left: !time;1
+      hour: 17
+      minute: 15
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
+- !date_and_day;1
+  date: 2017-10-24
+  day: !day;1
+    came: null
+    came_or_left: null
+    left: null
+    lunch: !timedelta;1
+      seconds: 1800
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
+projects:
+- Parental Leave
+redo_list: []

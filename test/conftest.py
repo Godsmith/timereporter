@@ -26,6 +26,16 @@ def mockdate_monday():
 
 
 @pytest.fixture
+def mockdate_oct_24():
+    temp = TimeReporter.today
+    TimeReporter.today = lambda x=None: date(2017, 10, 24)
+    try:
+        yield
+    finally:
+        TimeReporter.today = temp
+
+
+@pytest.fixture
 def temp_logfile(tmpdir_factory):
     fn = tmpdir_factory.mktemp('data').join('timereporter.yaml')
     before = dict(os.environ)
@@ -43,3 +53,19 @@ def custom_log_path():
 
     yield fn
     os.environ = before
+
+
+@pytest.fixture
+def mock_browser():
+    class MockBrowser:
+        def __init__(self):
+            self.url = ''  # type: str
+
+        def open(self, url: str):
+            self.url = url
+
+    mock_browser = MockBrowser()
+    temp = TimeReporter.webbrowser
+    TimeReporter.webbrowser = lambda _: mock_browser
+    yield mock_browser
+    TimeReporter.webbrowser = temp

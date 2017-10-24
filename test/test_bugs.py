@@ -9,3 +9,13 @@ class TestCrash:
         custom_log_path(Path(os.path.realpath(__file__)).parent / 'fixtures' /
                         'crash.yaml')
         TimeReporter()
+
+    def test_wrong_sum(self, custom_log_path, mock_browser, mockdate_oct_24):
+        custom_log_path(Path(os.path.realpath(__file__)).parent / 'fixtures' /
+                        'wrong_sum.yaml')
+        TimeReporter('show week html')
+        with open(mock_browser.url) as f:
+            s = f.read()
+            print(s)
+            assert not "1,25" in s
+            assert "25,25" in s
