@@ -28,6 +28,15 @@ class timedelta(datetime.timedelta):
             return self.__class__(seconds=self.seconds + other.seconds)
         return NotImplemented
 
+    def __mul__(self, other):
+        return self.from_timedelta(super().__mul__(other))
+
+    @classmethod
+    def from_timedelta(cls, td):
+        if td is None:
+            return None
+        return cls(days=td.days, seconds=td.seconds)
+
 
 @camelRegistry.dumper(timedelta, 'timedelta', version=1)
 def _dump_timedelta(timedelta_):
@@ -79,9 +88,3 @@ class timedeltaDecimal(timedelta):
         hours, minutes = map(int, hours_colon_minutes.split(':'))
         hoursDecimal = sign * float(hours + minutes / 60)
         return f'{hoursDecimal:.2f}'.replace('.', ',')
-
-    @classmethod
-    def from_timedelta(cls, td):
-        if td is None:
-            return None
-        return cls(days=td.days, seconds=td.seconds)

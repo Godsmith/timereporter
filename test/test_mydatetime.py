@@ -36,3 +36,11 @@ class TestTimeDeltaDecimal:
         td = timedelta(seconds=-3600 - 3600 * 0.25)
         tdd = timedeltaDecimal.from_timedelta(td)
         assert str(tdd) == '-1,25'
+
+    def test_multiply_positive(self):
+        td = timedeltaDecimal(seconds=3600)
+        assert str(td * 2) == '2,00'
+
+    def test_multiply_negative(self):
+        td = timedeltaDecimal(seconds=3600)
+        assert str(td * -1) == '-1,00'

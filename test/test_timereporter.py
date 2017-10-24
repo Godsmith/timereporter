@@ -111,13 +111,16 @@ class TestShow:
 
     def test_show_week_html(self, mock_browser):
         TimeReporter('9 16')
+        TimeReporter('yesterday 10 18')
         TimeReporter('show week html')
         assert mock_browser.url.endswith('.html')
         with open(mock_browser.url) as f:
             s = f.read()
             print(s)
             assert '7,00' in s
-            assert not '23,25' in s # Negative flex should show correctly
+            assert '0,75' in s  # Used flex should be positive
+            assert not '23,25' in s  # Used flex should show correctly
+            assert not '0,25' in s  # Earned flex should not show
 
 
 @pytest.mark.usefixtures('temp_logfile')
@@ -165,6 +168,7 @@ class TestFlex:
 class TestFlex:
     def test_minus_1(self):
         t = TimeReporter('10 16:45')
+        print(t.show_day())
         assert '-01:00' in t.show_day()
 
 

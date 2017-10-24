@@ -197,7 +197,9 @@ class TimeReporter:
         if offset is None:
             offset = self.week_offset
         html = self.calendar.show_week(offset, table_format='html',
-                                       timedelta_conversion_function=timedeltaDecimal.from_timedelta)
+                                       timedelta_conversion_function=timedeltaDecimal.from_timedelta,
+                                       flex_multiplier=-1,
+                                       show_earned_flex=False)
         _, path = tempfile.mkstemp(suffix='.html')
         with open(path, 'w') as f:
             f.write(html)

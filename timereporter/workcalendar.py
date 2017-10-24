@@ -79,7 +79,8 @@ class Calendar:
         return self.show_days(date_, 1)
 
     def show_week(self, weeks_offset=0, table_format='simple',
-                  timedelta_conversion_function=lambda x: x):
+                  timedelta_conversion_function=lambda x: x, flex_multiplier=1,
+                  show_earned_flex=True):
         """Shows an overview of the current week in table format.
 
         :param weeks_offset: 0 shows the current week, -1 the last week, etc.
@@ -89,7 +90,9 @@ class Calendar:
         closest_monday = self.today + timedelta(days=-self.today.weekday(),
                                                 weeks=weeks_offset)
         return self.show_days(closest_monday, 5, table_format,
-                              timedelta_conversion_function)
+                              timedelta_conversion_function,
+                              flex_multiplier=flex_multiplier,
+                              show_earned_flex=show_earned_flex)
 
     def _assemble_days(self):
         self.days = defaultdict(Day)
@@ -97,7 +100,8 @@ class Calendar:
             self.days[date_and_day.date] += date_and_day.day
 
     def show_days(self, first_date: date, day_count, table_format='simple',
-                  timedelta_conversion_function=lambda x: x):
+                  timedelta_conversion_function=lambda x: x,
+                  flex_multiplier=1, show_earned_flex=True):
         """Shows a number of days from the calendar in table format.
 
         :param first_date: the first day to show.
@@ -131,8 +135,16 @@ class Calendar:
             date_ in
             dates]
 
-        flex_times = [timedelta_conversion_function(self._flex(date_)) for
-                      date_ in dates]
+        flex_times = [self._flex(date_) for date_ in dates]
+        flex_times = [timedelta_conversion_function(flex) for flex in
+                      flex_times]
+        flex_times = list(
+            map(lambda x: None if x is None else x * flex_multiplier,
+                flex_times))
+        if not show_earned_flex:
+            flex_times = list(
+                map(lambda x: None if x is None or x <= timedelta() else x,
+                    flex_times))
 
         return tabulate([[''] + dates,
                          [''] + weekdays_to_show,
