@@ -153,7 +153,6 @@ class TestFlex:
 class TestFlex:
     def test_minus_1(self):
         t = TimeReporter('10 16:45')
-        print(t.show_day())
         assert '-01:00' in t.show_day()
 
 

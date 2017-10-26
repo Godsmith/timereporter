@@ -16,6 +16,5 @@ class TestCrash:
         TimeReporter('show week html')
         with open(mock_browser.url) as f:
             s = f.read()
-            print(s)
             assert not "1,25" in s
             assert "25,25" in s
