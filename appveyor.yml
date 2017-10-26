@@ -1,3 +1,6 @@
+before_build:
+  - choco install codecov
+
 build_script:
   - C:\Python36\Scripts\pip.exe install -r requirements.txt
   - C:\Python36\python.exe setup.py install
@@ -6,4 +9,4 @@ test_script:
   - C:\PYTHON36\python.exe -m pytest --cov . --cov-report xml
 
 after_test:
-  - C:\Python36\python.exe -m codecov
+  - codecov -f coverage.xml
