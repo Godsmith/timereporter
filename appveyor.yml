@@ -3,7 +3,7 @@ build_script:
   - C:\Python36\python.exe setup.py install
 
 test_script:
-  - C:\PYTHON36\python.exe -m pytest --cov . --cov-report xml
+  - C:\PYTHON36\python.exe -m pytest --cov .
 
 after_test:
   - C:\Python36\python.exe -m codecov

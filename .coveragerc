@@ -1,0 +1,10 @@
+[run]
+branch = True
+source = timereporter
+
+[report]
+exclude_lines =
+    if self.debug:
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
