@@ -139,16 +139,10 @@ class TestFlex:
         assert 'Flex' in t.show_day()
         assert '0:00' in t.show_day()
 
-
-@pytest.mark.usefixtures('temp_logfile')
-class TestFlex:
     def test_plus_1(self):
         t = TimeReporter('10 18:45')
         assert '1:00' in t.show_day()
 
-
-@pytest.mark.usefixtures('temp_logfile')
-class TestFlex:
     def test_minus_1(self):
         t = TimeReporter('10 16:45')
         assert '-01:00' in t.show_day()

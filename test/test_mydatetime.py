@@ -49,18 +49,18 @@ class TestTimeDeltaDecimal:
         td = timedeltaDecimal(seconds=3600 * 25)
         assert str(td) == '25,00'
 
-    def less_than_negative_24_hours(self):
+    def test_less_than_negative_24_hours(self):
         td = timedeltaDecimal(seconds=-3600 * 25)
         assert str(td) == '-25,00'
 
-    def exactly_24_hours(self):
+    def test_exactly_24_hours(self):
         td = timedeltaDecimal(seconds=3600 * 24)
         assert str(td) == '24,00'
 
-    def exactly_negative_24_hours(self):
+    def test_exactly_negative_24_hours(self):
         td = timedeltaDecimal(seconds=-3600 * 24)
         assert str(td) == '-24,00'
 
-    def exactly_48_hours(self):
+    def test_exactly_48_hours(self):
         td = timedeltaDecimal(seconds=-3600 * 48)
         assert str(td) == '-48,00'
