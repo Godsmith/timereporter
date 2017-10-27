@@ -124,14 +124,14 @@ class TimeReporter:
             pass
 
     @classmethod
-    def webbrowser(cls):
+    def webbrowser(cls):  # pragma: no cover
         """Returns the webbrowser module.
 
         Useful to mock out when testing webbrowser functionality."""
         return webbrowser
 
     @classmethod
-    def today(cls) -> date:
+    def today(cls) -> date:  # pragma: no cover
         """Returns the current day.
 
         Useful to mock out in unit tests.
@@ -194,8 +194,8 @@ class TimeReporter:
         :param offset: 0 shows the current week, -1 shows last week, etc
         """
         # If offset is None, override the value with the last offset entered
-        if offset is None:
-            offset = self.week_offset
+        offset = self.week_offset if offset is None else offset
+
         html = self.calendar.show_week(offset, table_format='html',
                                        timedelta_conversion_function=timedeltaDecimal.from_timedelta,
                                        flex_multiplier=-1,

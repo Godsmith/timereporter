@@ -2,6 +2,7 @@ import pytest
 from timereporter.timeparser import TimeParserError
 
 from timereporter.day import Day
+import timereporter.day
 from timereporter.mydatetime import time, timedelta
 
 
@@ -94,9 +95,13 @@ class TestAdd:
         assert d1 + d2 == Day('9 17 45m')
 
     def test_add_unspecified_and_then_came_should_overwrite_came(self):
-        d1 = Day('9')
+        d1 = Day('8')
         d2 = Day('9 17 45m')
         assert d1 + d2 == Day('9 17 45m')
+
+    def test_add_to_other_class_error(self):
+        with pytest.raises(timereporter.day.DayAddError):
+            Day() + 2
 
 
 class TestFormatCorrection:
