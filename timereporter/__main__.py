@@ -6,11 +6,13 @@ from timereporter.timeparser import TimeParserError
 from timereporter.controllers.project_controller import ProjectError
 
 
-def main():
+def main(args=None):
     """This is executed when running "python timereporter".
     """
+    if args is None:
+        args = []
     try:
-        time_reporter = TimeReporter(sys.argv[1:])
+        time_reporter = TimeReporter(args)
         print(time_reporter.show_week())
     except (TimeParserError, TimeReporterError, CalendarError, ProjectError) \
             as err:
@@ -18,4 +20,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])

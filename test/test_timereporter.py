@@ -11,7 +11,7 @@ from timereporter.timereporter import TimeReporter, MultipleDateException, \
 @pytest.mark.usefixtures('temp_logfile')
 class TestTimeReporter:
     def test_no_argument_throws_no_error(self):
-        main()
+        TimeReporter()
 
     def test_show_last_week(self):
         t = TimeReporter('show last week')

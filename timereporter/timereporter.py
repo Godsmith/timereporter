@@ -98,6 +98,7 @@ class TimeReporter:
         try:
             with open(path, 'w'):
                 pass
+            os.remove(path)
             return True
         except FileNotFoundError:
             return False
