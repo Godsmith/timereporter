@@ -1,24 +1,29 @@
 from typing import List
 from datetime import date
+
 from timereporter.day import Day  # TODO: remove this, only know of calendar?
 from timereporter.workcalendar import Calendar
+from timereporter.controllers.controller import Controller
 
 
-class ProjectController:
-    @classmethod
-    def handle_project(cls, args: List[str], date_: date, calendar: Calendar):
+class ProjectController(Controller):
+    def __init__(self, date_: date, calendar: Calendar, args: List[str]):
         """Does something project-related with the supplied arguments, like
         creating a new project or reporting to a project for a certain date
 
         :param args: the command line arguments supplied by the user
         :param date_: the day on which the project time will be reported
         """
-        if args[0] == 'new':
-            project_name = ' '.join(args[1:])
-            calendar.add_project(project_name)
+        super().__init__(date_=date_, calendar=calendar, args=args)
+        self.args = args[1:]  # First is always 'project'
+
+    def execute(self) -> Calendar:
+        if self.args[0] == 'new':
+            project_name = ' '.join(self.args[1:])
+            self.calendar.add_project(project_name)
         else:
-            project_name = ' '.join(args[:-1])
-            project_name_matches = [p for p in calendar.projects if
+            project_name = ' '.join(self.args[:-1])
+            project_name_matches = [p for p in self.calendar.projects if
                                     project_name in p]
             if not project_name_matches:
                 raise ProjectNameDoesNotExistError(
@@ -29,9 +34,10 @@ class ProjectController:
                     f'"{project_name}" matches all of '
                     f'{", ".join(project_name_matches)}.')
             else:
-                calendar.add(Day(project_name=project_name_matches[0],
-                                 project_time=args[-1]),
-                             date_)
+                self.calendar.add(Day(project_name=project_name_matches[0],
+                                 project_time=self.args[-1]),
+                             self.date)
+        return self.calendar
 
 
 class ProjectError(Exception):

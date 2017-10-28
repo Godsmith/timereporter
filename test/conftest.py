@@ -1,38 +1,47 @@
-from datetime import date
-import pytest
 import os
+from datetime import date
+from unittest.mock import patch
 
-from timereporter.timereporter import TimeReporter
+import pytest
+
+import timereporter.__main__ as __main__
+from timereporter.controllers.show_controller import ShowController
 
 
 @pytest.fixture(autouse=True)
 def mockdate_tuesday():
-    temp = TimeReporter.today
-    TimeReporter.today = lambda x=None: date(2017, 9, 19)
+    temp = __main__.today
+    __main__.today = lambda x=None: date(2017, 9, 19)
     try:
         yield
     finally:
-        TimeReporter.today = temp
+        __main__.today = temp
 
 
 @pytest.fixture
 def mockdate_monday():
-    temp = TimeReporter.today
-    TimeReporter.today = lambda x=None: date(2017, 9, 18)
+    temp = __main__.today
+    __main__.today = lambda x=None: date(2017, 9, 18)
     try:
         yield
     finally:
-        TimeReporter.today = temp
+        __main__.today = temp
 
 
 @pytest.fixture
 def mockdate_oct_24():
-    temp = TimeReporter.today
-    TimeReporter.today = lambda x=None: date(2017, 10, 24)
+    temp = __main__.today
+    __main__.today = lambda x=None: date(2017, 10, 24)
     try:
         yield
     finally:
-        TimeReporter.today = temp
+        __main__.today = temp
+
+
+@pytest.fixture
+def patched_print():
+    with patch('timereporter.__main__.print') as print_:
+        yield print_
 
 
 @pytest.fixture
@@ -65,7 +74,15 @@ def mock_browser():
             self.url = url
 
     mock_browser = MockBrowser()
-    temp = TimeReporter.webbrowser
-    TimeReporter.webbrowser = lambda _: mock_browser
+    temp = ShowController.webbrowser
+    ShowController.webbrowser = lambda _: mock_browser
     yield mock_browser
-    TimeReporter.webbrowser = temp
+    ShowController.webbrowser = temp
+
+
+@pytest.fixture
+def empty_os_environ():
+    osenviron = os.environ
+    os.environ = {'USERPROFILE': osenviron['USERPROFILE']}
+    yield
+    os.environ = osenviron

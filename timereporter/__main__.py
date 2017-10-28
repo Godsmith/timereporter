@@ -1,9 +1,16 @@
 import sys
+import os
+from datetime import date, datetime
 
-from timereporter.timereporter import TimeReporter, TimeReporterError
+from timereporter.controllers.controller_factory import ControllerFactory
 from timereporter.workcalendar import CalendarError
 from timereporter.timeparser import TimeParserError
 from timereporter.controllers.project_controller import ProjectError
+from timereporter.workcalendar import Calendar
+from timereporter.date_arg_parser import DateArgParser, MultipleDateException
+
+TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
+default_path = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.yaml'
 
 
 def main(args=None):
@@ -11,12 +18,91 @@ def main(args=None):
     """
     if args is None:
         args = []
+    if isinstance(args, str):
+        args = args.split()
+
+    if TIMEREPORTER_FILE in os.environ:
+        path = os.environ[TIMEREPORTER_FILE]
+    else:
+        path = default_path
+    print(path)
+
     try:
-        time_reporter = TimeReporter(args)
-        print(time_reporter.show_week())
-    except (TimeParserError, TimeReporterError, CalendarError, ProjectError) \
+        calendar = get_calendar(path)
+    except (UnreadableCamelFileException, DirectoryDoesNotExistError) as err:
+        print(err)
+        exit(1)
+
+    try:
+        parser = DateArgParser(today())
+        date_, args = parser.parse(args)
+    except MultipleDateException as err:
+        print(err)
+        exit(1)
+
+    try:
+        controller = ControllerFactory.create(date_, calendar, args)
+        calendar = controller.execute()
+
+        print(controller.show())
+
+        with open(path, 'w') as f:
+            data = calendar.dump()
+            f.write(data)
+    except (TimeParserError, CalendarError, ProjectError) \
             as err:
         print(err)
+
+
+
+def get_calendar(path):
+    try:
+        with open(path, 'r') as f:
+            data = f.read()
+            calendar = Calendar.load(data)
+            if not isinstance(calendar, Calendar):
+                raise UnreadableCamelFileException(
+                    f'File found at {path} not readable. Remove it to '
+                    f'create a new one.')
+    except FileNotFoundError:
+        if _can_file_be_created_at(path):
+            calendar = Calendar()
+        else:
+            raise DirectoryDoesNotExistError(
+                f'The directory for the specified path {path} does not exist. '
+                f'Specify a custom path by setting the %TIMEREPORTER_FILE% '
+                f'environment variable.')
+    calendar.today = today()  # Override the date from the pickle
+    return calendar
+
+
+def _can_file_be_created_at(path):
+    try:
+        with open(path, 'w'):
+            pass
+        os.remove(path)
+        return True
+    except FileNotFoundError:
+        return False
+
+
+def today() -> date:  # pragma: no cover
+    """Returns the current day.
+
+    Useful to mock out in unit tests.
+
+    :return: a datetime.date object for the current day.
+    """
+    return date.today()
+
+
+
+class UnreadableCamelFileException(Exception):
+    pass
+
+
+class DirectoryDoesNotExistError(Exception):
+    pass
 
 
 if __name__ == '__main__':

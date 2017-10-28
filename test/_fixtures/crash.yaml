@@ -6,616 +6,671 @@ dates_and_days:
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: &id001 !type;1
         module: timereporter.mydatetime
         name: timedelta
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: !time;1
       hour: 7
       minute: 30
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: !timedelta;1
       seconds: 2700
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_:
         Parental Leave: !timedelta;1
           seconds: 7200
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_:
         Parental Leave: !timedelta;1
           seconds: 7200
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_:
         Parental Leave: !timedelta;1
           seconds: 7200
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_:
         Parental Leave: !timedelta;1
           seconds: 7200
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_:
         Parental Leave: !timedelta;1
           seconds: 7200
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: null
-    lunch: null
-    projects: !defaultdict;1
-      default_factory: *id001
-      dict_: {}
-    went: !time;1
+    came_or_left: null
+    left: !time;1
       hour: 17
       minute: 0
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-09-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-16
   day: !day;1
     came: !time;1
       hour: 9
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-17
   day: !day;1
     came: !time;1
       hour: 8
       minute: 45
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-17
   day: !day;1
     came: !time;1
       hour: 17
       minute: 0
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-17
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: !timedelta;1
       seconds: 2700
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-17
   day: !day;1
     came: null
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_:
         Parental Leave: !timedelta;1
           seconds: 7200
-    went: null
 - !date_and_day;1
   date: 2017-10-17
   day: !day;1
     came: null
-    lunch: null
-    projects: !defaultdict;1
-      default_factory: *id001
-      dict_: {}
-    went: !time;1
+    came_or_left: null
+    left: !time;1
       hour: 16
       minute: 45
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
 - !date_and_day;1
   date: 2017-10-18
   day: !day;1
     came: !time;1
       hour: 8
       minute: 45
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-18
   day: !day;1
     came: null
-    lunch: !time;1
-      hour: 1
-      minute: 15
+    came_or_left: null
+    left: null
+    lunch: !timedelta;1
+      seconds: 4500
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 - !date_and_day;1
   date: 2017-10-18
   day: !day;1
     came: null
-    lunch: null
-    projects: !defaultdict;1
-      default_factory: *id001
-      dict_: {}
-    went: !time;1
+    came_or_left: null
+    left: !time;1
       hour: 15
       minute: 15
+    lunch: null
+    projects: !defaultdict;1
+      default_factory: *id001
+      dict_: {}
 - !date_and_day;1
   date: 2017-10-19
   day: !day;1
     came: null
+    came_or_left: null
+    left: !time;1
+      hour: 15
+      minute: 15
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: !time;1
-      hour: 15
-      minute: 15
 - !date_and_day;1
   date: 2017-10-19
   day: !day;1
     came: !time;1
       hour: 9
       minute: 30
+    came_or_left: null
+    left: null
     lunch: null
     projects: !defaultdict;1
       default_factory: *id001
       dict_: {}
-    went: null
 projects:
 - Parental Leave
 redo_list: []
