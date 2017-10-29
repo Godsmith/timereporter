@@ -7,7 +7,7 @@ Command line time reporting tool written in Python.
 
 ## Requirements
 
-Python 3.6, Windows (currently).
+Python 3.6, Windows/Linux/Mac.
 
 ## Installation
 

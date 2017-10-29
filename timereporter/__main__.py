@@ -10,7 +10,6 @@ from timereporter.workcalendar import Calendar
 from timereporter.date_arg_parser import DateArgParser, MultipleDateException
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
-default_path = f'{os.environ["USERPROFILE"]}\\Dropbox\\timereporter.yaml'
 
 
 def main(args=None):
@@ -24,8 +23,7 @@ def main(args=None):
     if TIMEREPORTER_FILE in os.environ:
         path = os.environ[TIMEREPORTER_FILE]
     else:
-        path = default_path
-    print(path)
+        path = default_path()
 
     try:
         calendar = get_calendar(path)
@@ -53,6 +51,13 @@ def main(args=None):
             as err:
         print(err)
 
+
+def default_path():
+    if 'USERPROFILE' in os.environ:
+        home_directory = os.environ['USERPROFILE']
+    else:
+        home_directory = os.environ['HOME']
+    return f'{home_directory}/Dropbox/timereporter.yaml'
 
 
 def get_calendar(path):
@@ -94,7 +99,6 @@ def today() -> date:  # pragma: no cover
     :return: a datetime.date object for the current day.
     """
     return date.today()
-
 
 
 class UnreadableCamelFileException(Exception):
