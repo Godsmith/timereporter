@@ -12,6 +12,7 @@ def last_call(patched_print):
     return patched_print.call_args[0][0]
 
 
+@pytest.mark.usefixtures('temp_logfile')
 class TestMain:
     def test_no_arguments_no_errors(self, patched_print):
         main()
