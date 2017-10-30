@@ -7,7 +7,7 @@ from timereporter.workcalendar import CalendarError
 from timereporter.timeparser import TimeParserError
 from timereporter.controllers.project_controller import ProjectError
 from timereporter.workcalendar import Calendar
-from timereporter.date_arg_parser import DateArgParser, MultipleDateException
+from timereporter.date_arg_parser import DateArgParser, MultipleDateError
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 
@@ -27,14 +27,14 @@ def main(args=None):
 
     try:
         calendar = get_calendar(path)
-    except (UnreadableCamelFileException, DirectoryDoesNotExistError) as err:
+    except (UnreadableCamelFileError, DirectoryDoesNotExistError) as err:
         print(err)
         exit(1)
 
     try:
         parser = DateArgParser(today())
         date_, args = parser.parse(args)
-    except MultipleDateException as err:
+    except MultipleDateError as err:
         print(err)
         exit(1)
 
@@ -66,7 +66,7 @@ def get_calendar(path):
             data = f.read()
             calendar = Calendar.load(data)
             if not isinstance(calendar, Calendar):
-                raise UnreadableCamelFileException(
+                raise UnreadableCamelFileError(
                     f'File found at {path} not readable. Remove it to '
                     f'create a new one.')
     except FileNotFoundError:
@@ -101,7 +101,7 @@ def today() -> date:  # pragma: no cover
     return date.today()
 
 
-class UnreadableCamelFileException(Exception):
+class UnreadableCamelFileError(Exception):
     pass
 
 

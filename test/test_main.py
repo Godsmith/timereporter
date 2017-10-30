@@ -2,7 +2,7 @@ import pytest
 
 import timereporter.__main__
 from timereporter.__main__ import DirectoryDoesNotExistError, \
-    UnreadableCamelFileException
+    UnreadableCamelFileError
 from timereporter.__main__ import main, get_calendar
 from timereporter.mydatetime import timedelta
 from timereporter.timeparser import TimeParserError
@@ -182,7 +182,7 @@ class TestGetCalendar:
         file.write('')
         path = tmpdir.join('timereporter.yaml')
 
-        with pytest.raises(UnreadableCamelFileException):
+        with pytest.raises(UnreadableCamelFileError):
             get_calendar(path)
 
     def test_not_working_path(self, empty_os_environ):

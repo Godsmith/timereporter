@@ -10,7 +10,7 @@ class DateArgParser:
         dates = list(
             date for date in map(self.to_date, args) if date is not None)
         if len(dates) > 1:
-            raise MultipleDateException(
+            raise MultipleDateError(
                 f'The command contains multiple date strings: '
                 f'{[str(date_) for date_ in dates]}')
         elif len(dates) == 1:
@@ -51,7 +51,7 @@ class DateArgParser:
             return False
 
 
-class MultipleDateException(Exception):
+class MultipleDateError(Exception):
     """Raised when multiple strings that can be parsed as a date are detected
     in a command
     """
