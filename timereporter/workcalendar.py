@@ -48,15 +48,14 @@ class Calendar:
     WORKING_HOURS_PER_DAY = timedelta(hours=7.75)
     DEFAULT_PROJECT_NAME = 'EPG Program'
 
-    def __init__(self, dates_and_days=None, redo_list=None, projects=None):
+    def __init__(self, dates_and_days=None, projects=None, redo_list=None):
         self.dates_and_days = [] if dates_and_days is None else dates_and_days
         self.redo_list = [] if redo_list is None else redo_list
         self.projects = [] if projects is None else projects
-        # TODO: this complicates testing.
-        self.today = date.today()
+        # TODO: remove this
         self.days = None
 
-    def add(self, day: Day, date_: date = None):
+    def add(self, day: Day, date_: date):
         """Add a day to the calendar.
 
         :param day: the Day object to add
@@ -64,12 +63,40 @@ class Calendar:
         is used.
         :return:
         """
-        if not date_:
-            date_ = self.today
-        self.dates_and_days.append(DateAndDay(date_, day))
+        new_dates_and_days = self.dates_and_days + [DateAndDay(date_, day)]
+        return Calendar(dates_and_days=new_dates_and_days,
+                        redo_list=self.redo_list[:],
+                        projects=self.projects[:])
         # if date_ not in self.days:
         #     self.days[date_] = Day()
         # self.days[date_] = self.days[date_] + day
+
+    def add_project(self, project_name: str):
+        """Adds a project with the specified project name to the calendar
+
+        :param project_name:
+        """
+        return Calendar(dates_and_days=self.dates_and_days[:],
+                        redo_list=self.redo_list[:],
+                        projects=self.projects + [project_name])
+
+    def undo(self):
+        try:
+            new_redo_list = self.redo_list + [self.dates_and_days.pop()]
+            return Calendar(dates_and_days=self.dates_and_days[:],
+                            redo_list=new_redo_list,
+                            projects=self.projects[:])
+        except IndexError:
+            raise NothingToUndoError('Error: nothing to undo.')
+
+    def redo(self):
+        try:
+            new_dates_and_days = self.dates_and_days + [self.redo_list.pop()]
+            return Calendar(dates_and_days=new_dates_and_days,
+                            redo_list=self.redo_list[:],
+                            projects=self.projects[:])
+        except IndexError:
+            raise NothingToRedoError('Error: nothing to redo.')
 
     def show_day(self, date_: date):
         """Shows an overview of the specified day in table format.
@@ -78,7 +105,7 @@ class Calendar:
         """
         return self.show_days(date_, 1)
 
-    def show_week(self, weeks_offset=0, table_format='simple',
+    def show_week(self, date_: date, weeks_offset=0, table_format='simple',
                   timedelta_conversion_function=lambda x: x, flex_multiplier=1,
                   show_earned_flex=True, show_sum=False):
         """Shows an overview of the current week in table format.
@@ -87,7 +114,7 @@ class Calendar:
         :param table_format: the table format, see
         https://bitbucket.org/astanin/python-tabulate for the alternatives.
         """
-        closest_monday = self.today + timedelta(days=-self.today.weekday(),
+        closest_monday = date_ + timedelta(days=-date_.weekday(),
                                                 weeks=weeks_offset)
         return self.show_days(closest_monday, 5, table_format,
                               timedelta_conversion_function,
@@ -178,25 +205,6 @@ class Calendar:
             return working_time - self.WORKING_HOURS_PER_DAY
         else:
             return None
-
-    def add_project(self, project_name: str):
-        """Adds a project with the specified project name to the calendar
-
-        :param project_name:
-        """
-        self.projects.append(project_name)
-
-    def undo(self):
-        try:
-            self.redo_list.append(self.dates_and_days.pop())
-        except IndexError:
-            raise NothingToUndoError('Error: nothing to undo.')
-
-    def redo(self):
-        try:
-            self.dates_and_days.append(self.redo_list.pop())
-        except IndexError:
-            raise NothingToRedoError('Error: nothing to redo.')
 
     def dump(self):
         return Camel([camelRegistry]).dump(self)

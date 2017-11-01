@@ -5,7 +5,6 @@ from timereporter.__main__ import DirectoryDoesNotExistError, \
     UnreadableCamelFileError
 from timereporter.__main__ import main, get_calendar
 from timereporter.mydatetime import timedelta
-from timereporter.timeparser import TimeParserError
 
 
 def last_call(patched_print):

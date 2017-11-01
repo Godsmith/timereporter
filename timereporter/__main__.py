@@ -39,14 +39,18 @@ def main(args=None):
         exit(1)
 
     try:
-        controller = ControllerFactory.create(date_, calendar, args)
-        calendar = controller.execute()
+        controller = ControllerFactory.create(date_, args)
+        new_calendar = controller.execute(calendar)
 
-        print(controller.show())
+        print(controller.show(new_calendar))
 
         with open(path, 'w') as f:
-            data = calendar.dump()
-            f.write(data)
+            try:
+                data = new_calendar.dump()
+                f.write(data)
+            except IOError:
+                data = calendar.dump()
+                f.write(data)
     except (TimeParserError, CalendarError, ProjectError) \
             as err:
         print(err)
@@ -77,7 +81,6 @@ def get_calendar(path):
                 f'The directory for the specified path {path} does not exist. '
                 f'Specify a custom path by setting the %TIMEREPORTER_FILE% '
                 f'environment variable.')
-    calendar.today = today()  # Override the date from the pickle
     return calendar
 
 

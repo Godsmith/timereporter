@@ -9,14 +9,14 @@ from timereporter.mydatetime import timedeltaDecimal
 
 
 class ShowController(Controller):
-    def __init__(self, date_: date, calendar: Calendar, args: List[str]):
+    def __init__(self, date_: date, args: List[str]):
         """Does something project-related with the supplied arguments, like
         creating a new project or reporting to a project for a certain date
 
         :param args: the command line arguments supplied by the user
         :param date_: the day on which the project time will be reported
         """
-        super().__init__(date_=date_, calendar=calendar, args=args)
+        super().__init__(date_=date_, args=args)
         self.week_offset = 0
 
         if 'last' in self.args:
@@ -37,26 +37,29 @@ class ShowController(Controller):
             '"show [last|next] (week|day)"'
             raise InvalidShowCommandError(msg)
 
-    def show(self):
+    def show(self, calendar):
         # This method shall always be replaced by another show method
         raise NotImplementedError
 
-    def show_day(self):
-        return self.calendar.show_day(self.date)
+    def show_day(self, calendar):
+        return calendar.show_day(self.date)
 
-    def show_week(self):
+    def show_week(self, calendar):
         """Shows a table overview of the specified week in the terminal."""
-        return self.calendar.show_week(weeks_offset=self.week_offset)
+        return calendar.show_week(date_=self.date,
+                                  weeks_offset=self.week_offset)
 
-    def show_week_html(self):
+    def show_week_html(self, calendar):
         """Shows a table overview of the specified week in the browser.
 
         """
-        html = self.calendar.show_week(self.week_offset, table_format='html',
-                                       timedelta_conversion_function=timedeltaDecimal.from_timedelta,
-                                       flex_multiplier=-1,
-                                       show_earned_flex=False,
-                                       show_sum=True)
+        html = calendar.show_week(date_=self.date,
+                                  weeks_offset=self.week_offset,
+                                  table_format='html',
+                                  timedelta_conversion_function=timedeltaDecimal.from_timedelta,
+                                  flex_multiplier=-1,
+                                  show_earned_flex=False,
+                                  show_sum=True)
         _, path = tempfile.mkstemp(suffix='.html')
         with open(path, 'w') as f:
             f.write(html)

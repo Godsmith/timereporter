@@ -13,15 +13,15 @@ class TimeReporterController(Controller):
     parsing input and handling environment issues
     """
 
-    def __init__(self, date_: date, calendar: Calendar, args=None):
-        super().__init__(date_=date_, calendar=calendar, args=args)
+    def __init__(self, date_: date, args=None):
+        super().__init__(date_=date_, args=args)
         self.week_offset = 0
 
-    def execute(self) -> Calendar:
+    def execute(self, calendar) -> Calendar:
         done = False
 
         if not self.args:
-            return self.calendar
+            return calendar
 
         if 'last' in self.args:
             self.week_offset = -1
@@ -32,9 +32,8 @@ class TimeReporterController(Controller):
 
         if not done:
             day = Day(self.args)
-            self.calendar.add(day,
+            return calendar.add(day,
                               self.date + timedelta(weeks=self.week_offset))
-        return self.calendar
 
 
 

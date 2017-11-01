@@ -11,7 +11,7 @@ from timereporter.controllers.redo_controller import RedoController
 
 class ControllerFactory:
     @classmethod
-    def create(cls, date_: date, calendar: Calendar, args: List):
+    def create(cls, date_: date, args: List):
         if args and args[0] == 'project':
             class_ = ProjectController
         elif args and args[0] == 'show':
@@ -22,4 +22,4 @@ class ControllerFactory:
             class_ = RedoController
         else:
             class_ = TimeReporterController
-        return class_(date_, calendar, args)
+        return class_(date_, args)
