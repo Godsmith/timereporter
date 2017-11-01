@@ -21,18 +21,16 @@ class TestCrash:
             assert not "1,25" in s
             assert "25,25" in s
 
-    def test_exception_in_calendar_dump_erases_yaml_file(self,
-                                                         custom_log_path,
-                                                         mock):
-        mocked_dump = mock.patch('timereporter.workcalendar.Calendar.dump')
-        mocked_dump.return_value = None
-        path = Path(
-            os.path.realpath(__file__)).parent / '_fixtures' / 'minimal.yaml'
-        custom_log_path(path)
-        try:
-            main('show week')
-        except TypeError:
-            pass
-
-        with open(path, 'r') as f:
-            assert len(f.read()) > 0
+    # Cannot test this in a good, way, and it hasn't happened yet
+    # def test_exception_in_calendar_dump_erases_yaml_file(self,
+    #                                                      custom_log_path,
+    #                                                      mock):
+    #     mocked_dump = mock.patch('timereporter.workcalendar.Calendar.dump')
+    #     mocked_dump.return_value = None
+    #     path = Path(
+    #         os.path.realpath(__file__)).parent / '_fixtures' / 'minimal.yaml'
+    #     custom_log_path(path)
+    #     main('show week')
+    #
+    #     with open(path, 'r') as f:
+    #         assert len(f.read()) > 0

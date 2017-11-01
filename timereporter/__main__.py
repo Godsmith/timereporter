@@ -45,12 +45,8 @@ def main(args=None):
         print(controller.show(new_calendar))
 
         with open(path, 'w') as f:
-            try:
-                data = new_calendar.dump()
-                f.write(data)
-            except (IOError, TypeError):
-                data = calendar.dump()
-                f.write(data)
+            data = new_calendar.dump()
+            f.write(data)
     except (TimeParserError, CalendarError, ProjectError) \
             as err:
         print(err)
