@@ -238,3 +238,22 @@ class TestProject:
         main('2017-09-14 project EP 9')
         main('show last week')
         assert '9:00' in last_call(patched_print)
+
+    def test_project_taking_time_from_default_project(
+            self, patched_print):
+        main('9 16:45 0m')
+        main('project new EPG Support')
+        main('project EP 4')
+        assert '4:00' in last_call(patched_print)
+        assert '3:45' in last_call(patched_print)
+
+
+@pytest.mark.usefixtures('temp_logfile')
+class TestNonWorkingProject:
+    def test_non_working_project(self, patched_print):
+        main('9 16:45 0m')
+        main('project new EPG Support --no-work')
+        main('project EP 4')
+        assert '4:00' in last_call(patched_print)
+        assert '7:45' in last_call(patched_print)
+        assert '--no-work' not in last_call(patched_print)

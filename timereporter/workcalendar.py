@@ -10,6 +10,7 @@ from camel import Camel
 from timereporter.day import Day
 from timereporter.camel_registry import camelRegistry
 from timereporter.mydatetime import timedelta
+from timereporter.project import Project
 
 my_types = CamelRegistry()
 
@@ -71,14 +72,14 @@ class Calendar:
         #     self.days[date_] = Day()
         # self.days[date_] = self.days[date_] + day
 
-    def add_project(self, project_name: str):
+    def add_project(self, project_name: str, work=True):
         """Adds a project with the specified project name to the calendar
 
         :param project_name:
         """
         return Calendar(dates_and_days=self.dates_and_days[:],
                         redo_list=self.redo_list[:],
-                        projects=self.projects + [project_name])
+                        projects=self.projects + [Project(project_name, work)])
 
     def undo(self):
         try:
@@ -154,7 +155,8 @@ class Calendar:
         for i, project in enumerate(self.projects):
             project_times = [
                 timedelta_conversion_function(self.days[date_].projects[
-                                                  project]) for date_ in dates]
+                                                  project.name]) for date_ in
+                dates]
             project_rows[i] = [project] + project_times
             sum_ += sum(project_times, timedelta())
 
@@ -191,8 +193,12 @@ class Calendar:
                          ['Flex'] + flex_times], tablefmt=table_format)
 
     def _default_project_time(self, date_):
-        project_time_sum = sum(self.days[date_].projects.values(),
-                               timedelta())
+        project_time_sum = timedelta()
+        for project_name in self.days[date_].projects:
+            project = [project for project in self.projects if project.name
+                       == project_name][0]
+            if project.work:
+                project_time_sum += self.days[date_].projects[project_name]
 
         default_project_time = self.days[date_].working_time - project_time_sum
 
@@ -225,6 +231,9 @@ def _dump_calendar(calendar):
 
 @camelRegistry.loader('calendar', version=1)
 def _load_calendar(data, version):
+    if data['projects']:
+        if isinstance(data['projects'][0], str):
+            data['projects'] = list(map(Project, data['projects']))
     return Calendar(dates_and_days=data['dates_and_days'],
                     redo_list=data['redo_list'],
                     projects=data['projects'])

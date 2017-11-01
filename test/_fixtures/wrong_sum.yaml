@@ -101,5 +101,7 @@ dates_and_days:
       default_factory: *id001
       dict_: {}
 projects:
-- Parental Leave
+- !project;1
+  name: Parental Leave
+  work: true
 redo_list: []

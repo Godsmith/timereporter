@@ -19,12 +19,16 @@ class ProjectController(Controller):
 
     def execute(self, calendar) -> Calendar:
         if self.args[0] == 'new':
+            working_project = True
+            if '--no-work' in self.args:
+                self.args.remove('--no-work')
+                working_project = False
             project_name = ' '.join(self.args[1:])
-            return calendar.add_project(project_name)
+            return calendar.add_project(project_name, work=working_project)
         else:
             project_name = ' '.join(self.args[:-1])
-            project_name_matches = [p for p in calendar.projects if
-                                    project_name in p]
+            project_name_matches = [p.name for p in calendar.projects if
+                                    project_name in p.name]
             if not project_name_matches:
                 raise ProjectNameDoesNotExistError(
                     f'Error: Project "{project_name}" does not exist.')

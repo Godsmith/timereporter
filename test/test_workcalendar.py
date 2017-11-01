@@ -206,6 +206,20 @@ class TestProject:
         assert '08:00' in s
 
 
+class TestNoWorkProject:
+    def test_basic(self):
+        c = Calendar()
+        c = c.add(Day(args='9 16:45 0m',
+                      project_name='Parental leave',
+                      project_time='04:00'),
+                  today)
+        c = c.add_project('Parental leave', work=False)
+        s = c.show_week(today)
+        assert 'Parental leave' in s
+        assert '04:00' in s
+        assert '07:45' in s
+
+
 class TestSerialization:
     def test_time(self):
         c = Calendar()
