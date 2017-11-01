@@ -48,7 +48,7 @@ def main(args=None):
             try:
                 data = new_calendar.dump()
                 f.write(data)
-            except IOError:
+            except (IOError, TypeError):
                 data = calendar.dump()
                 f.write(data)
     except (TimeParserError, CalendarError, ProjectError) \
