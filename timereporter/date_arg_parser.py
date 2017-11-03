@@ -18,6 +18,13 @@ class DateArgParser:
         else:
             date_ = self.today
 
+        if 'last' in args:
+            date_ -= timedelta(weeks=1)
+            args.remove('last')
+        elif 'next' in args:
+            date_ += timedelta(weeks=1)
+            args.remove('next')
+
         args = [arg for arg in args if self.to_date(arg) is None]
 
         return date_, args

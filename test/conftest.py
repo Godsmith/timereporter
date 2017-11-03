@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 
 import timereporter.__main__ as __main__
-from timereporter.controllers.show_controller import ShowController
+from timereporter.views.browser_week_view import BrowserWeekView
 
 
 @pytest.fixture(autouse=True)
@@ -74,10 +74,10 @@ def mock_browser():
             self.url = url
 
     mock_browser = MockBrowser()
-    temp = ShowController.webbrowser
-    ShowController.webbrowser = lambda _: mock_browser
+    temp = BrowserWeekView.webbrowser
+    BrowserWeekView.webbrowser = lambda _: mock_browser
     yield mock_browser
-    ShowController.webbrowser = temp
+    BrowserWeekView.webbrowser = temp
 
 
 @pytest.fixture

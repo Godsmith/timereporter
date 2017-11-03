@@ -42,7 +42,7 @@ def main(args=None):
         controller = ControllerFactory.create(date_, args)
         new_calendar = controller.execute(calendar)
 
-        print(controller.show(new_calendar))
+        print(controller.view.show(new_calendar))
 
         with open(path, 'w') as f:
             data = new_calendar.dump()

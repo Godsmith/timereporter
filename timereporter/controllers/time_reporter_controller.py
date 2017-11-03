@@ -23,13 +23,6 @@ class TimeReporterController(Controller):
         if not self.args:
             return calendar
 
-        if 'last' in self.args:
-            self.week_offset = -1
-            self.args.remove('last')
-        elif 'next' in self.args:
-            self.week_offset = 1
-            self.args.remove('next')
-
         if not done:
             day = Day(self.args)
             return calendar.add(day,

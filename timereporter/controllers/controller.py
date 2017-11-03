@@ -1,6 +1,8 @@
 from typing import List
 from datetime import date
+
 from timereporter.workcalendar import Calendar
+from timereporter.views.console_week_view import ConsoleWeekView
 
 class Controller:
     def __init__(self, date_: date, args: List[str]):
@@ -20,6 +22,7 @@ class Controller:
     def execute(self, calendar) -> Calendar:
         return calendar
 
-    def show(self, calendar) -> str:
-        return calendar.show_week(self.date)
+    @property
+    def view(self):
+        return ConsoleWeekView(self.date)
 
