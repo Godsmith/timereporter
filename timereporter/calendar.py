@@ -1,7 +1,6 @@
 """Supplies the Calendar class
 """
-from collections import defaultdict
-from datetime import date
+from collections import defaultdict, namedtuple
 
 from camel import Camel
 
@@ -11,31 +10,6 @@ from timereporter.mydatetime import timedelta
 from timereporter.project import Project
 
 
-class DateAndDay:
-    def __init__(self, date, day):
-        self.date = date
-        self.day = day
-
-    def __repr__(self):
-        return f'DateAndDay({self.date}, {self.day})'
-
-    def __str__(self):
-        return self.__repr__()
-
-
-@camelRegistry.dumper(DateAndDay, 'date_and_day', version=1)
-def _dump_date_and_day(date_and_day):
-    return dict(
-        date=date_and_day.date,
-        day=date_and_day.day
-    )
-
-
-@camelRegistry.loader('date_and_day', version=1)
-def _load_date_and_day(data, version):
-    return DateAndDay(**data)
-
-
 class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days
@@ -43,28 +17,27 @@ class Calendar:
     WORKING_HOURS_PER_DAY = timedelta(hours=7.75)
     DEFAULT_PROJECT_NAME = 'EPG Program'
 
-    def __init__(self, dates_and_days=None, projects=None, redo_list=None):
-        self.dates_and_days = [] if dates_and_days is None else dates_and_days
+    def __init__(self, raw_days=None, projects=None, redo_list=None):
+        self._raw_days = [] if raw_days is None else raw_days
         self.redo_list = [] if redo_list is None else redo_list
         self.projects = [] if projects is None else projects
 
     @property
     def days(self):
         days = defaultdict(Day)
-        for date_and_day in self.dates_and_days:
-            days[date_and_day.date] += date_and_day.day
+        for day in self._raw_days:
+            days[day.date] += day
         return days
 
-    def add(self, day: Day, date_: date):
+    def add(self, day: Day):
         """Add a day to the calendar.
 
         :param day: the Day object to add
-        :param date_: the date of the day or None, in which case today's date
         is used.
         :return:
         """
-        new_dates_and_days = self.dates_and_days + [DateAndDay(date_, day)]
-        return Calendar(dates_and_days=new_dates_and_days,
+        new_days = self._raw_days + [day]
+        return Calendar(raw_days=new_days,
                         redo_list=self.redo_list[:],
                         projects=self.projects[:])
         # if date_ not in self.days:
@@ -76,27 +49,21 @@ class Calendar:
 
         :param project_name:
         """
-        return Calendar(dates_and_days=self.dates_and_days[:],
+        return Calendar(raw_days=self._raw_days[:],
                         redo_list=self.redo_list[:],
                         projects=self.projects + [Project(project_name, work)])
 
     def undo(self):
-        try:
-            new_redo_list = self.redo_list + [self.dates_and_days.pop()]
-            return Calendar(dates_and_days=self.dates_and_days[:],
-                            redo_list=new_redo_list,
-                            projects=self.projects[:])
-        except IndexError:
-            raise NothingToUndoError('Error: nothing to undo.')
+        new_redo_list = self.redo_list + self._raw_days[-1:]
+        return Calendar(raw_days=self._raw_days[:-1],
+                        redo_list=new_redo_list,
+                        projects=self.projects[:])
 
     def redo(self):
-        try:
-            new_dates_and_days = self.dates_and_days + [self.redo_list.pop()]
-            return Calendar(dates_and_days=new_dates_and_days,
-                            redo_list=self.redo_list[:],
-                            projects=self.projects[:])
-        except IndexError:
-            raise NothingToRedoError('Error: nothing to redo.')
+        new_days = self._raw_days + self.redo_list[-1:]
+        return Calendar(raw_days=new_days,
+                        redo_list=self.redo_list[:-1],
+                        projects=self.projects[:])
 
     def default_project_time(self, date_):
         project_time_sum = timedelta()
@@ -129,7 +96,7 @@ class Calendar:
 @camelRegistry.dumper(Calendar, 'calendar', version=1)
 def _dump_calendar(calendar):
     return dict(
-        dates_and_days=calendar.dates_and_days,
+        raw_days=calendar._raw_days,
         redo_list=calendar.redo_list,
         projects=calendar.projects
     )
@@ -140,7 +107,13 @@ def _load_calendar(data, version):
     if data['projects']:
         if isinstance(data['projects'][0], str):
             data['projects'] = list(map(Project, data['projects']))
-    return Calendar(dates_and_days=data['dates_and_days'],
+    if not 'raw_days' in data:
+        data['raw_days'] = []
+        for date_and_day in data['dates_and_days']:
+            day = date_and_day.day
+            day.date = date_and_day.date
+            data['raw_days'].append(day)
+    return Calendar(raw_days=data['raw_days'],
                     redo_list=data['redo_list'],
                     projects=data['projects'])
 
@@ -149,9 +122,14 @@ class CalendarError(Exception):
     pass
 
 
-class NothingToUndoError(CalendarError):
-    pass
-
-
 class NothingToRedoError(CalendarError):
     pass
+
+
+# Need to keep this for backwards compatibility
+DateAndDay = namedtuple('DateAndDay', 'date day')
+
+
+@camelRegistry.loader('date_and_day', version=1)
+def _load_date_and_day(data, version):
+    return DateAndDay(date=data['date'], day=data['day'])

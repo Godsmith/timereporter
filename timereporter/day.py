@@ -2,7 +2,6 @@
 from collections import defaultdict
 from datetime import datetime, date
 from typing import List, Dict
-from copy import deepcopy
 
 from timereporter.timeparser import TimeParser
 from timereporter.mydatetime import timedelta, time
@@ -20,8 +19,10 @@ class Day:
 
     def __init__(self,
                  args: Union[List[str], str] = None,
+                 date_: date = None,
                  project_name: str = None,
                  project_time: str = None):
+        self.date = date_
         self._came = self._left = self._came_or_left = self._lunch = None
         self._projects = defaultdict(timedelta)
 
@@ -70,7 +71,9 @@ class Day:
     def __add__(self, other):
         if not isinstance(other, Day):
             raise DayAddError('Cannot add Day to another class')
-        new_day = Day()
+        if self.date and other.date and self.date != other.date:
+            raise DayAddError('Cannot add two days with different dates')
+        new_day = Day(self.date)
 
         new_day.lunch = other.lunch if other.lunch else self.lunch
 
@@ -213,8 +216,9 @@ class DayLoadingError(Exception):
 
 
 @camelRegistry.dumper(Day, 'day', version=1)
-def _dump_date_and_day(day):
+def _dump_day(day):
     return dict(
+        date=day.date,
         came=day._came,
         left=day.left,
         came_or_left=day._came_or_left,
@@ -224,8 +228,10 @@ def _dump_date_and_day(day):
 
 
 @camelRegistry.loader('day', version=1)
-def _load_date_and_day(data, version):
+def _load_day(data, version):
     day = Day()
+    if 'date' in data:
+        day.date = data['date']
     day.came = data['came']
     if 'left' in data:
         day.left = data['left']

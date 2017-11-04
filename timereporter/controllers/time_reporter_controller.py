@@ -24,9 +24,8 @@ class TimeReporterController(Controller):
             return calendar
 
         if not done:
-            day = Day(self.args)
-            return calendar.add(day,
-                              self.date + timedelta(weeks=self.week_offset))
+            day = Day(self.args, self.date)
+            return calendar.add(day)
 
 
 

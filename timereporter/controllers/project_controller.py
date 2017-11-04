@@ -38,9 +38,10 @@ class ProjectController(Controller):
                     f'"{project_name}" matches all of '
                     f'{", ".join(project_name_matches)}.')
             else:
-                day = Day(project_name=project_name_matches[0],
+                day = Day(date_=self.date,
+                          project_name=project_name_matches[0],
                           project_time=self.args[-1])
-                return calendar.add(day, self.date)
+                return calendar.add(day)
 
 
 class ProjectError(Exception):
