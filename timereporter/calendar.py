@@ -47,8 +47,6 @@ class Calendar:
         self.dates_and_days = [] if dates_and_days is None else dates_and_days
         self.redo_list = [] if redo_list is None else redo_list
         self.projects = [] if projects is None else projects
-        # TODO: remove this
-        self._days = None
 
     @property
     def days(self):
