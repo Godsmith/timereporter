@@ -1,8 +1,8 @@
 import os
 from datetime import date
 from unittest.mock import patch
-
 import pytest
+import shutil
 
 import timereporter.__main__ as __main__
 from timereporter.views.browser_week_view import BrowserWeekView
@@ -54,13 +54,16 @@ def temp_logfile(tmpdir_factory):
 
 
 @pytest.fixture
-def custom_log_path():
+def custom_log_path(tmpdir):
     before = dict(os.environ)
 
     def fn(path):
-        os.environ['TIMEREPORTER_FILE'] = str(path)
+        temp_path = tmpdir.mkdir('custom_log_path').join('timereporter.yaml')
+        shutil.copyfile(path, temp_path)
+        os.environ['TIMEREPORTER_FILE'] = str(temp_path)
 
     yield fn
+
     os.environ = before
 
 
