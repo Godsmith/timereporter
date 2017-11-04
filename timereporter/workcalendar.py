@@ -4,14 +4,13 @@ from collections import defaultdict
 from datetime import date
 
 from camel import Camel, CamelRegistry
-from tabulate import tabulate
-from camel import Camel
 
 from timereporter.day import Day
 from timereporter.camel_registry import camelRegistry
 from timereporter.mydatetime import timedelta
 from timereporter.project import Project
 
+# TODO: remove
 my_types = CamelRegistry()
 
 
@@ -42,6 +41,7 @@ def _load_date_and_day(data, version):
 
 # TODO: change name of this file to calendar.py back again now that it is not a
 # global name anymore
+# Make days a property that returns a generator instead of a list
 class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days
@@ -99,98 +99,12 @@ class Calendar:
         except IndexError:
             raise NothingToRedoError('Error: nothing to redo.')
 
-    def show_day(self, date_: date):
-        """Shows an overview of the specified day in table format.
-
-        :param date_ : the date of the day to show.
-        """
-        return self.show_days(date_, 1)
-
-    def show_week(self, date_: date, weeks_offset=0, table_format='simple',
-                  timedelta_conversion_function=lambda x: x, flex_multiplier=1,
-                  show_earned_flex=True, show_sum=False):
-        """Shows an overview of the current week in table format.
-
-        :param weeks_offset: 0 shows the current week, -1 the last week, etc.
-        :param table_format: the table format, see
-        https://bitbucket.org/astanin/python-tabulate for the alternatives.
-        """
-        closest_monday = date_ + timedelta(days=-date_.weekday(),
-                                                weeks=weeks_offset)
-        return self.show_days(closest_monday, 5, table_format,
-                              timedelta_conversion_function,
-                              flex_multiplier=flex_multiplier,
-                              show_earned_flex=show_earned_flex,
-                              show_sum=show_sum)
-
+    # TODO: remove this, and create days ad hoc
     def _assemble_days(self):
         self.days = defaultdict(Day)
         for date_and_day in self.dates_and_days:
             self.days[date_and_day.date] += date_and_day.day
 
-    def show_days(self, first_date: date, day_count, table_format='simple',
-                  timedelta_conversion_function=lambda x: x,
-                  flex_multiplier=1, show_earned_flex=True, show_sum=False):
-        """Shows a number of days from the calendar in table format.
-
-        :param first_date: the first day to show.
-        :param day_count: the number of days to show, including the first day.
-        :param table_format: the table format, see
-        https://bitbucket.org/astanin/python-tabulate for the alternatives.
-        """
-
-        dates = [first_date + timedelta(days=i) for i in range(day_count)]
-
-        self._assemble_days()
-
-        weekdays = 'Monday Tuesday Wednesday Thursday Friday'.split()
-        weekdays_to_show = [weekdays[date_.weekday()] for date_ in dates]
-
-        came_times = [self.days[date_].came for date_ in dates]
-        leave_times = [self.days[date_].left for date_ in dates]
-        lunch_times = [self.days[date_].lunch for date_ in dates]
-
-        sum_ = timedelta()
-        project_rows = [[project] for project in self.projects]
-        for i, project in enumerate(self.projects):
-            project_times = [
-                timedelta_conversion_function(self.days[date_].projects[
-                                                  project.name]) for date_ in
-                dates]
-            project_rows[i] = [project] + project_times
-            sum_ += sum(project_times, timedelta())
-
-        default_project_times = [timedelta_conversion_function(
-            self._default_project_time(date_)) for
-            date_ in
-            dates]
-        sum_ += sum(default_project_times, timedelta())
-
-        flex_times = [self._flex(date_) for date_ in dates]
-        flex_times = [timedelta_conversion_function(flex) for flex in
-                      flex_times]
-        flex_times = list(
-            map(lambda x: None if x is None else x * flex_multiplier,
-                flex_times))
-        if not show_earned_flex:
-            flex_times = list(
-                map(lambda x: None if x is None or x <= timedelta() else x,
-                    flex_times))
-        sum_ += sum(flex_times, timedelta())
-
-        if show_sum:
-            sum_cell = ['Sum: %s' % timedelta_conversion_function(sum_)]
-        else:
-            sum_cell = ['']
-
-        return tabulate([sum_cell + dates,
-                         [''] + weekdays_to_show,
-                         ['Came'] + came_times,
-                         ['Left'] + leave_times,
-                         ['Lunch'] + lunch_times,
-                         [self.DEFAULT_PROJECT_NAME] + default_project_times,
-                         *project_rows,
-                         ['Flex'] + flex_times], tablefmt=table_format)
 
     def _default_project_time(self, date_):
         project_time_sum = timedelta()

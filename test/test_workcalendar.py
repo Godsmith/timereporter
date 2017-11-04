@@ -5,6 +5,7 @@ from timereporter.mydatetime import timedelta, time
 from timereporter.workcalendar import Calendar, NothingToUndoError, \
     NothingToRedoError
 from timereporter.day import Day
+from timereporter.views.day_shower import DayShower
 
 today = date(2017, 9, 20)
 
@@ -121,58 +122,23 @@ class TestSpecificDay:
         assert c.days[today] == Day('8 18 45m')
 
 
-class TestShow:
-    def test_empty(self):
-        c = Calendar()
-        s = c.show_week(today)
-        assert 'Monday' in s
-        assert 'Friday' in s
-
-    def test_added(self):
-        c = Calendar()
-        wednesday = today + timedelta(days=-today.weekday() + 2)
-        c = c.add(Day('8 18 45m'), wednesday)
-        s = c.show_week(today)
-        assert '08:00' in s
-        assert '18:00' in s
-        assert '0:45' in s
-        assert 'Came' in s
-        assert 'Left' in s
-        assert 'Lunch' in s
-
-    def test_show_last_week(self):
-        c = Calendar()
-        last_monday = str(today + timedelta(days=-today.weekday(), weeks=-1))
-        s = c.show_week(today, -1)
-        assert last_monday in s
-
-    def test_show_week_html(self):
-        c = Calendar()
-        wednesday = today + timedelta(days=-today.weekday() + 2)
-        c = c.add(Day('8 18 45m'), wednesday)
-        s = c.show_week(today, table_format='html')
-        assert '08:00' in s
-        assert '18:00' in s
-        assert 'Came' in s
-        assert '<table>' in s
-
 
 class TestUndo:
     def test_only_came(self):
         c = Calendar()
         c.today = today
         c = c.add(Day('9'), today)
-        assert '09:00' in c.show_week(today)
+        assert '09:00' in DayShower.show_days(c, today, 1)
         c.undo()
-        assert '09:00' not in c.show_week(today)
+        assert '09:00' not in DayShower.show_days(c, today, 1)
 
     def test_came_left_lunch(self):
         c = Calendar()
         c.today = today
         c = c.add(Day('9 15 30m'), today)
-        assert '30' in c.show_week(today)
+        assert '30' in DayShower.show_days(c, today, 1)
         c.undo()
-        assert '30' not in c.show_week(today)
+        assert '30' not in DayShower.show_days(c, today, 1)
 
     def test_nothing_to_undo(self):
         c = Calendar()
@@ -187,7 +153,7 @@ class TestRedo:
         c = c.add(Day('9 15 30m'), today)
         c = c.undo()
         c = c.redo()
-        assert '30' in c.show_week(today)
+        assert '30' in DayShower.show_days(c, today, 1)
 
     def test_nothing_to_redo(self):
         c = Calendar()
@@ -201,7 +167,7 @@ class TestProject:
         Calendar.today = today
         c = c.add(Day(project_name='EPG Support', project_time='08:00'), today)
         c = c.add_project('EPG Support')
-        s = c.show_week(today)
+        s = DayShower.show_days(c, today, 1)
         assert 'EPG Support' in s
         assert '08:00' in s
 
@@ -214,7 +180,7 @@ class TestNoWorkProject:
                       project_time='04:00'),
                   today)
         c = c.add_project('Parental leave', work=False)
-        s = c.show_week(today)
+        s = DayShower.show_days(c, today, 1)
         assert 'Parental leave' in s
         assert '04:00' in s
         assert '07:45' in s
@@ -238,6 +204,6 @@ class TestSerialization:
         c = c.add_project('EPG Support')
         data = c.dump()
         c2 = Calendar.load(data)
-        s = c2.show_week(today)
+        s = DayShower.show_days(c2, today, 1)
         assert 'EPG Support' in s
         assert '08:00' in s
