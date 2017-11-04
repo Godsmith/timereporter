@@ -39,12 +39,12 @@ class DayShower:
             sum_ += sum(project_times, timedelta())
 
         default_project_times = [timedelta_conversion_function(
-            calendar._default_project_time(date_)) for
+            calendar.default_project_time(date_)) for
             date_ in
             dates]
         sum_ += sum(default_project_times, timedelta())
 
-        flex_times = [calendar._flex(date_) for date_ in dates]
+        flex_times = [calendar.flex(date_) for date_ in dates]
         flex_times = [timedelta_conversion_function(flex) for flex in
                       flex_times]
         flex_times = list(

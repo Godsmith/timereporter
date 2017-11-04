@@ -103,7 +103,7 @@ class Calendar:
         except IndexError:
             raise NothingToRedoError('Error: nothing to redo.')
 
-    def _default_project_time(self, date_):
+    def default_project_time(self, date_):
         project_time_sum = timedelta()
         for project_name in self.days[date_].projects:
             project = [project for project in self.projects if project.name
@@ -116,7 +116,7 @@ class Calendar:
         # Set to 0 hours if less than 0 hours
         return max(default_project_time, timedelta())
 
-    def _flex(self, date_):
+    def flex(self, date_):
         working_time = self.days[date_].working_time
         if working_time:
             return working_time - self.WORKING_HOURS_PER_DAY
