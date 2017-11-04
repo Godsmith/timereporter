@@ -20,8 +20,6 @@ class DayShower:
 
         dates = [first_date + timedelta(days=i) for i in range(day_count)]
 
-        calendar._assemble_days()
-
         weekdays = 'Monday Tuesday Wednesday Thursday Friday Saturday ' \
                    'Sunday'.split()
         weekdays_to_show = [weekdays[date_.weekday() % 7] for date_ in dates]

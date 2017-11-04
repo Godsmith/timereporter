@@ -14,7 +14,6 @@ class TestToday:
     def test_add_day(self):
         c = Calendar()
         c = c.add(Day('9 15'), today)
-        c._assemble_days()
         assert c.days[today].came == time(9)
         assert c.days[today].left == time(15)
 
@@ -22,7 +21,6 @@ class TestToday:
         c = Calendar()
         c = c.add(Day('9'), today)
         c = c.add(Day('15'), today)
-        c._assemble_days()
         assert c.days[today].came == time(9)
         assert c.days[today].left == time(15)
 
@@ -30,7 +28,6 @@ class TestToday:
         c = Calendar()
         c = c.add(Day('15'), today)
         c = c.add(Day('9'), today)
-        c._assemble_days()
         assert c.days[today].came == time(9)
         assert c.days[today].left == time(15)
 
@@ -38,7 +35,6 @@ class TestToday:
         c = Calendar()
         c = c.add(Day('9 15'), today)
         c = c.add(Day('8 14'), today)
-        c._assemble_days()
         assert c.days[today].came == time(8)
         assert c.days[today].left == time(14)
 
@@ -46,7 +42,6 @@ class TestToday:
         c = Calendar()
         c = c.add(Day('9 15'), today)
         c = c.add(Day('13'), today)
-        c._assemble_days()
         assert c.days[today].came == time(9)
         assert c.days[today].left == time(13)
 
@@ -54,7 +49,6 @@ class TestToday:
         c = Calendar()
         c = c.add(Day('9 15'), today)
         c = c.add(Day('11'), today)
-        c._assemble_days()
         assert c.days[today].came == time(11)
         assert c.days[today].left == time(15)
 
@@ -62,54 +56,46 @@ class TestToday:
         c = Calendar()
         c = c.add(Day('45m'), today)
         c = c.add(Day('35m'), today)
-        c._assemble_days()
         assert c.days[today].lunch == timedelta(minutes=35)
 
     def test_add_came_and_left(self):
         c = Calendar()
         c = c.add(Day('45m'), today)
         c = c.add(Day('8 15'), today)
-        c._assemble_days()
         assert c.days[today] == Day('8 15 45m')
 
     def test_change_came_and_left(self):
         c = Calendar()
         c = c.add(Day('9 16 45m'), today)
         c = c.add(Day('8 15'), today)
-        c._assemble_days()
         assert c.days[today] == Day('8 15 45m')
 
     def test_add_nothing(self):
         c = Calendar()
         c = c.add(Day('8 18 45m'), today)
         c = c.add(Day(''), today)
-        c._assemble_days()
         assert c.days[today] == Day('8 18 45m')
 
     def test_add_to_nothing(self):
         c = Calendar()
         c = c.add(Day(''), today)
         c = c.add(Day('8 18 45m'), today)
-        c._assemble_days()
         assert c.days[today] == Day('8 18 45m')
 
     def test_came_text(self):
         c = Calendar()
         c = c.add(Day('came 08:00'), today)
-        c._assemble_days()
         assert c.days[today] == Day('8')
 
     def test_left_text(self):
         c = Calendar()
         c = c.add(Day('came 08:00'), today)
         c = c.add(Day('left 17:00'), today)
-        c._assemble_days()
         assert c.days[today] == Day('8 17')
 
     def test_lunch_text(self):
         c = Calendar()
         c = c.add(Day('lunch 45 min'), today)
-        c._assemble_days()
         assert c.days[today] == Day('45m')
 
 
@@ -118,7 +104,6 @@ class TestSpecificDay:
         c = Calendar()
         c = c.add(Day(''), today)
         c = c.add(Day('8 18 45m'), today)
-        c._assemble_days()
         assert c.days[today] == Day('8 18 45m')
 
 
@@ -193,7 +178,6 @@ class TestSerialization:
         c = c.add(Day('9 15'), today)
         data = c.dump()
         c2 = Calendar.load(data)
-        c2._assemble_days()
         assert c2.days[today].came == time(9)
         assert c2.days[today].left == time(15)
 

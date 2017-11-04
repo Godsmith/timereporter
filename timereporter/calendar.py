@@ -39,7 +39,6 @@ def _load_date_and_day(data, version):
     return DateAndDay(**data)
 
 
-# TODO: Make days a property that returns a generator instead of a list
 class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days
@@ -52,7 +51,14 @@ class Calendar:
         self.redo_list = [] if redo_list is None else redo_list
         self.projects = [] if projects is None else projects
         # TODO: remove this
-        self.days = None
+        self._days = None
+
+    @property
+    def days(self):
+        days = defaultdict(Day)
+        for date_and_day in self.dates_and_days:
+            days[date_and_day.date] += date_and_day.day
+        return days
 
     def add(self, day: Day, date_: date):
         """Add a day to the calendar.
@@ -96,13 +102,6 @@ class Calendar:
                             projects=self.projects[:])
         except IndexError:
             raise NothingToRedoError('Error: nothing to redo.')
-
-    # TODO: remove this, and create days ad hoc
-    def _assemble_days(self):
-        self.days = defaultdict(Day)
-        for date_and_day in self.dates_and_days:
-            self.days[date_and_day.date] += date_and_day.day
-
 
     def _default_project_time(self, date_):
         project_time_sum = timedelta()
