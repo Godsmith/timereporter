@@ -3,7 +3,7 @@ from datetime import date
 
 from timereporter.controllers.project_controller import ProjectController, \
     ProjectNameDoesNotExistError, AmbiguousProjectNameError
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 
 
 class TestProjectController:

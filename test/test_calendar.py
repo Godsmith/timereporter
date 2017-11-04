@@ -2,7 +2,7 @@ from datetime import date
 import pytest
 
 from timereporter.mydatetime import timedelta, time
-from timereporter.workcalendar import Calendar, NothingToUndoError, \
+from timereporter.calendar import Calendar, NothingToUndoError, \
     NothingToRedoError
 from timereporter.day import Day
 from timereporter.views.day_shower import DayShower

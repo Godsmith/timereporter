@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 
 from timereporter.controllers.time_reporter_controller import TimeReporterController
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 from timereporter.timeparser import TimeParserError
 
 

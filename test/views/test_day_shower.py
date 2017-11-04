@@ -2,7 +2,7 @@ from datetime import date
 
 from timereporter.views.day_shower import DayShower
 from timereporter.mydatetime import timedelta
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 from timereporter.day import Day
 
 today = date(2017, 9, 18)

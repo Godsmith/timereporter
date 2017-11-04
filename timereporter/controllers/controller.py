@@ -1,7 +1,7 @@
 from typing import List
 from datetime import date
 
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 from timereporter.views.console_week_view import ConsoleWeekView
 
 class Controller:

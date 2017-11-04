@@ -39,9 +39,7 @@ def _load_date_and_day(data, version):
     return DateAndDay(**data)
 
 
-# TODO: change name of this file to calendar.py back again now that it is not a
-# global name anymore
-# Make days a property that returns a generator instead of a list
+# TODO: Make days a property that returns a generator instead of a list
 class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days

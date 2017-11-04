@@ -5,7 +5,7 @@ from datetime import date
 from timereporter.day import Day
 from timereporter.mydatetime import timedelta
 from timereporter.controllers.controller import Controller
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 
 
 class TimeReporterController(Controller):

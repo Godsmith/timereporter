@@ -2,7 +2,7 @@ from typing import List
 from datetime import date
 
 from timereporter.day import Day  # TODO: remove this, only know of calendar?
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 from timereporter.controllers.controller import Controller
 
 

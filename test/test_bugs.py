@@ -3,7 +3,7 @@ import os
 from unittest.mock import patch
 
 from timereporter.__main__ import main
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 
 
 class TestCrash:
@@ -25,7 +25,7 @@ class TestCrash:
     # def test_exception_in_calendar_dump_erases_yaml_file(self,
     #                                                      custom_log_path,
     #                                                      mock):
-    #     mocked_dump = mock.patch('timereporter.workcalendar.Calendar.dump')
+    #     mocked_dump = mock.patch('timereporter.calendar.Calendar.dump')
     #     mocked_dump.return_value = None
     #     path = Path(
     #         os.path.realpath(__file__)).parent / '_fixtures' / 'minimal.yaml'

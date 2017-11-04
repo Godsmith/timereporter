@@ -1,7 +1,7 @@
 from typing import List
 from datetime import date
 
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 from timereporter.controllers.project_controller import ProjectController
 from timereporter.controllers.time_reporter_controller import TimeReporterController
 from timereporter.controllers.show_controller import ShowController

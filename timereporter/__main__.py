@@ -3,10 +3,10 @@ import os
 from datetime import date, datetime
 
 from timereporter.controllers.controller_factory import ControllerFactory
-from timereporter.workcalendar import CalendarError
+from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
 from timereporter.controllers.project_controller import ProjectError
-from timereporter.workcalendar import Calendar
+from timereporter.calendar import Calendar
 from timereporter.date_arg_parser import DateArgParser, MultipleDateError
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
