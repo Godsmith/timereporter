@@ -3,15 +3,12 @@
 from collections import defaultdict
 from datetime import date
 
-from camel import Camel, CamelRegistry
+from camel import Camel
 
 from timereporter.day import Day
 from timereporter.camel_registry import camelRegistry
 from timereporter.mydatetime import timedelta
 from timereporter.project import Project
-
-# TODO: remove
-my_types = CamelRegistry()
 
 
 class DateAndDay:
