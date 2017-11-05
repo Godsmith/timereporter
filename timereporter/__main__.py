@@ -58,7 +58,9 @@ def main(args=None):
                                              COMMANDS_IN_ORDER)
         new_calendar, view = first_command.execute()
 
-        print(view.show(new_calendar))
+        s = view.show(new_calendar)
+        if s:
+            print(s)
 
         with open(path, 'w') as f:
             data = new_calendar.dump()
