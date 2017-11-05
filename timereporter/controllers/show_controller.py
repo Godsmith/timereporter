@@ -1,18 +1,12 @@
-from typing import List
-from datetime import date
-
 from timereporter.calendar import Calendar
 from timereporter.views.view import View
 from timereporter.views.console_week_view import ConsoleWeekView
 from timereporter.views.console_day_view import ConsoleDayView
 from timereporter.views.browser_week_view import BrowserWeekView
 from timereporter.controllers.controller import Controller
-from timereporter.controllers.undo_controller import UndoController
 
 
 class ShowController(Controller):
-    SUCCESSOR = UndoController
-
     def view(self):
         week_offset = 0
 

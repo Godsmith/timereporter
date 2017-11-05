@@ -1,15 +1,26 @@
 import sys
 import os
-from datetime import date, datetime
+from datetime import date
 
-from timereporter.controllers.project_controller import ProjectController
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
 from timereporter.controllers.project_controller import ProjectError
 from timereporter.calendar import Calendar
 from timereporter.date_arg_parser import DateArgParser, MultipleDateError
+from timereporter.controllers.project_controller import ProjectController
+from timereporter.controllers.show_controller import ShowController
+from timereporter.controllers.undo_controller import UndoController
+from timereporter.controllers.redo_controller import RedoController
+from timereporter.controllers.time_reporter_controller import \
+    TimeReporterController
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
+
+CONTROLLERS_IN_ORDER = (ProjectController,
+                        ShowController,
+                        UndoController,
+                        RedoController,
+                        TimeReporterController)
 
 
 def main(args=None):
@@ -40,13 +51,11 @@ def main(args=None):
         exit(1)
 
     try:
-        # TODO: not really clear that project controller starts a chain of
-        # responsibility. Create a class for pointing to that controller.
-        # Use the successor list in Controller.
         # TODO: not evident that "try handle" returns a calendar and a view
         # Try to separate methods unless necessary
-        new_calendar, view = ProjectController(calendar, date_,
-                                               args).try_handle()
+        new_calendar, view = CONTROLLERS_IN_ORDER[0](calendar,
+                                                     date_, args,
+                                                     CONTROLLERS_IN_ORDER).try_handle()
 
         print(view.show(new_calendar))
 

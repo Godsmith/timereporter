@@ -1,3 +1,4 @@
+from typing import Union, Sequence
 from datetime import date
 
 from timereporter.calendar import Calendar
@@ -6,9 +7,10 @@ from timereporter.views.console_week_view import ConsoleWeekView
 
 
 class Controller:
-    SUCCESSOR = NotImplemented
-
-    def __init__(self, calendar: Calendar, date_: date, args: list):
+    def __init__(self, calendar: Calendar,
+                 date_: date,
+                 args: Union[list, str, None],
+                 controllers_in_order: Sequence):
         """Does something project-related with the supplied arguments, like
         creating a new project or reporting to a project for a certain date
 
@@ -18,6 +20,7 @@ class Controller:
         self.calendar = calendar
         self.date = date_
         self.args = args
+        self.controllers_in_order = controllers_in_order
 
         if self.args is None:
             self.args = []
@@ -31,8 +34,9 @@ class Controller:
         if self.can_handle():
             return self.execute()
         else:
-            return self.SUCCESSOR(self.calendar, self.date,
-                                  self.args).try_handle()
+            return self._successor(self.calendar, self.date,
+                                   self.args,
+                                   self.controllers_in_order).try_handle()
 
     def view(self) -> View:
         return ConsoleWeekView(self.date)
@@ -43,4 +47,16 @@ class Controller:
     def execute(self) -> (Calendar, View):
         return self.new_calendar(), self.view()
 
-        # TODO: Create static method here to get the successor
+    @property
+    def _successor(self):
+        try:
+            return self.controllers_in_order[self.controllers_in_order.index(
+                self.__class__) + 1]
+        except IndexError:
+            raise NoSuccessorError(
+                f'"{self.__class__}" is the last item in the '
+                f'sequence {self.controllers_in_order}.')
+
+
+class NoSuccessorError(Exception):
+    pass

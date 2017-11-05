@@ -1,32 +1,15 @@
 from timereporter.day import Day
 from timereporter.controllers.controller import Controller
-from timereporter.controllers.show_controller import ShowController
 from timereporter.calendar import Calendar
 from timereporter.views.view import View
 
 
 class ProjectController(Controller):
-    # TODO: remove
-    # def __init__(self, date_: date, args: List[str]):
-    #     """Does something project-related with the supplied arguments, like
-    #     creating a new project or reporting to a project for a certain date
-    #
-    #     :param args: the command line arguments supplied by the user
-    #     :param date_: the day on which the project time will be reported
-    #     """
-    #     super().__init__(date_=date_, args=args)
-    #     args = args[1:]  # First is always 'project'
-
-    SUCCESSOR = ShowController
-
     def can_handle(self) -> bool:
         return self.args and self.args[0] == 'project'
 
     def new_calendar(self) -> (Calendar, View):
-        if self.args[0] == 'project':
-            self.args = self.args[1:]  # First is always 'project'
-        else:
-            return self.SUCCESSOR(self.calendar, self.date, self.args).execute()
+        self.args = self.args[1:]  # First is always 'project'
         if self.args[0] == 'new':
             working_project = True
             if '--no-work' in self.args:
