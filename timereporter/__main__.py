@@ -20,6 +20,7 @@ COMMANDS_IN_ORDER = (ProjectCommand,
                      ShowWeekCommand,
                      ShowWeekHtmlCommand,
                      ShowDayCommand,
+                     ShowMonthCommand,
                      UndoCommand,
                      RedoCommand,
                      TimeReporterCommand)

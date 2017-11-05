@@ -106,6 +106,12 @@ class TestShow:
             assert not '0,25' in s  # Earned flex should not show
             assert '15,75' in s  # Sum of times
 
+    def test_show_month(self, patched_print):
+        main('9')
+        main('show september')
+        print(last_call(patched_print))
+        assert '9:00' in last_call(patched_print)
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:
