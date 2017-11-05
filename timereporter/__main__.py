@@ -8,7 +8,7 @@ from timereporter.commands.project_command import ProjectError
 from timereporter.calendar import Calendar
 from timereporter.date_arg_parser import DateArgParser, MultipleDateError
 from timereporter.commands.project_command import ProjectCommand
-from timereporter.commands.show_command import ShowCommand
+from timereporter.commands.show_commands import *
 from timereporter.commands.undo_command import UndoCommand
 from timereporter.commands.redo_command import RedoCommand
 from timereporter.commands.time_reporter_command import \
@@ -17,7 +17,9 @@ from timereporter.commands.time_reporter_command import \
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 
 COMMANDS_IN_ORDER = (ProjectCommand,
-                     ShowCommand,
+                     ShowWeekCommand,
+                     ShowWeekHtmlCommand,
+                     ShowDayCommand,
                      UndoCommand,
                      RedoCommand,
                      TimeReporterCommand)
