@@ -109,9 +109,19 @@ class TestShow:
     def test_show_month(self, patched_print):
         main('9')
         main('show september')
-        print(last_call(patched_print))
         assert '9:00' in last_call(patched_print)
 
+    def test_show_weekend(self, patched_print):
+        main('show week --show-weekend')
+        assert 'Saturday' in last_call(patched_print)
+        assert 'Sunday' in last_call(patched_print)
+
+    def test_show_week_html_weekend(self, mock_browser):
+        main('show week html --show-weekend')
+        with open(mock_browser.url) as f:
+            s = f.read()
+            assert 'Saturday' in s
+            assert 'Sunday' in s
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:

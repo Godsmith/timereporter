@@ -1,23 +1,24 @@
 import webbrowser
 import tempfile
 
-from timereporter.views.view import View
+from timereporter.views.week_view import WeekView
 from timereporter.mydatetime import timedeltaDecimal
 from timereporter.mydatetime import timedelta
 from timereporter.views.day_shower import DayShower
 
 
-class BrowserWeekView(View):
+class BrowserWeekView(WeekView):
     def show(self, calendar):
         closest_monday = self.date + timedelta(days=-self.date.weekday())
         """Shows a table overview of the specified week in the browser.
 
         """
+        t = timedeltaDecimal.from_timedelta
         html = DayShower.show_days(calendar=calendar,
                                    first_date=closest_monday,
-                                   day_count=5,
+                                   day_count=self.day_count,
                                    table_format='html',
-                                   timedelta_conversion_function=timedeltaDecimal.from_timedelta,
+                                   timedelta_conversion_function=t,
                                    flex_multiplier=-1,
                                    show_earned_flex=False,
                                    show_sum=True)

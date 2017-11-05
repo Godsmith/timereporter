@@ -17,7 +17,6 @@ class DayShower:
         :param table_format: the table format, see
         https://bitbucket.org/astanin/python-tabulate for the alternatives.
         """
-
         dates = [first_date + timedelta(days=i) for i in range(day_count)]
 
         weekdays = 'Monday Tuesday Wednesday Thursday Friday Saturday ' \

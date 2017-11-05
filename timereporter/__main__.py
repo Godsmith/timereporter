@@ -17,8 +17,8 @@ from timereporter.commands.time_reporter_command import \
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 
 COMMANDS_IN_ORDER = (ProjectCommand,
+                     ShowWeekHtmlCommand,  # Must be before ShowWeekCommand
                      ShowWeekCommand,
-                     ShowWeekHtmlCommand,
                      ShowDayCommand,
                      ShowMonthCommand,
                      UndoCommand,
