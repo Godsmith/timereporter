@@ -45,8 +45,8 @@ def main(args=None):
         # Use the successor list in Controller.
         # TODO: not evident that "try handle" returns a calendar and a view
         # Try to separate methods unless necessary
-        new_calendar, view = ProjectController.try_handle(calendar, date_,
-                                                          args)
+        new_calendar, view = ProjectController(calendar, date_,
+                                               args).try_handle()
 
         print(view.show(new_calendar))
 

@@ -6,40 +6,41 @@ from timereporter.views.console_week_view import ConsoleWeekView
 
 
 class Controller:
-
     SUCCESSOR = NotImplemented
 
-    # def __init__(self, calendar: Calendar, date_: date, args: list):
-    #     self.calendar = calendar
-    #     self.date = date_
-    #     self.args = args
+    def __init__(self, calendar: Calendar, date_: date, args: list):
+        """Does something project-related with the supplied arguments, like
+        creating a new project or reporting to a project for a certain date
 
-    # TODO: investigate if making these class methods could avoid having to
-    # bring along all the arguments all the time
-    @classmethod
-    def can_handle(cls, args) -> bool:
+        :param args: the command line arguments supplied by the user
+        :param date_: the day on which the project time will be reported
+        """
+        self.calendar = calendar
+        self.date = date_
+        self.args = args
+
+        if self.args is None:
+            self.args = []
+        elif isinstance(self.args, str):
+            self.args = self.args.split()
+
+    def can_handle(self) -> bool:
         raise NotImplementedError
 
-    @classmethod
-    def try_handle(cls, calendar: Calendar, date_: date, args):
-        if cls.can_handle(args):
-            return cls.execute(calendar, date_, args)
+    def try_handle(self):
+        if self.can_handle():
+            return self.execute()
         else:
-            return cls.SUCCESSOR.try_handle(calendar, date_, args)
+            return self.SUCCESSOR(self.calendar, self.date,
+                                  self.args).try_handle()
 
-    @classmethod
-    def view(cls, date_: date, args: list) -> View:
-        return ConsoleWeekView(date_)
+    def view(self) -> View:
+        return ConsoleWeekView(self.date)
 
-    @classmethod
-    def new_calendar(cls, calendar: Calendar, date_: date, args: list) -> \
-            Calendar:
-        return calendar
+    def new_calendar(self) -> Calendar:
+        return self.calendar
 
-    @classmethod
-    def execute(cls, calendar: Calendar, date_: date, args: list) -> (
-            Calendar,
-                                                                 View):
-        return cls.new_calendar(calendar, date_, args), cls.view(date_, args)
+    def execute(self) -> (Calendar, View):
+        return self.new_calendar(), self.view()
 
-    # TODO: Create static method here to get the successor
+        # TODO: Create static method here to get the successor

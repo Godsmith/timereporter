@@ -7,10 +7,8 @@ from timereporter.controllers.redo_controller import RedoController
 class UndoController(Controller):
     SUCCESSOR = RedoController
 
-    @classmethod
-    def can_handle(cls, args) -> bool:
-        return args == ['undo']
+    def can_handle(self) -> bool:
+        return self.args == ['undo']
 
-    @classmethod
-    def new_calendar(self, calendar, date_, args) -> (Calendar, View):
-        return calendar.undo()
+    def new_calendar(self) -> (Calendar, View):
+        return self.calendar.undo()

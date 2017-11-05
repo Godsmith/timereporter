@@ -10,17 +10,15 @@ class TimeReporterController(Controller):
     parsing input and handling environment issues
     """
 
-    @classmethod
-    def can_handle(cls, args) -> bool:
+    def can_handle(self) -> bool:
         return True
 
-    @classmethod
-    def new_calendar(cls, calendar, date_, args) -> Calendar:
+    def new_calendar(self) -> Calendar:
         done = False
 
-        if not args:
-            return calendar
+        if not self.args:
+            return self.calendar
 
         if not done:
-            day = Day(args, date_)
-            return calendar.add(day)
+            day = Day(self.args, self.date)
+            return self.calendar.add(day)

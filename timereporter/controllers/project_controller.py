@@ -19,26 +19,24 @@ class ProjectController(Controller):
 
     SUCCESSOR = ShowController
 
-    @classmethod
-    def can_handle(cls, args) -> bool:
-        return args and args[0] == 'project'
+    def can_handle(self) -> bool:
+        return self.args and self.args[0] == 'project'
 
-    @classmethod
-    def new_calendar(cls, calendar, date_, args) -> (Calendar, View):
-        if args[0] == 'project':
-            args = args[1:]  # First is always 'project'
+    def new_calendar(self) -> (Calendar, View):
+        if self.args[0] == 'project':
+            self.args = self.args[1:]  # First is always 'project'
         else:
-            return cls.SUCCESSOR.execute(calendar, date_, args)
-        if args[0] == 'new':
+            return self.SUCCESSOR(self.calendar, self.date, self.args).execute()
+        if self.args[0] == 'new':
             working_project = True
-            if '--no-work' in args:
-                args.remove('--no-work')
+            if '--no-work' in self.args:
+                self.args.remove('--no-work')
                 working_project = False
-            project_name = ' '.join(args[1:])
-            return calendar.add_project(project_name, work=working_project)
+            project_name = ' '.join(self.args[1:])
+            return self.calendar.add_project(project_name, work=working_project)
         else:
-            project_name = ' '.join(args[:-1])
-            project_name_matches = [p.name for p in calendar.projects if
+            project_name = ' '.join(self.args[:-1])
+            project_name_matches = [p.name for p in self.calendar.projects if
                                     project_name in p.name]
             if not project_name_matches:
                 raise ProjectNameDoesNotExistError(
@@ -49,10 +47,10 @@ class ProjectController(Controller):
                     f'"{project_name}" matches all of '
                     f'{", ".join(project_name_matches)}.')
             else:
-                day = Day(date_=date_,
+                day = Day(date_=self.date,
                           project_name=project_name_matches[0],
-                          project_time=args[-1])
-                return calendar.add(day)
+                          project_time=self.args[-1])
+                return self.calendar.add(day)
 
 
 class ProjectError(Exception):

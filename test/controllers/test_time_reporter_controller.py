@@ -8,13 +8,13 @@ from timereporter.timeparser import TimeParserError
 
 
 def test_nonsense_input():
-    controller = TimeReporterController()
+    controller = TimeReporterController(Calendar(), date.today(), 'nonsense')
     with pytest.raises(TimeParserError):
-        controller.execute(Calendar(), date.today(), 'nonsense')
+        controller.execute()
 
 
 def test_next_and_last_weekday(patched_print):
-    controller = TimeReporterController()
+    controller = TimeReporterController(Calendar(), date.today(), 'next last monday 1')
     with pytest.raises(TimeParserError):
-        controller.execute(Calendar(), date.today(), 'next last monday 1')
+        controller.execute()
 

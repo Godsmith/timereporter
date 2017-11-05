@@ -8,10 +8,8 @@ from timereporter.controllers.time_reporter_controller import \
 class RedoController(Controller):
     SUCCESSOR = TimeReporterController
 
-    @classmethod
-    def can_handle(cls, args) -> bool:
-        return args == ['redo']
+    def can_handle(self) -> bool:
+        return self.args == ['redo']
 
-    @classmethod
-    def new_calendar(cls, calendar, date_, args) -> (Calendar, View):
-        return calendar.redo()
+    def new_calendar(self) -> (Calendar, View):
+        return self.calendar.redo()
