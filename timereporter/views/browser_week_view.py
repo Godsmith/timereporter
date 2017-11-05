@@ -8,10 +8,6 @@ from timereporter.views.day_shower import DayShower
 
 
 class BrowserWeekView(View):
-    def __init__(self, date, week_offset):
-        super().__init__(date)
-        self.week_offset = week_offset
-
     def show(self, calendar):
         closest_monday = self.date + timedelta(days=-self.date.weekday())
         """Shows a table overview of the specified week in the browser.

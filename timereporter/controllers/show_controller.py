@@ -8,23 +8,12 @@ from timereporter.controllers.controller import Controller
 
 class ShowController(Controller):
     def view(self):
-        week_offset = 0
-
-        # TODO: this can be removed, handled elsewhere
-        if 'last' in self.args:
-            week_offset = -1
-            self.args.remove('last')
-        elif 'next' in self.args:
-            week_offset = 1
-            self.args.remove('next')
-
-        if self.args == 'show week'.split():
-            return ConsoleWeekView(self.date)
-        elif self.args == 'show day'.split():
-            return ConsoleDayView(self.date)
-        elif self.args == 'show week html'.split():
-            return BrowserWeekView(self.date, week_offset)
-        else:
+        view_from_arg = {'show week': ConsoleWeekView,
+                         'show day': ConsoleDayView,
+                         'show week html': BrowserWeekView}
+        try:
+            return view_from_arg[' '.join(self.args)](self.date)
+        except KeyError:
             msg = f'Error: Command "{" ".join(self.args)}" not on the form '
             '"show [last|next] (week|day)"'
             raise InvalidShowCommandError(msg)

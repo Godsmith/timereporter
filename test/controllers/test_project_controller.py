@@ -6,7 +6,6 @@ from timereporter.controllers.project_controller import ProjectController, \
 from timereporter.calendar import Calendar
 
 
-# TODO: remove repeititions in this module
 class TestProjectController:
     def test_project_not_existing_error(self, patched_print):
         with pytest.raises(ProjectNameDoesNotExistError):
