@@ -30,22 +30,20 @@ class Controller:
     def can_handle(self) -> bool:
         raise NotImplementedError
 
-    def try_handle(self):
+    def execute(self):
         if self.can_handle():
-            return self.execute()
+            return self.new_calendar(), self.view()
         else:
-            return self._successor(self.calendar, self.date,
-                                   self.args,
-                                   self.controllers_in_order).try_handle()
+            successor = self._successor(self.calendar, self.date,
+                                        self.args,
+                                        self.controllers_in_order)
+            return successor.execute()
 
     def view(self) -> View:
         return ConsoleWeekView(self.date)
 
     def new_calendar(self) -> Calendar:
         return self.calendar
-
-    def execute(self) -> (Calendar, View):
-        return self.new_calendar(), self.view()
 
     @property
     def _successor(self):

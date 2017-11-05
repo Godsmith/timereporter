@@ -21,9 +21,6 @@ class ShowController(Controller):
     def can_handle(self) -> bool:
         return self.args and self.args[0] == 'show'
 
-    def execute(self) -> (Calendar, View):
-        return self.calendar, self.view()
-
 
 class InvalidShowCommandError(Exception):
     pass

@@ -51,11 +51,9 @@ def main(args=None):
         exit(1)
 
     try:
-        # TODO: not evident that "try handle" returns a calendar and a view
-        # Try to separate methods unless necessary
-        new_calendar, view = CONTROLLERS_IN_ORDER[0](calendar,
-                                                     date_, args,
-                                                     CONTROLLERS_IN_ORDER).try_handle()
+        first_controller = CONTROLLERS_IN_ORDER[0](calendar, date_, args,
+                                                   CONTROLLERS_IN_ORDER)
+        new_calendar, view = first_controller.execute()
 
         print(view.show(new_calendar))
 
