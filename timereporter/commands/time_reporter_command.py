@@ -1,11 +1,11 @@
 """Supply the TimeReporter class, associated exceptions, and a main() method
 """
 from timereporter.day import Day
-from timereporter.controllers.controller import Controller
+from timereporter.commands.command import Command
 from timereporter.calendar import Calendar
 
 
-class TimeReporterController(Controller):
+class TimeReporterCommand(Command):
     """Act as a user interface towards the Calendar class,
     parsing input and handling environment issues
     """

@@ -1,10 +1,10 @@
 from timereporter.day import Day
-from timereporter.controllers.controller import Controller
+from timereporter.commands.command import Command
 from timereporter.calendar import Calendar
 from timereporter.views.view import View
 
 
-class ProjectController(Controller):
+class ProjectCommand(Command):
     def can_handle(self) -> bool:
         return self.args and self.args[0] == 'project'
 

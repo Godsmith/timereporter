@@ -1,9 +1,9 @@
-from timereporter.controllers.controller import Controller
+from timereporter.commands.command import Command
 from timereporter.calendar import Calendar
 from timereporter.views.view import View
 
 
-class RedoController(Controller):
+class RedoCommand(Command):
     def can_handle(self) -> bool:
         return self.args == ['redo']
 

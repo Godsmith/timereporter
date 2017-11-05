@@ -1,9 +1,9 @@
 from timereporter.calendar import Calendar
 from timereporter.views.view import View
-from timereporter.controllers.controller import Controller
+from timereporter.commands.command import Command
 
 
-class UndoController(Controller):
+class UndoCommand(Command):
     def can_handle(self) -> bool:
         return self.args == ['undo']
 

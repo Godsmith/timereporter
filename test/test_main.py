@@ -18,7 +18,7 @@ class TestMain:
 
 
 @pytest.mark.usefixtures('temp_logfile')
-class TestReportController:
+class TestTimeReporterCommand:
     def test_no_argument_throws_no_error(self, patched_print):
         main()
 

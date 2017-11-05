@@ -3,10 +3,10 @@ from timereporter.views.view import View
 from timereporter.views.console_week_view import ConsoleWeekView
 from timereporter.views.console_day_view import ConsoleDayView
 from timereporter.views.browser_week_view import BrowserWeekView
-from timereporter.controllers.controller import Controller
+from timereporter.commands.command import Command
 
 
-class ShowController(Controller):
+class ShowCommand(Command):
     def view(self):
         view_from_arg = {'show week': ConsoleWeekView,
                          'show day': ConsoleDayView,

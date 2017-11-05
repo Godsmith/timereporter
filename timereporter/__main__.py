@@ -4,23 +4,23 @@ from datetime import date
 
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
-from timereporter.controllers.project_controller import ProjectError
+from timereporter.commands.project_command import ProjectError
 from timereporter.calendar import Calendar
 from timereporter.date_arg_parser import DateArgParser, MultipleDateError
-from timereporter.controllers.project_controller import ProjectController
-from timereporter.controllers.show_controller import ShowController
-from timereporter.controllers.undo_controller import UndoController
-from timereporter.controllers.redo_controller import RedoController
-from timereporter.controllers.time_reporter_controller import \
-    TimeReporterController
+from timereporter.commands.project_command import ProjectCommand
+from timereporter.commands.show_command import ShowCommand
+from timereporter.commands.undo_command import UndoCommand
+from timereporter.commands.redo_command import RedoCommand
+from timereporter.commands.time_reporter_command import \
+    TimeReporterCommand
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 
-CONTROLLERS_IN_ORDER = (ProjectController,
-                        ShowController,
-                        UndoController,
-                        RedoController,
-                        TimeReporterController)
+COMMANDS_IN_ORDER = (ProjectCommand,
+                     ShowCommand,
+                     UndoCommand,
+                     RedoCommand,
+                     TimeReporterCommand)
 
 
 def main(args=None):
@@ -51,9 +51,9 @@ def main(args=None):
         exit(1)
 
     try:
-        first_controller = CONTROLLERS_IN_ORDER[0](calendar, date_, args,
-                                                   CONTROLLERS_IN_ORDER)
-        new_calendar, view = first_controller.execute()
+        first_command = COMMANDS_IN_ORDER[0](calendar, date_, args,
+                                             COMMANDS_IN_ORDER)
+        new_calendar, view = first_command.execute()
 
         print(view.show(new_calendar))
 
