@@ -8,20 +8,11 @@ from timereporter.views.console_week_view import ConsoleWeekView
 class Controller:
 
     SUCCESSOR = NotImplemented
-    # TODO: args parsing has to move into all classes
-    # def __init__(self, date_: date, args: List[str]):
-    #     """Does something project-related with the supplied arguments, like
-    #     creating a new project or reporting to a project for a certain date
-    #
-    #     :param args: the command line arguments supplied by the user
-    #     :param date_: the day on which the project time will be reported
-    #     """
+
+    # def __init__(self, calendar: Calendar, date_: date, args: list):
+    #     self.calendar = calendar
     #     self.date = date_
     #     self.args = args
-    #     if self.args is None:
-    #         self.args = []
-    #     elif isinstance(self.args, str):
-    #         self.args = self.args.split()
 
     # TODO: investigate if making these class methods could avoid having to
     # bring along all the arguments all the time
@@ -50,3 +41,5 @@ class Controller:
             Calendar,
                                                                  View):
         return cls.new_calendar(calendar, date_, args), cls.view(date_, args)
+
+    # TODO: Create static method here to get the successor

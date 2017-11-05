@@ -40,6 +40,11 @@ def main(args=None):
         exit(1)
 
     try:
+        # TODO: not really clear that project controller starts a chain of
+        # responsibility. Create a class for pointing to that controller.
+        # Use the successor list in Controller.
+        # TODO: not evident that "try handle" returns a calendar and a view
+        # Try to separate methods unless necessary
         new_calendar, view = ProjectController.try_handle(calendar, date_,
                                                           args)
 
