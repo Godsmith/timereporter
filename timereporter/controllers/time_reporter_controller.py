@@ -1,9 +1,6 @@
 """Supply the TimeReporter class, associated exceptions, and a main() method
 """
-from datetime import date
-
 from timereporter.day import Day
-from timereporter.mydatetime import timedelta
 from timereporter.controllers.controller import Controller
 from timereporter.calendar import Calendar
 
@@ -13,19 +10,17 @@ class TimeReporterController(Controller):
     parsing input and handling environment issues
     """
 
-    def __init__(self, date_: date, args=None):
-        super().__init__(date_=date_, args=args)
-        self.week_offset = 0
+    @classmethod
+    def can_handle(cls, args) -> bool:
+        return True
 
-    def execute(self, calendar) -> Calendar:
+    @classmethod
+    def new_calendar(cls, calendar, date_, args) -> Calendar:
         done = False
 
-        if not self.args:
+        if not args:
             return calendar
 
         if not done:
-            day = Day(self.args, self.date)
+            day = Day(args, date_)
             return calendar.add(day)
-
-
-

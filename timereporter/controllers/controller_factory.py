@@ -8,7 +8,7 @@ from timereporter.controllers.show_controller import ShowController
 from timereporter.controllers.undo_controller import UndoController
 from timereporter.controllers.redo_controller import RedoController
 
-
+# TODO: remove class
 class ControllerFactory:
     @classmethod
     def create(cls, date_: date, args: List):

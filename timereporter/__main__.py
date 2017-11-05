@@ -2,7 +2,7 @@ import sys
 import os
 from datetime import date, datetime
 
-from timereporter.controllers.controller_factory import ControllerFactory
+from timereporter.controllers.project_controller import ProjectController
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
 from timereporter.controllers.project_controller import ProjectError
@@ -15,6 +15,7 @@ TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 def main(args=None):
     """This is executed when running "python timereporter".
     """
+
     if args is None:
         args = []
     if isinstance(args, str):
@@ -39,10 +40,10 @@ def main(args=None):
         exit(1)
 
     try:
-        controller = ControllerFactory.create(date_, args)
-        new_calendar = controller.execute(calendar)
+        new_calendar, view = ProjectController.try_handle(calendar, date_,
+                                                          args)
 
-        print(controller.view.show(new_calendar))
+        print(view.show(new_calendar))
 
         with open(path, 'w') as f:
             data = new_calendar.dump()
