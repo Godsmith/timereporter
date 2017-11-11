@@ -89,6 +89,8 @@ class Day:
                                                      other.came_or_left])
             elif not self.came and not self.left:
                 new_day._came_or_left = other.came_or_left
+            elif self.came and not self.left:
+                new_day._left = other.came_or_left
             else:
                 if self._difference(other.came, self.came) < self._difference(
                         other.came, self.left):

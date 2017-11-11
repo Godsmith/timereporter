@@ -21,6 +21,10 @@ class TestCrash:
             assert not "1,25" in s
             assert "25,25" in s
 
+    def test_came_9_t_17(self, temp_logfile):
+        main('came 9')
+        main('17')
+
     # Cannot test this in a good, way, and it hasn't happened yet
     # def test_exception_in_calendar_dump_erases_yaml_file(self,
     #                                                      custom_log_path,
