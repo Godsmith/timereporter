@@ -31,4 +31,3 @@ Options:
   --no-work       Marks the project as non-working time
   --show-weekend  Show Saturday and Sunday
 """
-

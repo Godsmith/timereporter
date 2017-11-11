@@ -1,8 +1,9 @@
 """Supplies the Calendar class
 """
 from collections import defaultdict, namedtuple
-
+from typing import Dict
 from camel import Camel
+from datetime import date
 
 from timereporter.day import Day
 from timereporter.camel_registry import camelRegistry
@@ -23,7 +24,11 @@ class Calendar:
         self.projects = [] if projects is None else projects
 
     @property
-    def days(self):
+    def days(self) -> Dict[date, Day]:
+        """Retrieve all Day objects in the calendar.
+
+        :return: A dictionary (date, Day) with all the Days in the calendar.
+        """
         days = defaultdict(Day)
         for day in self._raw_days:
             days[day.date] += day
@@ -54,12 +59,16 @@ class Calendar:
                         projects=self.projects + [Project(project_name, work)])
 
     def undo(self):
+        """Undo the last edit to the calendar.
+        """
         new_redo_list = self.redo_list + self._raw_days[-1:]
         return Calendar(raw_days=self._raw_days[:-1],
                         redo_list=new_redo_list,
                         projects=self.projects[:])
 
     def redo(self):
+        """Redo the last undo made to the calendar.
+        """
         new_days = self._raw_days + self.redo_list[-1:]
         return Calendar(raw_days=new_days,
                         redo_list=self.redo_list[:-1],
