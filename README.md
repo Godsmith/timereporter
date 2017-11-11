@@ -79,6 +79,9 @@ By default, Saturday and Sunday are not shown, but this can be changed by adding
 
 `t` is an alias for `t show week`.
 
+###   Undo/redo
+    t (undo | redo)
+
 ###   Show help text
     t (help | --help | -h)
 

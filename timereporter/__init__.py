@@ -17,6 +17,9 @@ Usage:
     t show [last | next] week [html] [--show-weekend]
     t show <month> [--show-weekend]
 
+  Undo/redo the latest reporting command
+    t (undo | redo)
+
   Show this help text
     t (help | --help | -h)
 
