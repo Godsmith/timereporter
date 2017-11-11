@@ -18,6 +18,15 @@ class TestMain:
 
 
 @pytest.mark.usefixtures('temp_logfile')
+class TestHelp:
+    @pytest.mark.parametrize('arg', ['help', '--help', '-h',])
+    def test_help(self, patched_print, arg):
+        main([arg])
+        s = last_call(patched_print)
+        assert 'Usage:' in s
+
+
+@pytest.mark.usefixtures('temp_logfile')
 class TestTimeReporterCommand:
     def test_no_argument_throws_no_error(self, patched_print):
         main()
@@ -122,6 +131,7 @@ class TestShow:
             s = f.read()
             assert 'Saturday' in s
             assert 'Sunday' in s
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:

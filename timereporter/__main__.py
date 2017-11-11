@@ -1,6 +1,7 @@
 import sys
 import os
 from datetime import date
+import inspect
 
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
@@ -29,11 +30,15 @@ COMMANDS_IN_ORDER = (ProjectCommand,
 def main(args=None):
     """This is executed when running "python timereporter".
     """
-
     if args is None:
         args = []
     if isinstance(args, str):
         args = args.split()
+
+    if len(args) == 1:
+        if args[0] in ('help', '--help', '-h'):
+            print(sys.modules[__loader__.name.split('.')[0]].__doc__)
+            return
 
     if TIMEREPORTER_FILE in os.environ:
         path = os.environ[TIMEREPORTER_FILE]
