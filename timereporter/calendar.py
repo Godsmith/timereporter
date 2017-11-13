@@ -1,7 +1,7 @@
 """Supplies the Calendar class
 """
 from collections import defaultdict, namedtuple
-from typing import Dict
+from typing import Dict, Union
 from camel import Camel
 from datetime import date
 
@@ -87,7 +87,7 @@ class Calendar:
         # Set to 0 hours if less than 0 hours
         return max(default_project_time, timedelta())
 
-    def flex(self, date_: date) -> timedelta:
+    def flex(self, date_: date) -> Union[timedelta, None]:
         """Calculates the flex time earned or spent on a certain day.
 
         The flex time is equal to the working time plus the no-work project time
