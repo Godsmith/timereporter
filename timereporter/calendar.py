@@ -87,10 +87,20 @@ class Calendar:
         # Set to 0 hours if less than 0 hours
         return max(default_project_time, timedelta())
 
-    def flex(self, date_):
+    def flex(self, date_: date) -> timedelta:
+        """Calculates the flex time earned or spent on a certain day.
+
+        The flex time is equal to the working time plus the no-work project time
+        minus the target hours per day.
+        """
         working_time = self.days[date_].working_time
+        no_work_projects_names = [project.name for project in self.projects if
+                            not project.work]
+        no_work_project_time = sum([self.days[date_].projects[project_name]
+                                   for project_name in
+                                   no_work_projects_names], timedelta())
         if working_time:
-            return working_time - self.WORKING_HOURS_PER_DAY
+            return working_time - self.WORKING_HOURS_PER_DAY + no_work_project_time
         else:
             return None
 

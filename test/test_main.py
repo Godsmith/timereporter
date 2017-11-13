@@ -277,9 +277,11 @@ class TestProject:
 @pytest.mark.usefixtures('temp_logfile')
 class TestNonWorkingProject:
     def test_non_working_project(self, patched_print):
-        main('9 16:45 0m')
-        main('project new EPG Support --no-work')
-        main('project EP 4')
-        assert '4:00' in last_call(patched_print)
-        assert '7:45' in last_call(patched_print)
+        main('9 15:00 0m')
+        main('project new Parental leave --no-work')
+        main('project Par 2')
+        print(last_call(patched_print))
+        assert '02:00' in last_call(patched_print)  # Parental leave
+        assert '06:00' in last_call(patched_print)  # EPG Program
+        assert '00:15' in last_call(patched_print)  # Flex
         assert '--no-work' not in last_call(patched_print)
