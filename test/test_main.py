@@ -97,6 +97,11 @@ class TestTimeReporterCommand:
         main('lunch 0m')
         assert not '01:00' in last_call(patched_print)
 
+    def test_unspecified_then_lunch(self, patched_print):
+        main('7')
+        main('lunch 00:45')
+        assert '07:00' in last_call(patched_print)
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:

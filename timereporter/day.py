@@ -75,6 +75,8 @@ class Day:
             raise DayAddError('Cannot add two days with different dates')
         new_day = Day(self.date)
 
+        new_day._came_or_left = self.came_or_left
+
         new_day.lunch = other.lunch if other.lunch is not None else self.lunch
 
         new_day._projects = self.projects.copy()
