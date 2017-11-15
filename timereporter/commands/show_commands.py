@@ -10,7 +10,6 @@ class ShowWeekCommand(Command):
         return self.args and self.args[:2] == 'show week'.split()
 
     def view(self):
-        # TODO: fix duplication --show-weekend
         show_weekend = '--show-weekend' in self.args
         return ConsoleWeekView(self.date, show_weekend)
 

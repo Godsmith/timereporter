@@ -17,7 +17,6 @@ class Day:
     intervals.
     """
 
-    # TODO: date_ should not be able to be None
     def __init__(self,
                  args: Union[List[str], str] = None,
                  date_: date = None,

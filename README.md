@@ -58,8 +58,12 @@ If `<day>` is not set, today's date will be used.
 ### Create a new project
 
     t project new [--no-work] <project>
-    
-TODO: describe --no-work when issue fixed.
+
+`<project>` can be multiple words long, e.g. `My new project`. Quotation marks
+are not required.
+
+Time reported on projects tagged with `--no-work` reduces the required
+working time for that day. This can be used e.g. for part-time parental leave.
 
 ###   Report time on a project
     t project <project> [<day>] <time>
