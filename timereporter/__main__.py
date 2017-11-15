@@ -22,6 +22,7 @@ COMMANDS_IN_ORDER = (ProjectCommand,
                      ShowWeekCommand,
                      ShowDayCommand,
                      ShowMonthCommand,
+                     ShowErrorHandler,
                      UndoCommand,
                      RedoCommand,
                      TimeReporterCommand)
@@ -70,8 +71,8 @@ def main(args=None):
         with open(path, 'w') as f:
             data = new_calendar.dump()
             f.write(data)
-    except (TimeParserError, CalendarError, ProjectError) \
-            as err:
+    except (TimeParserError, CalendarError,
+            ProjectError, InvalidShowCommandError) as err:
         print(str(err))
 
 

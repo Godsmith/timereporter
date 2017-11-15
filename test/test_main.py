@@ -142,6 +142,14 @@ class TestShow:
             assert 'Saturday' in s
             assert 'Sunday' in s
 
+    def test_show_nothing(self, patched_print):
+        main('show')
+        assert 'Error: invalid show command.' in last_call(patched_print)
+
+    def test_show_nonsense(self, patched_print):
+        main('show aksldfj')
+        assert 'Error: invalid show command.' in last_call(patched_print)
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:

@@ -33,6 +33,8 @@ class ShowWeekHtmlCommand(Command):
 
 class ShowMonthCommand(Command):
     def can_handle(self) -> bool:
+        if len(self.args) != 2:
+            return False
         return (self.args and
                 self.args[0] == 'show' and
                 self.args[1] in ConsoleMonthView.MONTHS)
@@ -40,3 +42,12 @@ class ShowMonthCommand(Command):
     def view(self):
         show_weekend = '--show-weekend' in self.args
         return ConsoleMonthView(self.date, self.args[1], show_weekend)
+
+class ShowErrorHandler(Command):
+    def can_handle(self) -> bool:
+        if self.args and self.args[0] == 'show':
+            raise InvalidShowCommandError('Error: invalid show command.')
+        return False
+
+class InvalidShowCommandError(Exception):
+    pass
