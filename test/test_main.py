@@ -283,6 +283,10 @@ class TestProject:
         assert '4:00' in last_call(patched_print)
         assert '3:45' in last_call(patched_print)
 
+    def test_no_project_name(self, patched_print):
+        main('project')
+        assert 'Error: <project> not specified.' in last_call(patched_print)
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestNonWorkingProject:

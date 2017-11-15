@@ -72,7 +72,7 @@ def main(args=None):
             f.write(data)
     except (TimeParserError, CalendarError, ProjectError) \
             as err:
-        print(err)
+        print(str(err))
 
 
 def default_path():

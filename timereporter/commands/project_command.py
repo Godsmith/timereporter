@@ -10,6 +10,8 @@ class ProjectCommand(Command):
 
     def new_calendar(self) -> (Calendar, View):
         self.args = self.args[1:]  # First is always 'project'
+        if not self.args:
+            raise NoProjectNameError('Error: <project> not specified.')
         if self.args[0] == 'new':
             working_project = True
             if '--no-work' in self.args:
@@ -51,5 +53,10 @@ class ProjectNameDoesNotExistError(ProjectError):
 class AmbiguousProjectNameError(ProjectError):
     """Raised when the supplied project name shorthand matches more than one
     project
+    """
+    pass
+
+class NoProjectNameError(ProjectError):
+    """Raised when project name is not specified
     """
     pass
