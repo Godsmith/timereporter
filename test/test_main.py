@@ -92,6 +92,11 @@ class TestTimeReporterCommand:
         assert '01:00' in last_call(patched_print)
         assert '05:00' in last_call(patched_print)
 
+    def test_empty_lunch(self, patched_print):
+        main('lunch 1')
+        main('lunch 0m')
+        assert not '01:00' in last_call(patched_print)
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:
