@@ -234,15 +234,10 @@ def _dump_day(day):
 @camelRegistry.loader('day', version=1)
 def _load_day(data, version):
     day = Day()
-    if 'date' in data:
-        day.date = data['date']
+    day.date = data.get('date', None)
     day.came = data['came']
-    if 'left' in data:
-        day.left = data['left']
-    else:
-        day.left = data['went']
-    if 'came_or_left' in data:
-        day._came_or_left = data['came_or_left']
+    day.left = data.get('left', data.get('went', None))
+    day._came_or_left = data.get('came_or_left', None)
     day.lunch = data['lunch']
     day._projects = data['projects']
     return day
