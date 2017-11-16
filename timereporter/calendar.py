@@ -15,13 +15,18 @@ class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days
     """
-    WORKING_HOURS_PER_DAY = timedelta(hours=7.75)
+    # TODO: rename to working time per day
+    DEFAULT_WORKING_HOURS_PER_DAY = timedelta(hours=7.75)
     DEFAULT_PROJECT_NAME = 'EPG Program'
 
-    def __init__(self, raw_days=None, projects=None, redo_list=None):
+    def __init__(self, raw_days=None, projects=None, redo_list=None,
+                 working_hours_per_day=DEFAULT_WORKING_HOURS_PER_DAY,
+                 default_project_name=DEFAULT_PROJECT_NAME):
         self._raw_days = [] if raw_days is None else raw_days
         self.redo_list = [] if redo_list is None else redo_list
         self.projects = [] if projects is None else projects
+        self.working_hours_per_day = working_hours_per_day
+        self.default_project_name = default_project_name
 
     @property
     def days(self) -> Dict[date, Day]:
@@ -44,7 +49,9 @@ class Calendar:
         new_days = self._raw_days + [day]
         return Calendar(raw_days=new_days,
                         redo_list=self.redo_list[:],
-                        projects=self.projects[:])
+                        projects=self.projects[:],
+                        working_hours_per_day=self.working_hours_per_day,
+                        default_project_name=self.default_project_name)
         # if date_ not in self.days:
         #     self.days[date_] = Day()
         # self.days[date_] = self.days[date_] + day
@@ -56,7 +63,9 @@ class Calendar:
         """
         return Calendar(raw_days=self._raw_days[:],
                         redo_list=self.redo_list[:],
-                        projects=self.projects + [Project(project_name, work)])
+                        projects=self.projects + [Project(project_name, work)],
+                        working_hours_per_day=self.working_hours_per_day,
+                        default_project_name=self.default_project_name)
 
     def undo(self):
         """Undo the last edit to the calendar.
@@ -64,7 +73,9 @@ class Calendar:
         new_redo_list = self.redo_list + self._raw_days[-1:]
         return Calendar(raw_days=self._raw_days[:-1],
                         redo_list=new_redo_list,
-                        projects=self.projects[:])
+                        projects=self.projects[:],
+                        working_hours_per_day=self.working_hours_per_day,
+                        default_project_name=self.default_project_name)
 
     def redo(self):
         """Redo the last undo made to the calendar.
@@ -72,7 +83,9 @@ class Calendar:
         new_days = self._raw_days + self.redo_list[-1:]
         return Calendar(raw_days=new_days,
                         redo_list=self.redo_list[:-1],
-                        projects=self.projects[:])
+                        projects=self.projects[:],
+                        working_hours_per_day=self.working_hours_per_day,
+                        default_project_name=self.default_project_name)
 
     def default_project_time(self, date_):
         project_time_sum = timedelta()
@@ -95,12 +108,13 @@ class Calendar:
         """
         working_time = self.days[date_].working_time
         no_work_projects_names = [project.name for project in self.projects if
-                            not project.work]
+                                  not project.work]
         no_work_project_time = sum([self.days[date_].projects[project_name]
-                                   for project_name in
-                                   no_work_projects_names], timedelta())
+                                    for project_name in
+                                    no_work_projects_names], timedelta())
         if working_time:
-            return working_time - self.WORKING_HOURS_PER_DAY + no_work_project_time
+            return working_time - self.working_hours_per_day + \
+                   no_work_project_time
         else:
             return None
 
@@ -117,7 +131,9 @@ def _dump_calendar(calendar):
     return dict(
         raw_days=calendar._raw_days,
         redo_list=calendar.redo_list,
-        projects=calendar.projects
+        projects=calendar.projects,
+        default_project_name=calendar.default_project_name,
+        working_hours_per_day=calendar.working_hours_per_day
     )
 
 
@@ -132,9 +148,15 @@ def _load_calendar(data, version):
             day = date_and_day.day
             day.date = date_and_day.date
             data['raw_days'].append(day)
+    default_project_name = data.get('default_project_name',
+                                    Calendar.DEFAULT_PROJECT_NAME)
+    working_hours_per_day = data.get('working_hours_per_day',
+                                    Calendar.DEFAULT_WORKING_HOURS_PER_DAY)
     return Calendar(raw_days=data['raw_days'],
                     redo_list=data['redo_list'],
-                    projects=data['projects'])
+                    projects=data['projects'],
+                    default_project_name=default_project_name,
+                    working_hours_per_day=working_hours_per_day)
 
 
 class CalendarError(Exception):

@@ -1,7 +1,8 @@
 from datetime import date
-import pytest
+import re
 
 from timereporter.mydatetime import timedelta, time
+# TODO: remove nothingtoredoerror
 from timereporter.calendar import Calendar, NothingToRedoError
 from timereporter.day import Day
 from timereporter.views.day_shower import DayShower
@@ -106,7 +107,6 @@ class TestSpecificDay:
         assert c.days[today] == Day('8 18 45m', today)
 
 
-
 class TestUndo:
     def test_only_came(self):
         c = Calendar()
@@ -125,7 +125,6 @@ class TestUndo:
         assert '30' not in DayShower.show_days(c, today, 1)
 
 
-
 class TestRedo:
     def test_basic(self):
         c = Calendar()
@@ -141,7 +140,7 @@ class TestProject:
         c = Calendar()
         Calendar.today = today
         c = c.add(Day(date_=today, project_name='EPG Support',
-                                            project_time='08:00'))
+                      project_time='08:00'))
         c = c.add_project('EPG Support')
         s = DayShower.show_days(c, today, 1)
         assert 'EPG Support' in s
@@ -176,10 +175,42 @@ class TestSerialization:
         c = Calendar()
         Calendar.today = today
         c = c.add(Day(date_=today, project_name='EPG Support',
-                                            project_time='08:00'))
+                      project_time='08:00'))
         c = c.add_project('EPG Support')
         data = c.dump()
         c2 = Calendar.load(data)
         s = DayShower.show_days(c2, today, 1)
         assert 'EPG Support' in s
         assert '08:00' in s
+
+
+class TestEditDefaultProject:
+    def test_edit_default_project(self):
+        c = Calendar(default_project_name='Hello world')
+        Calendar.today = today
+        s = DayShower.show_days(c, today, 1)
+        assert 'Hello world' in s
+
+    def test_serialize(self):
+        c = Calendar(default_project_name='Hello world')
+        data = c.dump()
+        c2 = Calendar.load(data)
+        s = DayShower.show_days(c2, today, 1)
+        assert 'Hello world' in s
+
+
+class TestEditDefaultWorkingTimePerDay:
+    def test_basic(self):
+        c = Calendar(working_hours_per_day=timedelta(hours=8.00))
+        Calendar.today = today
+        c = c.add(Day('9 18', today))
+        s = DayShower.show_days(c, today, 1)
+        assert re.search('Flex *01:00', s)
+
+    def test_serialize(self):
+        c = Calendar(working_hours_per_day=timedelta(hours=8.00))
+        c = c.add(Day('9 18', today))
+        data = c.dump()
+        c2 = Calendar.load(data)
+        s = DayShower.show_days(c2, today, 1)
+        assert re.search('Flex *01:00', s)

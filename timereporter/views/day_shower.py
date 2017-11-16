@@ -65,7 +65,6 @@ class DayShower:
                          ['Came'] + came_times,
                          ['Left'] + leave_times,
                          ['Lunch'] + lunch_times,
-                         [
-                             calendar.DEFAULT_PROJECT_NAME] + default_project_times,
+                         [calendar.default_project_name] + default_project_times,
                          *project_rows,
                          ['Flex'] + flex_times], tablefmt=table_format)
