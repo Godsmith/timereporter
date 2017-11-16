@@ -201,14 +201,14 @@ class TestEditDefaultProject:
 
 class TestEditDefaultWorkingTimePerDay:
     def test_basic(self):
-        c = Calendar(working_hours_per_day=timedelta(hours=8.00))
+        c = Calendar(target_hours_per_day=timedelta(hours=8.00))
         Calendar.today = today
         c = c.add(Day('9 18', today))
         s = DayShower.show_days(c, today, 1)
         assert re.search('Flex *01:00', s)
 
     def test_serialize(self):
-        c = Calendar(working_hours_per_day=timedelta(hours=8.00))
+        c = Calendar(target_hours_per_day=timedelta(hours=8.00))
         c = c.add(Day('9 18', today))
         data = c.dump()
         c2 = Calendar.load(data)

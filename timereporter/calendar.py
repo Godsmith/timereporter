@@ -15,17 +15,16 @@ class Calendar:
     """Contains a dictionary mapping Day objects to dates, and handles
     visualization of those days
     """
-    # TODO: rename to working time per day
-    DEFAULT_WORKING_HOURS_PER_DAY = timedelta(hours=7.75)
+    DEFAULT_TARGET_HOURS_PER_DAY = timedelta(hours=7.75)
     DEFAULT_PROJECT_NAME = 'EPG Program'
 
     def __init__(self, raw_days=None, projects=None, redo_list=None,
-                 working_hours_per_day=DEFAULT_WORKING_HOURS_PER_DAY,
+                 target_hours_per_day=DEFAULT_TARGET_HOURS_PER_DAY,
                  default_project_name=DEFAULT_PROJECT_NAME):
         self._raw_days = [] if raw_days is None else raw_days
         self.redo_list = [] if redo_list is None else redo_list
         self.projects = [] if projects is None else projects
-        self.working_hours_per_day = working_hours_per_day
+        self.target_hours_per_day = target_hours_per_day
         self.default_project_name = default_project_name
 
     @property
@@ -50,7 +49,7 @@ class Calendar:
         return Calendar(raw_days=new_days,
                         redo_list=self.redo_list[:],
                         projects=self.projects[:],
-                        working_hours_per_day=self.working_hours_per_day,
+                        target_hours_per_day=self.target_hours_per_day,
                         default_project_name=self.default_project_name)
         # if date_ not in self.days:
         #     self.days[date_] = Day()
@@ -64,7 +63,7 @@ class Calendar:
         return Calendar(raw_days=self._raw_days[:],
                         redo_list=self.redo_list[:],
                         projects=self.projects + [Project(project_name, work)],
-                        working_hours_per_day=self.working_hours_per_day,
+                        target_hours_per_day=self.target_hours_per_day,
                         default_project_name=self.default_project_name)
 
     def undo(self):
@@ -74,7 +73,7 @@ class Calendar:
         return Calendar(raw_days=self._raw_days[:-1],
                         redo_list=new_redo_list,
                         projects=self.projects[:],
-                        working_hours_per_day=self.working_hours_per_day,
+                        target_hours_per_day=self.target_hours_per_day,
                         default_project_name=self.default_project_name)
 
     def redo(self):
@@ -84,7 +83,7 @@ class Calendar:
         return Calendar(raw_days=new_days,
                         redo_list=self.redo_list[:-1],
                         projects=self.projects[:],
-                        working_hours_per_day=self.working_hours_per_day,
+                        target_hours_per_day=self.target_hours_per_day,
                         default_project_name=self.default_project_name)
 
     def default_project_time(self, date_):
@@ -113,7 +112,7 @@ class Calendar:
                                     for project_name in
                                     no_work_projects_names], timedelta())
         if working_time:
-            return working_time - self.working_hours_per_day + \
+            return working_time - self.target_hours_per_day + \
                    no_work_project_time
         else:
             return None
@@ -133,7 +132,7 @@ def _dump_calendar(calendar):
         redo_list=calendar.redo_list,
         projects=calendar.projects,
         default_project_name=calendar.default_project_name,
-        working_hours_per_day=calendar.working_hours_per_day
+        target_hours_per_day=calendar.target_hours_per_day
     )
 
 
@@ -150,13 +149,13 @@ def _load_calendar(data, version):
             data['raw_days'].append(day)
     default_project_name = data.get('default_project_name',
                                     Calendar.DEFAULT_PROJECT_NAME)
-    working_hours_per_day = data.get('working_hours_per_day',
-                                    Calendar.DEFAULT_WORKING_HOURS_PER_DAY)
+    target_hours_per_day = data.get('target_hours_per_day', data.get(
+        'working_hours_per_day', Calendar.DEFAULT_TARGET_HOURS_PER_DAY))
     return Calendar(raw_days=data['raw_days'],
                     redo_list=data['redo_list'],
                     projects=data['projects'],
                     default_project_name=default_project_name,
-                    working_hours_per_day=working_hours_per_day)
+                    target_hours_per_day=target_hours_per_day)
 
 
 class CalendarError(Exception):

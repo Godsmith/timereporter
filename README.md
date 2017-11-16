@@ -44,7 +44,8 @@ To set another name for the default project, change the `default_project_name` v
 
 #### Target hours per day
 
-To set the target hours per day, edit the `working_hours_per_day` variable. The default value is 27900 seconds.
+To set the target hours per day, edit the `target_hours_per_day` variable. The
+default value is 27900 seconds.
 
 
 ## Usage
