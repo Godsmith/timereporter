@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import datetime, date
 from typing import List, Dict
 
-from timereporter.timeparser import TimeParser
+from timereporter.timeparser import TimeParser, TimeParserError
 from timereporter.mydatetime import timedelta, time
 from timereporter.camel_registry import camelRegistry
 from typing import Union
@@ -54,10 +54,9 @@ class Day:
             self.lunch = TimeParser.parse(args[1])
             return
 
-        (success, minutes) = TimeParser.try_parse_minutes(args[0])
-        if success:
-            self.lunch = minutes
-        else:
+        try:
+            self.lunch = TimeParser.try_parse_minutes(args[0])
+        except TimeParserError:
             self._came_or_left = TimeParser.parse(args[0])
             if len(args) > 1:
                 self._came = TimeParser.parse(args[0])

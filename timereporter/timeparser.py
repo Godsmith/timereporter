@@ -22,9 +22,10 @@ class TimeParser:
         HHMM, HMM, M m, MM m, M min or MM min
         :return: a datetime.time object corresponding to the input string
         """
-        (success, minutes) = cls.try_parse_minutes(str_)
-        if success:
-            return minutes
+        try:
+            return cls.try_parse_minutes(str_)
+        except TimeParserError:
+            pass
 
         if not re.match(r'^\d{1,2}:?\d?\d?$', str_):
             raise TimeParserError(
@@ -51,11 +52,12 @@ class TimeParser:
         return timedelta(hours=time_.hour, minutes=time_.minute)
 
     @classmethod
-    def try_parse_minutes(cls, str_) -> Tuple[bool, Union[timedelta, None]]:
+    def try_parse_minutes(cls, str_) -> timedelta:
         """Parses a string specifying a certain number of minutes
         and returns a datetime.time object
 
-        If the string is not on the spcified format, a ValueError is raised.
+        If the string is not on the specified format, a TimeParserError is
+        raised.
 
         :param str_: a string on the form MMm, MM m, MMmin, MM min
         :return: a datetime.time object representing a number of minutes
@@ -65,10 +67,10 @@ class TimeParser:
                 minutes = int(str_.split('m')[0])
                 hours = minutes // 60
                 minutes = minutes % 60
-                return True, timedelta(hours=hours, minutes=minutes)
+                return timedelta(hours=hours, minutes=minutes)
             except ValueError:
                 pass
-        return False, None
+        raise TimeParserError
 
 
 class TimeParserError(Exception):
