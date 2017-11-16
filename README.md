@@ -34,6 +34,19 @@ alias t='python -m timereporter'
 The usage documentation below assumes that the above alias is set.
 
 
+### Customization
+
+After running once, the `timereporter.yaml` file will be created. In this file, the following options can be set:
+
+#### Default project name
+
+To set another name for the default project, change the `default_project_name` variable. The default value is EPG Program.
+
+#### Target hours per day
+
+To set the target hours per day, edit the `working_hours_per_day` variable. The default value is 27900 seconds.
+
+
 ## Usage
 
 ### Report time on default project
@@ -113,3 +126,6 @@ Shows Monday-Friday of last week in the browser.
     t show october --show-weekend
 
 Shows all days of october in the console.
+
+
+
