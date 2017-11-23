@@ -1,31 +1,17 @@
 import sys
 import os
 from datetime import date
-import inspect
 
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
-from timereporter.commands.project_command import ProjectError
 from timereporter.calendar import Calendar
 from timereporter.date_arg_parser import DateArgParser, MultipleDateError
-from timereporter.commands.project_command import ProjectCommand
-from timereporter.commands.show_commands import *
-from timereporter.commands.undo_command import UndoCommand
-from timereporter.commands.redo_command import RedoCommand
-from timereporter.commands.time_reporter_command import \
-    TimeReporterCommand
+from timereporter.commands.command_factory import CommandFactory
+from timereporter.commands.project_command import ProjectError
+from timereporter.commands.show_commands import InvalidShowCommandError
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 
-COMMANDS_IN_ORDER = (ProjectCommand,
-                     ShowWeekHtmlCommand,  # Must be before ShowWeekCommand
-                     ShowWeekCommand,
-                     ShowDayCommand,
-                     ShowMonthCommand,
-                     ShowErrorHandler,
-                     UndoCommand,
-                     RedoCommand,
-                     TimeReporterCommand)
 
 
 def main(args=None):
@@ -60,9 +46,8 @@ def main(args=None):
         exit(1)
 
     try:
-        first_command = COMMANDS_IN_ORDER[0](calendar, date_, args,
-                                             COMMANDS_IN_ORDER)
-        new_calendar, view = first_command.execute()
+        command = CommandFactory.get_command(calendar, date_, args)
+        new_calendar, view = command.execute()
 
         s = view.show(new_calendar)
         if s:

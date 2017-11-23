@@ -5,8 +5,9 @@ from timereporter.views.view import View
 
 
 class ProjectCommand(Command):
-    def can_handle(self) -> bool:
-        return self.args and self.args[0] == 'project'
+    @classmethod
+    def can_handle(cls, args) -> bool:
+        return args and args[0] == 'project'
 
     def new_calendar(self) -> (Calendar, View):
         self.args = self.args[1:]  # First is always 'project'

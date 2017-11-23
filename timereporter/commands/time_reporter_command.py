@@ -10,7 +10,8 @@ class TimeReporterCommand(Command):
     parsing input and handling environment issues
     """
 
-    def can_handle(self) -> bool:
+    @classmethod
+    def can_handle(cls, args) -> bool:
         return True
 
     def new_calendar(self) -> Calendar:

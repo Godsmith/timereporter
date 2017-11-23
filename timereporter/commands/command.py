@@ -9,8 +9,7 @@ from timereporter.views.console_week_view import ConsoleWeekView
 class Command:
     def __init__(self, calendar: Calendar,
                  date_: date,
-                 args: Union[list, str, None],
-                 commands_in_order: Sequence):
+                 args: Union[list, str, None]):
         """Does something project-related with the supplied arguments, like
         creating a new project or reporting to a project for a certain date
 
@@ -20,41 +19,21 @@ class Command:
         self.calendar = calendar
         self.date = date_
         self.args = args
-        self.commands_in_order = commands_in_order
 
         if self.args is None:
             self.args = []
         elif isinstance(self.args, str):
             self.args = self.args.split()
 
-    def can_handle(self) -> bool:
+    @classmethod
+    def can_handle(cls, args) -> bool:
         raise NotImplementedError
 
     def execute(self):
-        if self.can_handle():
-            return self.new_calendar(), self.view()
-        else:
-            successor = self._successor(self.calendar, self.date,
-                                        self.args,
-                                        self.commands_in_order)
-            return successor.execute()
+        return self.new_calendar(), self.view()
 
     def view(self) -> View:
         return ConsoleWeekView(self.date)
 
     def new_calendar(self) -> Calendar:
         return self.calendar
-
-    @property
-    def _successor(self):
-        try:
-            return self.commands_in_order[self.commands_in_order.index(
-                self.__class__) + 1]
-        except IndexError:
-            raise NoSuccessorError(
-                f'"{self.__class__}" is the last item in the '
-                f'sequence {self.commands_in_order}.')
-
-
-class NoSuccessorError(Exception):
-    pass

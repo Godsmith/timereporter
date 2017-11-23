@@ -4,8 +4,9 @@ from timereporter.commands.command import Command
 
 
 class UndoCommand(Command):
-    def can_handle(self) -> bool:
-        return self.args == ['undo']
+    @classmethod
+    def can_handle(cls, args) -> bool:
+        return args == ['undo']
 
     def new_calendar(self) -> (Calendar, View):
         return self.calendar.undo()
