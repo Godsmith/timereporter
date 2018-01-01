@@ -29,17 +29,25 @@ class ProjectCommand(Command):
                 raise ProjectNameDoesNotExistError(
                     f'Error: Project "{project_name}" does not exist.')
             elif len(project_name_matches) > 1:
-                # TODO: newlines between project names, and indent them.
                 raise AmbiguousProjectNameError(
                     f'Error: Ambiguous project name abbreviation '
-                    f'"{project_name}" matches all of '
-                    f'{", ".join(project_name_matches)}. Try reporting on a '
-                    f'project number.')
+                    f'"{project_name}" matches the following projects:\n\n  '
+                    f'{self._project_rows(project_name_matches)}\n\n'
+                    f'Try reporting on a project number.')
             else:
                 day = Day(date_=self.date,
                           project_name=project_name_matches[0],
                           project_time=self.args[-1])
                 return self.calendar.add(day)
+
+    def _project_rows(self, project_names):
+        project_numbers_and_names = [str(self._project_number(
+            project_name)) + '. ' + project_name for project_name in
+                                     project_names]
+        return '\n  '.join(project_numbers_and_names)
+
+    def _project_number(self, project_name):
+        return [p.name for p in self.calendar.projects].index(project_name) + 2
 
     def _project_name_matches(self, project_name):
         return [p.name for p in self.calendar.projects if
@@ -68,13 +76,12 @@ class ProjectCommand(Command):
             raise InvalidTimeError(
                 f'Error: Invalid time: "{" ".join(args[1:])}"')
         elif self._project_name_matches(str(project_number)):
-            project_names = ", ".join([self._project_name(project_number)] +
-                                      self._project_name_matches(
-                                          str(project_number)))
-            # TODO: newlines between project names, and indent them.
+            project_names = ([self._project_name(project_number)] +
+                             self._project_name_matches(str(project_number)))
             raise AmbiguousProjectNameError(
                 f'Error: Ambiguous project name abbreviation/number '
-                f'"{project_number}" matches all of {project_names}.')
+                f'"{project_number}" matches the following projects:\n\n  '
+                f'{self._project_rows(project_names)}')
 
 
 class ProjectError(Exception):
