@@ -20,23 +20,61 @@ class ProjectCommand(Command):
                 working_project = False
             project_name = ' '.join(self.args[1:])
             return self.calendar.add_project(project_name, work=working_project)
+        elif self.args[0].isdigit():
+            return self._report_on_project_number(self.args)
         else:
             project_name = ' '.join(self.args[:-1])
-            project_name_matches = [p.name for p in self.calendar.projects if
-                                    project_name in p.name]
+            project_name_matches = self._project_name_matches(project_name)
             if not project_name_matches:
                 raise ProjectNameDoesNotExistError(
                     f'Error: Project "{project_name}" does not exist.')
             elif len(project_name_matches) > 1:
+                # TODO: newlines between project names, and indent them.
                 raise AmbiguousProjectNameError(
                     f'Error: Ambiguous project name abbreviation '
                     f'"{project_name}" matches all of '
-                    f'{", ".join(project_name_matches)}.')
+                    f'{", ".join(project_name_matches)}. Try reporting on a '
+                    f'project number.')
             else:
                 day = Day(date_=self.date,
                           project_name=project_name_matches[0],
                           project_time=self.args[-1])
                 return self.calendar.add(day)
+
+    def _project_name_matches(self, project_name):
+        return [p.name for p in self.calendar.projects if
+                project_name in p.name]
+
+    def _report_on_project_number(self, args):
+        self._validate_report_on_project_number(args)
+        day = Day(date_=self.date,
+                  project_name=self._project_name(int(args[0])),
+                  project_time=self.args[-1])
+        return self.calendar.add(day)
+
+    def _project_name(self, project_number):
+        return self.calendar.projects[project_number - 2].name
+
+    def _validate_report_on_project_number(self, args):
+        project_number = int(args[0])
+        if project_number == 1:
+            raise CannotReportOnDefaultProjectError('Error: Cannot report '
+                                                    'on default project.')
+        elif project_number == 0 or project_number > len(
+                self.calendar.projects) + 1:
+            raise InvalidProjectNumberError(
+                f'Error: No project number "{project_number}".')
+        elif len(args) != 2:
+            raise InvalidTimeError(
+                f'Error: Invalid time: "{" ".join(args[1:])}"')
+        elif self._project_name_matches(str(project_number)):
+            project_names = ", ".join([self._project_name(project_number)] +
+                                      self._project_name_matches(
+                                          str(project_number)))
+            # TODO: newlines between project names, and indent them.
+            raise AmbiguousProjectNameError(
+                f'Error: Ambiguous project name abbreviation/number '
+                f'"{project_number}" matches all of {project_names}.')
 
 
 class ProjectError(Exception):
@@ -57,7 +95,26 @@ class AmbiguousProjectNameError(ProjectError):
     """
     pass
 
+
 class NoProjectNameError(ProjectError):
     """Raised when project name is not specified
+    """
+    pass
+
+
+class InvalidProjectNumberError(ProjectError):
+    """Raised when the project number specified does not exist
+    """
+    pass
+
+
+class InvalidTimeError(ProjectError):
+    """Raised when the supplied time is not valid
+    """
+    pass
+
+
+class CannotReportOnDefaultProjectError(ProjectError):
+    """Raised when trying to report on default project
     """
     pass

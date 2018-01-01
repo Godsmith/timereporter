@@ -34,7 +34,7 @@ class DayShower:
                 timedelta_conversion_function(calendar.days[date_].projects[
                                                   project.name]) for date_ in
                 dates]
-            project_rows[i] = [project] + project_times
+            project_rows[i] = [f'{i+2}. {project}'] + project_times
             sum_ += sum(project_times, timedelta())
 
         default_project_times = [timedelta_conversion_function(
@@ -65,6 +65,7 @@ class DayShower:
                          ['Came'] + came_times,
                          ['Left'] + leave_times,
                          ['Lunch'] + lunch_times,
-                         [calendar.default_project_name] + default_project_times,
+                         [f'1. {calendar.default_project_name}'] +
+                         default_project_times,
                          *project_rows,
                          ['Flex'] + flex_times], tablefmt=table_format)
