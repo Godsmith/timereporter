@@ -9,19 +9,27 @@ from timereporter.views.day_shower import DayShower
 
 class BrowserWeekView(WeekView):
     def show(self, calendar):
-        closest_monday = self.date + timedelta(days=-self.date.weekday())
         """Shows a table overview of the specified week in the browser.
 
         """
-        t = timedeltaDecimal.from_timedelta
-        html = DayShower.show_days(calendar=calendar,
-                                   first_date=closest_monday,
+        self._show_in_browser(self._html_for_current_week(calendar))
+
+    def _html_for_current_week(self, calendar):
+        return DayShower.show_days(calendar=calendar,
+                                   first_date=self._closest_monday(),
                                    day_count=self.day_count,
                                    table_format='html',
-                                   timedelta_conversion_function=t,
+                                   timedelta_conversion_function=
+                                   timedeltaDecimal.from_timedelta,
                                    flex_multiplier=-1,
                                    show_earned_flex=False,
                                    show_sum=True)
+
+    def _closest_monday(self):
+        closest_monday = self.date + timedelta(days=-self.date.weekday())
+        return closest_monday
+
+    def _show_in_browser(self, html):
         _, path = tempfile.mkstemp(suffix='.html')
         with open(path, 'w') as f:
             f.write(html)
