@@ -5,7 +5,7 @@ import pytest
 import shutil
 
 import timereporter.__main__ as __main__
-from timereporter.views.browser_week_view import BrowserWeekView
+from timereporter.views.browser_shower import BrowserShower
 
 
 @pytest.fixture(autouse=True)
@@ -77,10 +77,10 @@ def mock_browser():
             self.url = url
 
     mock_browser = MockBrowser()
-    temp = BrowserWeekView.webbrowser
-    BrowserWeekView.webbrowser = lambda _: mock_browser
+    temp = BrowserShower.webbrowser
+    BrowserShower.webbrowser = lambda _: mock_browser
     yield mock_browser
-    BrowserWeekView.webbrowser = temp
+    BrowserShower.webbrowser = temp
 
 
 @pytest.fixture

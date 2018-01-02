@@ -12,6 +12,7 @@ class CommandFactory:
                          ShowWeekCommand,
                          ShowDayCommand,
                          ShowMonthCommand,
+                         ShowMonthHtmlCommand,
                          ShowErrorHandler,
                          UndoCommand,
                          RedoCommand,

@@ -16,12 +16,12 @@ class ConsoleMonthView(WeekView):
             self.last_month_index = 12
 
     def show(self, calendar):
-        first_monday = self._closest_monday_to_first_day_of_target_month()
         week_strings = [DayShower.show_days(calendar, monday, self.day_count)
-                        for monday in self._mondays(first_monday)]
+                        for monday in self._mondays()]
         return '\n'.join(self._trim(week_strings))
 
-    def _mondays(self, first_monday):
+    def _mondays(self):
+        first_monday = self._closest_monday_to_first_day_of_target_month()
         mondays = [first_monday + timedelta(days=days)
                    for days in range(0, 38, 7)  # Max 31+7 days first-last Mon
                    if (first_monday + timedelta(days=days)).month
