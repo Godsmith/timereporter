@@ -36,14 +36,14 @@ def main(args=None):
         calendar = get_calendar(path)
     except (UnreadableCamelFileError, DirectoryDoesNotExistError) as err:
         print(err)
-        exit(1)
+        return 1
 
     try:
         parser = DateArgParser(today())
         date_, args = parser.parse(args)
     except MultipleDateError as err:
         print(err)
-        exit(1)
+        return 1
 
     try:
         command = CommandFactory.get_command(calendar, date_, args)
@@ -59,6 +59,8 @@ def main(args=None):
     except (TimeParserError, CalendarError,
             ProjectError, InvalidShowCommandError) as err:
         print(str(err))
+        return 1
+    return 0
 
 
 def default_path():
@@ -118,4 +120,4 @@ class DirectoryDoesNotExistError(Exception):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    exit(main(sys.argv[1:]))
