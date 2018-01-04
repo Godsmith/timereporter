@@ -24,8 +24,7 @@ def main(args=None):
 
     if len(args) == 1:
         if args[0] in ('help', '--help', '-h'):
-            print(sys.modules[__loader__.name.split('.')[0]].__doc__)
-            return
+            return sys.modules[__loader__.name.split('.')[0]].__doc__, 0
 
     if TIMEREPORTER_FILE in os.environ:
         path = os.environ[TIMEREPORTER_FILE]
@@ -35,32 +34,27 @@ def main(args=None):
     try:
         calendar = get_calendar(path)
     except (UnreadableCamelFileError, DirectoryDoesNotExistError) as err:
-        print(err)
-        return 1
+        return err, 1
 
     try:
         parser = DateArgParser(today())
         date_, args = parser.parse(args)
     except MultipleDateError as err:
-        print(err)
-        return 1
+        return err, 1
 
     try:
         command = CommandFactory.get_command(calendar, date_, args)
         new_calendar, view = command.execute()
 
-        s = view.show(new_calendar)
-        if s:
-            print(s)
+        to_print = view.show(new_calendar)
 
         with open(path, 'w') as f:
             data = new_calendar.dump()
             f.write(data)
+        return to_print, 0
     except (TimeParserError, CalendarError,
             ProjectError, InvalidShowCommandError) as err:
-        print(str(err))
-        return 1
-    return 0
+        return str(err), 1
 
 
 def default_path():
@@ -120,4 +114,6 @@ class DirectoryDoesNotExistError(Exception):
 
 
 if __name__ == '__main__':
-    exit(main(sys.argv[1:]))
+    to_print, exit_code = main(sys.argv[1:])
+    print(to_print)
+    exit(exit_code)
