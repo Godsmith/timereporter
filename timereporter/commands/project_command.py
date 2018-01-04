@@ -10,35 +10,42 @@ class ProjectCommand(Command):
         return args and args[0] == 'project'
 
     def new_calendar(self) -> (Calendar, View):
+        # TODO: remove this assignment, counterintuitive
         self.args = self.args[1:]  # First is always 'project'
         if not self.args:
             raise NoProjectNameError('Error: <project> not specified.')
         if self.args[0] == 'new':
-            working_project = True
-            if '--no-work' in self.args:
-                self.args.remove('--no-work')
-                working_project = False
-            project_name = ' '.join(self.args[1:])
-            return self.calendar.add_project(project_name, work=working_project)
+            return self._create_new_project()
         elif self.args[0].isdigit():
-            return self._report_on_project_number(self.args)
+            return self._report_on_project_number()
         else:
-            project_name = ' '.join(self.args[:-1])
-            project_name_matches = self._project_name_matches(project_name)
-            if not project_name_matches:
-                raise ProjectNameDoesNotExistError(
-                    f'Error: Project "{project_name}" does not exist.')
-            elif len(project_name_matches) > 1:
-                raise AmbiguousProjectNameError(
-                    f'Error: Ambiguous project name abbreviation '
-                    f'"{project_name}" matches the following projects:\n\n  '
-                    f'{self._project_rows(project_name_matches)}\n\n'
-                    f'Try reporting on a project number.')
-            else:
-                day = Day(date_=self.date,
-                          project_name=project_name_matches[0],
-                          project_time=self.args[-1])
-                return self.calendar.add(day)
+            return self._report_on_project_name()
+
+    def _report_on_project_name(self):
+        project_name = ' '.join(self.args[:-1])
+        project_name_matches = self._project_name_matches(project_name)
+        if not project_name_matches:
+            raise ProjectNameDoesNotExistError(
+                f'Error: Project "{project_name}" does not exist.')
+        elif len(project_name_matches) > 1:
+            raise AmbiguousProjectNameError(
+                f'Error: Ambiguous project name abbreviation '
+                f'"{project_name}" matches the following projects:\n\n  '
+                f'{self._project_rows(project_name_matches)}\n\n'
+                f'Try reporting on a project number.')
+        else:
+            day = Day(date_=self.date,
+                      project_name=project_name_matches[0],
+                      project_time=self.args[-1])
+            return self.calendar.add(day)
+
+    def _create_new_project(self):
+        working_project = True
+        if '--no-work' in self.args:
+            self.args.remove('--no-work')
+            working_project = False
+        project_name = ' '.join(self.args[1:])
+        return self.calendar.add_project(project_name, work=working_project)
 
     def _project_rows(self, project_names):
         project_numbers_and_names = [str(self._project_number(
@@ -53,10 +60,10 @@ class ProjectCommand(Command):
         return [p.name for p in self.calendar.projects if
                 project_name in p.name]
 
-    def _report_on_project_number(self, args):
-        self._validate_report_on_project_number(args)
+    def _report_on_project_number(self):
+        self._validate_report_on_project_number(self.args)
         day = Day(date_=self.date,
-                  project_name=self._project_name(int(args[0])),
+                  project_name=self._project_name(int(self.args[0])),
                   project_time=self.args[-1])
         return self.calendar.add(day)
 
