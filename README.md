@@ -71,22 +71,22 @@ If `<day>` is not set, today's date will be used.
 
 ### Create a new project
 
-    t project new [--no-work] <project>
+    t project new [--no-work] <project-name>
 
-`<project>` can be multiple words long, e.g. `My new project`. Quotation marks
-are not required.
+`<project-name>` can be multiple words, e.g. `My new project`. Quotation
+marks are not required.
 
 Time reported on projects tagged with `--no-work` reduces the required
 working time for that day. This can be used e.g. for part-time parental leave.
 
 ###   Report time on a project
-    t project <project> [<day>] <time>
+    t project (<project-name> | <project-number>) [<day>] <time>
     
 See Report time on default project.
 
 ###   Show reported time
     t show [last | next] week [html] [--show-weekend]
-    t show <month> [--show-weekend]
+    t show <month> [html] [--show-weekend]
     t
 
 `html` shows the specified week in a browser windows instead of in the console.
