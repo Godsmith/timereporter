@@ -1,6 +1,7 @@
 import os
 from datetime import date
 from unittest.mock import patch
+from io import StringIO
 import pytest
 import shutil
 
@@ -36,12 +37,6 @@ def mockdate_oct_24():
         yield
     finally:
         __main__.today = temp
-
-
-@pytest.fixture
-def patched_print():
-    with patch('timereporter.__main__.print') as print_:
-        yield print_
 
 
 @pytest.fixture

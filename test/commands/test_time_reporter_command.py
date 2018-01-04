@@ -14,7 +14,7 @@ def test_nonsense_input():
         command.execute()
 
 
-def test_next_and_last_weekday(patched_print):
+def test_next_and_last_weekday():
     command = TimeReporterCommand(Calendar(),
                                   date.today(),
                                   'next last monday 1')

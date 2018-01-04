@@ -9,6 +9,8 @@ from timereporter.date_arg_parser import DateArgParser, MultipleDateError
 from timereporter.commands.command_factory import CommandFactory
 from timereporter.commands.project_command import ProjectError
 from timereporter.commands.show_commands import InvalidShowCommandError
+from timereporter.calendar_printer import CalendarPrinter
+
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 
@@ -46,7 +48,7 @@ def main(args=None):
         command = CommandFactory.get_command(calendar, date_, args)
         new_calendar, view = command.execute()
 
-        to_print = view.show(new_calendar)
+        to_print = CalendarPrinter(calendar, new_calendar, view).to_print()
 
         with open(path, 'w') as f:
             data = new_calendar.dump()

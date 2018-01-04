@@ -187,8 +187,7 @@ class TestFlex:
 
 
 class TestWithoutEnvironmentVariable:
-    def test_existing_directory_no_file(self, empty_os_environ, tmpdir,
-                                        patched_print):
+    def test_existing_directory_no_file(self, empty_os_environ, tmpdir):
         timereporter.__main__.default_path = lambda: tmpdir.join(
             'timereporter.yaml')
 
