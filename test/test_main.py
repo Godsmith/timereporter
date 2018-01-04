@@ -282,10 +282,6 @@ class TestProject:
         assert '4:00' in s
         assert '3:45' in s
 
-    def test_no_project_name(self):
-        s, _ = main('project')
-        assert 'Error: <project> not specified.' in s
-
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestNonWorkingProject:

@@ -13,7 +13,7 @@ class ProjectCommand(Command):
         # TODO: remove this assignment, counterintuitive
         self.args = self.args[1:]  # First is always 'project'
         if not self.args:
-            raise NoProjectNameError('Error: <project> not specified.')
+            raise NoProjectNameError()
         if self.args[0] == 'new':
             return self._create_new_project()
         elif self.args[0].isdigit():
@@ -40,6 +40,8 @@ class ProjectCommand(Command):
             return self.calendar.add(day)
 
     def _create_new_project(self):
+        if len(self.args) == 1:
+            raise NoProjectNameError()
         working_project = True
         if '--no-work' in self.args:
             self.args.remove('--no-work')
@@ -113,7 +115,10 @@ class AmbiguousProjectNameError(ProjectError):
 class NoProjectNameError(ProjectError):
     """Raised when project name is not specified
     """
-    pass
+
+    def __init__(self):
+        super().__init__(
+            'Error: No <project-name> or <project-number> specified.')
 
 
 class InvalidProjectNumberError(ProjectError):
