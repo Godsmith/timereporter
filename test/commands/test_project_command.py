@@ -4,7 +4,8 @@ from datetime import date
 from timereporter.commands.project_command import ProjectCommand, \
     ProjectNameDoesNotExistError, AmbiguousProjectNameError, \
     InvalidProjectNumberError, InvalidTimeError, \
-    CannotReportOnDefaultProjectError, NoProjectNameError
+    CannotReportOnDefaultProjectError, NoProjectNameError, \
+    AmbiguousProjectNumberError
 from timereporter.calendar import Calendar
 
 
@@ -31,7 +32,6 @@ class TestProjectCommand:
         with pytest.raises(NoProjectNameError):
             pc = ProjectCommand(Calendar(), date.today(), 'project new'.split())
             pc.execute()
-
 
 
 class TestReportTimeByProjectNumber:
@@ -67,7 +67,7 @@ class TestReportTimeByProjectNumber:
         calendar = calendar.add_project('Hello')
         calendar = calendar.add_project('2Hello')
         pc = ProjectCommand(calendar, date.today(), 'project 2 8'.split())
-        with pytest.raises(AmbiguousProjectNameError):
+        with pytest.raises(AmbiguousProjectNumberError):
             pc.execute()
 
     def test_show_digits_before_projects(self):

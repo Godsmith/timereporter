@@ -25,14 +25,11 @@ class ProjectCommand(Command):
         project_name = ' '.join(self.args[:-1])
         project_name_matches = self._project_name_matches(project_name)
         if not project_name_matches:
-            raise ProjectNameDoesNotExistError(
-                f'Error: Project "{project_name}" does not exist.')
+            raise ProjectNameDoesNotExistError(project_name)
         elif len(project_name_matches) > 1:
-            raise AmbiguousProjectNameError(
-                f'Error: Ambiguous project name abbreviation '
-                f'"{project_name}" matches the following projects:\n\n  '
-                f'{self._project_rows(project_name_matches)}\n\n'
-                f'Try reporting on a project number.')
+            raise AmbiguousProjectNameError(project_name,
+                                            self._project_rows(
+                                                project_name_matches))
         else:
             day = Day(date_=self.date,
                       project_name=project_name_matches[0],
@@ -75,41 +72,53 @@ class ProjectCommand(Command):
     def _validate_report_on_project_number(self, args):
         project_number = int(args[0])
         if project_number == 1:
-            raise CannotReportOnDefaultProjectError('Error: Cannot report '
-                                                    'on default project.')
+            raise CannotReportOnDefaultProjectError()
         elif project_number == 0 or project_number > len(
                 self.calendar.projects) + 1:
-            raise InvalidProjectNumberError(
-                f'Error: No project number "{project_number}".')
+            raise InvalidProjectNumberError(project_number)
         elif len(args) != 2:
-            raise InvalidTimeError(
-                f'Error: Invalid time: "{" ".join(args[1:])}"')
+            raise InvalidTimeError(' '.join(args[1:]))
         elif self._project_name_matches(str(project_number)):
             project_names = ([self._project_name(project_number)] +
                              self._project_name_matches(str(project_number)))
-            raise AmbiguousProjectNameError(
-                f'Error: Ambiguous project name abbreviation/number '
-                f'"{project_number}" matches the following projects:\n\n  '
-                f'{self._project_rows(project_names)}')
+            raise AmbiguousProjectNumberError(project_number,
+                                              self._project_rows(project_names))
 
 
 class ProjectError(Exception):
     """Raised when trying to report on a non-existing project name.
     """
-    pass
 
 
 class ProjectNameDoesNotExistError(ProjectError):
     """Raised when trying to report on a non-existing project name.
     """
-    pass
+
+    def __init__(self, project_name):
+        super().__init__(f'Error: Project "{project_name}" does not exist.')
 
 
 class AmbiguousProjectNameError(ProjectError):
     """Raised when the supplied project name shorthand matches more than one
     project
     """
-    pass
+
+    def __init__(self, project_name, project_names):
+        super().__init__(f'Error: Ambiguous project name abbreviation '
+                         f'"{project_name}" matches the following '
+                         f'projects:\n\n  {project_names}\n\n'
+                         f'Try reporting on a project number.')
+
+
+class AmbiguousProjectNumberError(ProjectError):
+    """Raised when the supplied project number matches more than one
+    project
+    """
+
+    def __init__(self, project_number, project_names):
+        super().__init__(f'Error: Ambiguous project name abbreviation/number '
+                         f'"{project_number}" matches the following '
+                         f'projects:\n\n  {project_names}')
 
 
 class NoProjectNameError(ProjectError):
@@ -124,16 +133,22 @@ class NoProjectNameError(ProjectError):
 class InvalidProjectNumberError(ProjectError):
     """Raised when the project number specified does not exist
     """
-    pass
+
+    def __init__(self, project_number):
+        super().__init__(f'Error: No project number "{project_number}".')
 
 
 class InvalidTimeError(ProjectError):
     """Raised when the supplied time is not valid
     """
-    pass
+
+    def __init__(self, time):
+        super().__init__(f'Error: Invalid time: "{time}"')
 
 
 class CannotReportOnDefaultProjectError(ProjectError):
     """Raised when trying to report on default project
     """
-    pass
+
+    def __init__(self):
+        super().__init__('Error: Cannot report on default project.')
