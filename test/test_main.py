@@ -210,6 +210,13 @@ class TestUndo:
         s, _ = main('redo')
         assert '9:00' in s
 
+    def test_no_redo_after_action(self):
+        main('came 9')
+        main('undo')
+        main('came 8')
+        s, _ = main('redo')  # This shall not overwrite the 8:00
+        assert '8:00' in s
+
 
 class TestGetCalendar:
     def test_unreadable_file(self, empty_os_environ, tmpdir):

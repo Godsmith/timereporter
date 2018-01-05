@@ -40,28 +40,19 @@ class Calendar:
 
     def add(self, day: Day):
         """Add a day to the calendar.
-
-        :param day: the Day object to add
-        is used.
-        :return:
         """
         new_days = self._raw_days + [day]
         return Calendar(raw_days=new_days,
-                        redo_list=self.redo_list[:],
+                        redo_list=[],
                         projects=self.projects[:],
                         target_hours_per_day=self.target_hours_per_day,
                         default_project_name=self.default_project_name)
-        # if date_ not in self.days:
-        #     self.days[date_] = Day()
-        # self.days[date_] = self.days[date_] + day
 
     def add_project(self, project_name: str, work=True):
         """Adds a project with the specified project name to the calendar
-
-        :param project_name:
         """
         return Calendar(raw_days=self._raw_days[:],
-                        redo_list=self.redo_list[:],
+                        redo_list=[],
                         projects=self.projects + [Project(project_name, work)],
                         target_hours_per_day=self.target_hours_per_day,
                         default_project_name=self.default_project_name)
