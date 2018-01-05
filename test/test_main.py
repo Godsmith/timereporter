@@ -44,7 +44,7 @@ class TestTimeReporterCommand:
     def test_report_then_came_shall_overwrite_came(self):
         main(['9'])
         s, _ = main('came 10')
-        assert not '9:00' in s
+        assert '9:00' not in s
         assert '10:00' in s
 
     def test_came_yesterday_monday(self):
@@ -88,7 +88,7 @@ class TestTimeReporterCommand:
     def test_empty_lunch(self):
         main('lunch 1')
         s, _ = main('lunch 0m')
-        assert not '01:00' in s
+        assert '01:00' not in s
 
     def test_unspecified_then_lunch(self):
         main('7')
@@ -114,8 +114,8 @@ class TestShow:
             s = f.read()
             assert '7,00' in s
             assert '0,75' in s  # Used flex should be positive
-            assert not '23,25' in s  # Used flex should show correctly
-            assert not '0,25' in s  # Earned flex should not show
+            assert '23,25' not in s  # Used flex should show correctly
+            assert '0,25' not in s  # Earned flex should not show
             assert '15,75' in s  # Sum of times
 
     def test_show_month(self):
@@ -287,12 +287,13 @@ class TestProject:
 class TestNonWorkingProject:
     def test_non_working_project(self):
         main('9 15:00 0m')
-        s = main('project new "Parental leave" --no-work')
+        main('project new "Parental leave" --no-work')
         s, _ = main('project Par 2')
         assert '02:00' in s  # Parental leave
         assert '06:00' in s  # EPG Program
         assert '00:15' in s  # Flex
         assert '--no-work' not in s
+
 
 class TestSplitArguments:
     def test_no_quotes(self):

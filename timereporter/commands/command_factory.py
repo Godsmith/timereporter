@@ -3,7 +3,9 @@ from timereporter.commands.redo_command import RedoCommand
 from timereporter.commands.time_reporter_command import \
     TimeReporterCommand
 from timereporter.commands.project_command import ProjectCommand
-from timereporter.commands.show_commands import *
+from timereporter.commands.show_commands import ShowWeekHtmlCommand, \
+    ShowWeekCommand, ShowDayCommand, ShowMonthCommand, ShowMonthHtmlCommand, \
+    ShowErrorHandler
 
 
 class CommandFactory:

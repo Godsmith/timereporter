@@ -141,7 +141,7 @@ def _load_calendar(data, version):
     if data['projects']:
         if isinstance(data['projects'][0], str):
             data['projects'] = list(map(Project, data['projects']))
-    if not 'raw_days' in data:
+    if 'raw_days' not in data:
         data['raw_days'] = []
         for date_and_day in data['dates_and_days']:
             day = date_and_day.day

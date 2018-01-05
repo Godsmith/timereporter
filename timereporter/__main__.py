@@ -11,9 +11,7 @@ from timereporter.commands.project_command import ProjectError
 from timereporter.commands.show_commands import InvalidShowCommandError
 from timereporter.calendar_printer import CalendarPrinter
 
-
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
-
 
 
 def main(args=None):
@@ -96,6 +94,7 @@ def _can_file_be_created_at(path):
     except FileNotFoundError:
         return False
 
+
 # TODO: Extract class and make usable by Command to make tests less error prone
 def split_arguments(string):
     """Splits a string into arguments. Quotes can enclose spaces.
@@ -122,6 +121,7 @@ def split_arguments(string):
     args = _add_current_word(args, current_word)
     return args
 
+
 def _add_current_word(args, current_word):
     return args + [''.join(current_word).replace('"', '')]
 
@@ -142,9 +142,10 @@ class UnreadableCamelFileError(Exception):
 
 class DirectoryDoesNotExistError(Exception):
     pass
+
+
 class OddNumberOfQuotesError(Exception):
     pass
-
 
 
 if __name__ == '__main__':

@@ -121,8 +121,8 @@ class Day:
         return time(hour=hour, minute=minute)
 
     @classmethod
-    def _to_timedelta(cls, t: Union[time, timedelta, None]) -> Union[
-        timedelta, None]:
+    def _to_timedelta(cls, t: Union[time, timedelta, None]) \
+            -> Union[timedelta, None]:
         if t is None:
             return None
         if isinstance(t, timedelta):

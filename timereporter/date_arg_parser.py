@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 from timereporter.mydatetime import timedelta
 
+
 class DateArgParser:
     def __init__(self, today):
         self.today = today
@@ -47,7 +48,6 @@ class DateArgParser:
 
         except ValueError:
             pass
-
 
     @classmethod
     def _is_date(cls, date_text):
