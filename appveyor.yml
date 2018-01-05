@@ -6,7 +6,7 @@ build_script:
   - C:\Python36\python.exe setup.py install
 
 test_script:
-  - C:\PYTHON36\python.exe -m pytest --cov . --cov-report xml
+  - C:\PYTHON36\python.exe -m pytest --cov . --cov-report xml test timereporter
 
 after_test:
   - codecov -f coverage.xml
