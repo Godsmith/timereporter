@@ -73,16 +73,19 @@ If `<day>` is not set, today's date will be used.
 
     t project new [--no-work] <project-name>
 
-`<project-name>` can be multiple words, e.g. `My new project`. Quotation
-marks are not required.
+If `<project-name>` is multiple words, enclose them in quotation marks, e.g.
+`"My new project"`.
 
 Time reported on projects tagged with `--no-work` reduces the required
 working time for that day. This can be used e.g. for part-time parental leave.
 
 ###   Report time on a project
     t project (<project-name> | <project-number>) [<day>] <time>
+
+There is no need to spell out the entire `<project-name>`, a part of it is
+enough. `imp` for `My important project`, for example.
     
-See Report time on default project.
+See also Report time on default project.
 
 ###   Show reported time
     t show [last | next] week [html] [--show-weekend]

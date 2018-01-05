@@ -2,8 +2,8 @@ import pytest
 
 import timereporter.__main__
 from timereporter.__main__ import DirectoryDoesNotExistError, \
-    UnreadableCamelFileError
-from timereporter.__main__ import main, get_calendar
+    UnreadableCamelFileError, main, get_calendar, split_arguments, \
+    OddNumberOfQuotesError
 from timereporter.mydatetime import timedelta
 
 
@@ -152,15 +152,15 @@ class TestDefaultProject:
         assert '9:00' in s
 
     def test_other_projects_exactly_7_45(self):
-        main('project new EPG Support')
-        s, _ = main('project EPG Support 7:45')
+        main('project new "EPG Support"')
+        s, _ = main('project "EPG Support" 7:45')
         assert 'EPG Program' in s
         assert '7:45' in s
         assert '0:00' in s
 
     def test_other_projects_more_than_7_45(self):
-        main('project new EPG Support')
-        s, _ = main('project EPG Support 12:45')
+        main('project new "EPG Support"')
+        s, _ = main('project "EPG Support" 12:45')
         assert 'EPG Program' in s
         assert '-05:00' not in s
         assert '00:00' in s
@@ -230,54 +230,54 @@ class TestGetCalendar:
 @pytest.mark.usefixtures('temp_logfile')
 class TestProject:
     def test_basic(self):
-        s, _ = main('project new EPG Support')
+        s, _ = main('project new "EPG Support"')
         assert 'EPG Program' in s
 
     def test_report_time_today(self):
-        main('project new EPG Support')
-        s, _ = main('project EPG Support 9')
+        main('project new "EPG Support"')
+        s, _ = main('project "EPG Support" 9')
         assert '9:00' in s
 
     def test_update_time_today(self):
-        main('project new EPG Support')
-        main('project EPG Support 9')
-        s, _ = main('project EPG Support 10')
+        main('project new "EPG Support"')
+        main('project "EPG Support" 9')
+        s, _ = main('project "EPG Support" 10')
         assert '10:00' in s
 
     def test_add_came_and_then_report_time_today(self):
         main('came 7')
-        main('project new EPG Support')
-        s, _ = main('project EPG Support 9')
+        main('project new "EPG Support"')
+        s, _ = main('project "EPG Support" 9')
         assert '9:00' in s
 
     def test_report_time_on_two_projects(self):
-        main('project new EPG Support')
-        main('project new EPG Maintenance')
-        main('project EPG Support 9')
-        s, _ = main('project EPG Maintenance 8')
+        main('project new "EPG Support"')
+        main('project new "EPG Maintenance"')
+        main('project "EPG Support" 9')
+        s, _ = main('project "EPG Maintenance" 8')
         assert '9:00' in s
         assert '8:00' in s
 
     def test_report_time_short_form(self):
-        main('project new EPG Support')
+        main('project new "EPG Support"')
         s, _ = main('project EP 9')
         assert '9:00' in s
 
     def test_report_time_specific_date(self):
-        main('project new EPG Support')
+        main('project new "EPG Support"')
         main('2017-09-14 project EP 9')
         s, _ = main('show last week')
         assert '9:00' in s
 
     def test_project_with_last_in_the_name(self):
-        main('project new EPG last Support')
+        main('project new "EPG last Support"')
         main('2017-09-14 project EP 9')
         s, _ = main('show last week')
         assert '9:00' in s
 
     def test_project_taking_time_from_default_project(self):
         main('9 16:45 0m')
-        main('project new EPG Support')
+        main('project new "EPG Support"')
         s, _ = main('project EP 4')
         assert '4:00' in s
         assert '3:45' in s
@@ -287,9 +287,23 @@ class TestProject:
 class TestNonWorkingProject:
     def test_non_working_project(self):
         main('9 15:00 0m')
-        main('project new Parental leave --no-work')
+        s = main('project new "Parental leave" --no-work')
         s, _ = main('project Par 2')
         assert '02:00' in s  # Parental leave
         assert '06:00' in s  # EPG Program
         assert '00:15' in s  # Flex
         assert '--no-work' not in s
+
+class TestSplitArguments:
+    def test_no_quotes(self):
+        assert split_arguments('1 2 3') == ['1', '2', '3']
+
+    def test_odd_quotes(self):
+        with pytest.raises(OddNumberOfQuotesError):
+            split_arguments('1 "2 3')
+
+    def test_one_set_of_quotes(self):
+        assert split_arguments('1 "2 3" 4') == ['1', '2 3', '4']
+
+    def test_two_sets_of_quotes(self):
+        assert split_arguments('1 "2 3" "4 5"') == ['1', '2 3', '4 5']

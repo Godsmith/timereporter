@@ -22,7 +22,7 @@ def main(args=None):
     if args is None:
         args = []
     if isinstance(args, str):
-        args = args.split()
+        args = split_arguments(args)
 
     if len(args) == 1:
         if args[0] in ('help', '--help', '-h'):
@@ -96,6 +96,35 @@ def _can_file_be_created_at(path):
     except FileNotFoundError:
         return False
 
+# TODO: Extract class and make usable by Command to make tests less error prone
+def split_arguments(string):
+    """Splits a string into arguments. Quotes can enclose spaces.
+    """
+    if string.count('"') % 2 == 1:
+        # This should only happen in tests, since it is not allowed by Bash.
+        raise OddNumberOfQuotesError('Error: malformed command.')
+
+    args = []
+    current_word = []
+    inside_quote = False
+    for char in string:
+        if char == '"':
+            if inside_quote:
+                inside_quote = False
+            else:
+                inside_quote = True
+        elif char == ' ':
+            if not inside_quote:
+                args = _add_current_word(args, current_word)
+                current_word = []
+                continue
+        current_word.append(char)
+    args = _add_current_word(args, current_word)
+    return args
+
+def _add_current_word(args, current_word):
+    return args + [''.join(current_word).replace('"', '')]
+
 
 def today() -> date:  # pragma: no cover
     """Returns the current day.
@@ -113,6 +142,9 @@ class UnreadableCamelFileError(Exception):
 
 class DirectoryDoesNotExistError(Exception):
     pass
+class OddNumberOfQuotesError(Exception):
+    pass
+
 
 
 if __name__ == '__main__':

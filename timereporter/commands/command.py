@@ -22,6 +22,7 @@ class Command:
 
         if self.args is None:
             self.args = []
+        # TODO: use the new argument splitter method instead
         elif isinstance(self.args, str):
             self.args = self.args.split()
 
