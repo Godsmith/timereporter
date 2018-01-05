@@ -1,6 +1,5 @@
 from camel import CamelRegistry
 from collections import defaultdict
-import sys
 
 camelRegistry = CamelRegistry()
 

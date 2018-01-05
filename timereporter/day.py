@@ -33,27 +33,14 @@ class Day:
         if not args:
             return
 
-        if isinstance(args, str):
-            args = args.split()
+        args = self._to_argument_list(args)
+        args = self._format_minutes(args)
 
-        # Change 45 min and 45 m to 45m
-        to_delete = len(args)
-        for i, _ in enumerate(args):
-            if args[i] == 'm' or args[i] == 'min':
-                args[i - 1] = args[i - 1] + 'm'
-                to_delete = i
-        args = args[0:to_delete] + args[to_delete:]
-
-        if args[0] == 'came':
-            self.came = TimeParser.parse(args[1])
-            return
-        elif args[0] == 'left':
-            self.left = TimeParser.parse(args[1])
-            return
-        elif args[0] == 'lunch':
-            self.lunch = TimeParser.parse(args[1])
+        if args[0] in ('came', 'left', 'lunch'):
+            setattr(self, args[0], TimeParser.parse(args[1]))
             return
 
+        # Assume all args are time
         try:
             self.lunch = TimeParser.try_parse_minutes(args[0])
         except TimeParserError:
@@ -66,6 +53,24 @@ class Day:
                 self._came, self._left = times
             if len(args) > 2:
                 self.lunch = TimeParser.parse(args[2])
+
+    @staticmethod
+    def _to_argument_list(args):
+        if isinstance(args, list):
+            return args
+        if isinstance(args, str):
+            return args.split()
+
+    @staticmethod
+    def _format_minutes(args):
+        # Change 45 min and 45 m to 45m
+        to_delete = len(args)
+        for i, _ in enumerate(args):
+            if args[i] == 'm' or args[i] == 'min':
+                args[i - 1] = args[i - 1] + 'm'
+                to_delete = i
+        args = args[0:to_delete] + args[to_delete:]
+        return args
 
     def __add__(self, other):
         if not isinstance(other, Day):

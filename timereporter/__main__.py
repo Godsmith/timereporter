@@ -17,19 +17,13 @@ TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
 def main(args=None):
     """This is executed when running "python timereporter".
     """
-    if args is None:
-        args = []
-    if isinstance(args, str):
-        args = split_arguments(args)
+    args = _to_argument_list(args)
 
     if len(args) == 1:
         if args[0] in ('help', '--help', '-h'):
             return sys.modules[__loader__.name.split('.')[0]].__doc__, 0
 
-    if TIMEREPORTER_FILE in os.environ:
-        path = os.environ[TIMEREPORTER_FILE]
-    else:
-        path = default_path()
+    path = os.environ.get(TIMEREPORTER_FILE, default_path())
 
     try:
         calendar = get_calendar(path)
@@ -93,6 +87,15 @@ def _can_file_be_created_at(path):
         return True
     except FileNotFoundError:
         return False
+
+
+def _to_argument_list(args):
+    if isinstance(args, list):
+        return args
+    if isinstance(args, str):
+        return split_arguments(args)
+    if args is None:
+        return []
 
 
 # TODO: Extract class and make usable by Command to make tests less error prone

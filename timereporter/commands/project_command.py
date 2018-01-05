@@ -159,6 +159,7 @@ class CannotReportOnDefaultProjectError(ProjectError):
     def __init__(self):
         super().__init__('Error: Cannot report on default project.')
 
+
 class TrailingArgumentsError(ProjectError):
     """Raised when trying to report on default project
     """

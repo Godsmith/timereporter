@@ -13,4 +13,3 @@ class BrowserWeekView(WeekView):
     def _closest_monday(self):
         closest_monday = self.date + timedelta(days=-self.date.weekday())
         return closest_monday
-

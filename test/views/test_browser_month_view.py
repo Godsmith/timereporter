@@ -1,5 +1,6 @@
 from timereporter.__main__ import main
 
+
 def test_basic(mock_browser):
     main('9 16')
     main('yesterday 10 18')
@@ -9,4 +10,3 @@ def test_basic(mock_browser):
         s = f.read()
         assert '2016-12-01' in s
         assert '2016-12-31' in s
-

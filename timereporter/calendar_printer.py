@@ -1,4 +1,3 @@
-from itertools import zip_longest
 from colorama import init, Style
 
 init()
@@ -41,9 +40,8 @@ class CalendarPrinter:
             new_indices = set()
             for i in self.changed_indices:
                 for j in (i - 1, i + 1):
-                    if (0 <= j < len(self.padded_new)
-                        and j not in self.changed_indices
-                        and self.padded_new[j] != ' '):
+                    if self._legal_index(j) and self._non_space(j) \
+                            and j not in self.changed_indices:
                         new_indices.add(j)
             if not new_indices:
                 break
@@ -52,3 +50,9 @@ class CalendarPrinter:
         new_row = ''.join(
             self.new_char(i) for i, _ in enumerate(self.padded_new))
         return new_row.replace(Style.RESET_ALL + Style.BRIGHT, '')
+
+    def _legal_index(self, j):
+        return 0 <= j < len(self.padded_new)
+
+    def _non_space(self, j):
+        return self.padded_new[j] != ' '

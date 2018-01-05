@@ -1,7 +1,5 @@
 import os
 from datetime import date
-from unittest.mock import patch
-from io import StringIO
 import pytest
 import shutil
 

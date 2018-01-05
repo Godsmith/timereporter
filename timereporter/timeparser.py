@@ -1,7 +1,6 @@
 """Supply the TimeParser class and related exceptions
 """
 import re
-from typing import Tuple, Union
 
 from timereporter.mydatetime import timedelta, time
 

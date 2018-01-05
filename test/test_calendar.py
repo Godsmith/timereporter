@@ -3,7 +3,7 @@ import re
 
 from timereporter.mydatetime import timedelta, time
 # TODO: remove nothingtoredoerror
-from timereporter.calendar import Calendar, NothingToRedoError
+from timereporter.calendar import Calendar
 from timereporter.day import Day
 from timereporter.views.day_shower import DayShower
 

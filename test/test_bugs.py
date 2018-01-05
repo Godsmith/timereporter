@@ -22,4 +22,3 @@ class TestCrash:
     def test_came_9_t_17(self, temp_logfile):
         main('came 9')
         main('17')
-

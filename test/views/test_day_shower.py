@@ -30,4 +30,3 @@ class TestDayShower:
         assert 'Came' in s
         assert 'Left' in s
         assert 'Lunch' in s
-

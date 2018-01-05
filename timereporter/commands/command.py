@@ -1,4 +1,4 @@
-from typing import Union, Sequence
+from typing import Union
 from datetime import date
 
 from timereporter.calendar import Calendar

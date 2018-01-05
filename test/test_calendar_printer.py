@@ -14,6 +14,7 @@ class TestHighlightDifferenceInLine:
         assert CalendarPrinter(None, None, None).highlight_difference_in_line(
             '00 0000 00', '00 00xx 00') == '00 \x1b[1m00xx\x1b[0m 00'
 
+
 class TestHighlightDifferenceInLines:
     def test_simple(self):
         assert CalendarPrinter(None, None, None).highlight_difference_in_lines(
