@@ -100,6 +100,9 @@ By default, Saturday and Sunday are not shown, but this can be changed by adding
 
 `t` is an alias for `t show week`.
 
+###   Show flex time
+    t show flex [--from=<date>] [--to=<date>]
+
 ###   Undo/redo
     t (undo | redo)
 

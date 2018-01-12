@@ -5,7 +5,7 @@ from timereporter.commands.time_reporter_command import \
 from timereporter.commands.project_command import ProjectCommand
 from timereporter.commands.show_commands import ShowWeekHtmlCommand, \
     ShowWeekCommand, ShowDayCommand, ShowMonthCommand, ShowMonthHtmlCommand, \
-    ShowErrorHandler
+    ShowErrorHandler, ShowFlexCommand
 
 
 class CommandFactory:
@@ -15,6 +15,7 @@ class CommandFactory:
                          ShowDayCommand,
                          ShowMonthCommand,
                          ShowMonthHtmlCommand,
+                         ShowFlexCommand,
                          ShowErrorHandler,
                          UndoCommand,
                          RedoCommand,
