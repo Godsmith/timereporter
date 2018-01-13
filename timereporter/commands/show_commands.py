@@ -6,17 +6,20 @@ from timereporter.views.browser_month_view import BrowserMonthView
 from timereporter.commands.command import Command
 
 
-class ShowWeekCommand(Command):
+class ShowWeekendCommand(Command):
+    def valid_options(self):
+        return ['--show-weekend']
+
+class ShowWeekCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
         return args and args[:2] == 'show week'.split()
 
     def view(self):
-        show_weekend = '--show-weekend' in self.args
-        return ConsoleWeekView(self.date, show_weekend)
+        return ConsoleWeekView(self.date, '--show-weekend' in self.options)
 
 
-class ShowDayCommand(Command):
+class ShowDayCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
         return args and args[:2] == 'show day'.split()
@@ -25,17 +28,16 @@ class ShowDayCommand(Command):
         return ConsoleDayView(self.date)
 
 
-class ShowWeekHtmlCommand(Command):
+class ShowWeekHtmlCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
         return args and args[:3] == 'show week html'.split()
 
     def view(self):
-        show_weekend = '--show-weekend' in self.args
-        return BrowserWeekView(self.date, show_weekend)
+        return BrowserWeekView(self.date, '--show-weekend' in self.options)
 
 
-class ShowMonthHtmlCommand(Command):
+class ShowMonthHtmlCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
         if len(args) < 3:
@@ -46,11 +48,10 @@ class ShowMonthHtmlCommand(Command):
                 args[2] == 'html')
 
     def view(self):
-        show_weekend = '--show-weekend' in self.args
-        return BrowserMonthView(self.date, self.args[1], show_weekend)
+        return BrowserMonthView(self.date, self.args[1], '--show-weekend' in self.options)
 
 
-class ShowMonthCommand(Command):
+class ShowMonthCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
         if len(args) != 2:
@@ -60,8 +61,7 @@ class ShowMonthCommand(Command):
                 args[1] in ConsoleMonthView.MONTHS)
 
     def view(self):
-        show_weekend = '--show-weekend' in self.args
-        return ConsoleMonthView(self.date, self.args[1], show_weekend)
+        return ConsoleMonthView(self.date, self.args[1], '--show-weekend' in self.options)
 
 
 class ShowErrorHandler(Command):

@@ -9,6 +9,9 @@ class ProjectCommand(Command):
     def can_handle(cls, args) -> bool:
         return args and args[0] == 'project'
 
+    def valid_options(self):
+        return ['--no-work']
+
     def new_calendar(self) -> (Calendar, View):
         # TODO: remove this assignment, counterintuitive
         self.args = self.args[1:]  # First is always 'project'
@@ -41,14 +44,11 @@ class ProjectCommand(Command):
     def _create_new_project(self):
         if len(self.args) == 1:
             raise NoProjectNameError()
-        working_project = True
-        if '--no-work' in self.args:
-            self.args.remove('--no-work')
-            working_project = False
         if len(self.args) > 2:
             raise TrailingArgumentsError(self.args[2:])
         project_name = ' '.join(self.args[1:])
-        return self.calendar.add_project(project_name, work=working_project)
+        return self.calendar.add_project(project_name,
+                                         work='--no-work' not in self.options)
 
     def _project_rows(self, project_names):
         project_numbers_and_names = [str(self._project_number(
