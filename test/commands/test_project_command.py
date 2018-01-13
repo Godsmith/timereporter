@@ -1,5 +1,4 @@
 import pytest
-from datetime import date
 
 from timereporter.commands.project_command import ProjectCommand, \
     ProjectNameDoesNotExistError, AmbiguousProjectNameError, \
@@ -10,110 +9,111 @@ from timereporter.calendar import Calendar
 
 
 class TestProjectCommand:
-    def test_project_not_existing_error(self):
+    def test_project_not_existing_error(self, mockdate_tuesday):
         with pytest.raises(ProjectNameDoesNotExistError):
             # TODO: when ProjectCommand moves to use argument splitter method
             # or class instead, change to passing a string since the below is
             # error prone.
-            pc = ProjectCommand(Calendar(), date.today(),
+            pc = ProjectCommand(Calendar(), mockdate_tuesday,
                                 ['project', 'EPG Support', '9'])
             pc.execute()
 
-    def test_report_time_short_form_ambiguity(self):
+    def test_report_time_short_form_ambiguity(self, mockdate_tuesday):
         calendar = Calendar()
-        pc = ProjectCommand(calendar, date.today(),
+        pc = ProjectCommand(calendar, mockdate_tuesday,
                             ['project', 'new', 'EPG Support'])
         calendar, view = pc.execute()
-        pc = ProjectCommand(calendar, date.today(),
+        pc = ProjectCommand(calendar, mockdate_tuesday,
                             ['project', 'new', 'EPG Maintenance'])
         calendar, view = pc.execute()
         with pytest.raises(AmbiguousProjectNameError):
-            pc = ProjectCommand(calendar, date.today(), 'project EP 9'.split())
+            pc = ProjectCommand(calendar, mockdate_tuesday, 'project EP 9'.split())
             pc.execute()
 
-    def test_new_project_without_name_raises_error(self):
+    def test_new_project_without_name_raises_error(self, mockdate_tuesday):
         with pytest.raises(NoProjectNameError):
-            pc = ProjectCommand(Calendar(), date.today(), 'project new'.split())
+            pc = ProjectCommand(Calendar(), mockdate_tuesday, 'project new'.split())
             pc.execute()
 
-    def test_trailing_args_creating_new_error(self):
+    def test_trailing_args_creating_new_error(self, mockdate_tuesday):
         with pytest.raises(TrailingArgumentsError):
             pc = ProjectCommand(Calendar(),
-                                date.today(),
+                                mockdate_tuesday,
                                 'project new Hello World'.split())
             pc.execute()
 
-    def test_trailing_args_reporting_name_error(self):
+    def test_trailing_args_reporting_name_error(self, mockdate_tuesday):
         with pytest.raises(TrailingArgumentsError):
             pc = ProjectCommand(Calendar(),
-                                date.today(),
+                                mockdate_tuesday,
                                 'project Hello World 7'.split())
             pc.execute()
 
-    def test_trailing_args_reporting_number_error(self):
+    def test_trailing_args_reporting_number_error(self, mockdate_tuesday):
         with pytest.raises(TrailingArgumentsError):
             pc = ProjectCommand(Calendar(),
-                                date.today(),
+                                mockdate_tuesday,
                                 'project 1 2 7'.split())
             pc.execute()
 
 
+@pytest.mark.usefixtures('mockdate_tuesday')
 class TestReportTimeByProjectNumber:
-    def test_default_project(self):
+    def test_default_project(self, mockdate_tuesday):
         calendar = Calendar()
         calendar = calendar.add_project('Hello')
-        pc = ProjectCommand(calendar, date.today(), 'project 1 8'.split())
+        pc = ProjectCommand(calendar, mockdate_tuesday, 'project 1 8'.split())
         with pytest.raises(CannotReportOnDefaultProjectError):
             pc.execute()
 
-    def test_other_project(self):
+    def test_other_project(self, mockdate_tuesday):
         calendar = Calendar()
         calendar = calendar.add_project('Hello')
-        pc = ProjectCommand(calendar, date.today(), 'project 2 8'.split())
+        pc = ProjectCommand(calendar, mockdate_tuesday, 'project 2 8'.split())
         calendar, view = pc.execute()
         assert '08:00' in view.show(calendar)
 
-    def test_project_number_not_existing(self):
+    def test_project_number_not_existing(self, mockdate_tuesday):
         calendar = Calendar()
         calendar = calendar.add_project('Hello')
-        pc = ProjectCommand(calendar, date.today(), 'project 3 8'.split())
+        pc = ProjectCommand(calendar, mockdate_tuesday, 'project 3 8'.split())
         with pytest.raises(InvalidProjectNumberError):
             pc.execute()
 
-    def test_project_number_0_not_existing(self):
+    def test_project_number_0_not_existing(self, mockdate_tuesday):
         calendar = Calendar()
-        pc = ProjectCommand(calendar, date.today(), 'project 0 8'.split())
+        pc = ProjectCommand(calendar, mockdate_tuesday, 'project 0 8'.split())
         with pytest.raises(InvalidProjectNumberError):
             pc.execute()
 
-    def test_project_starting_with_a_digit(self):
+    def test_project_starting_with_a_digit(self, mockdate_tuesday):
         calendar = Calendar()
         calendar = calendar.add_project('Hello')
         calendar = calendar.add_project('2Hello')
-        pc = ProjectCommand(calendar, date.today(), 'project 2 8'.split())
+        pc = ProjectCommand(calendar, mockdate_tuesday, 'project 2 8'.split())
         with pytest.raises(AmbiguousProjectNumberError):
             pc.execute()
 
-    def test_show_digits_before_projects(self):
+    def test_show_digits_before_projects(self, mockdate_tuesday):
         calendar = Calendar()
         calendar = calendar.add_project('Hello')
-        pc = ProjectCommand(calendar, date.today(), 'project 2 8'.split())
+        pc = ProjectCommand(calendar, mockdate_tuesday, 'project 2 8'.split())
         calendar, view = pc.execute()
         assert '2. Hello' in view.show(calendar)
 
     # TODO: remove if this is always catched by TrailingArgumentsError instead
-    # def test_invalid_time_many_times(self):
+    # def test_invalid_time_many_times(self, mockdate_tuesday):
     #     calendar = Calendar()
     #     calendar = calendar.add_project('Hello')
-    #     pc = ProjectCommand(calendar, date.today(), 'project 2 8 9'.split())
+    #     pc = ProjectCommand(calendar, mockdate_tuesday, 'project 2 8 9'.split())
     #     with pytest.raises(InvalidTimeError)as e:
     #         pc.execute()
     #     assert '"8 9"' in str(e.value)
 
-    def test_invalid_time_no_time(self):
+    def test_invalid_time_no_time(self, mockdate_tuesday):
         calendar = Calendar()
         calendar = calendar.add_project('Hello')
-        pc = ProjectCommand(calendar, date.today(), 'project 2'.split())
+        pc = ProjectCommand(calendar, mockdate_tuesday, 'project 2'.split())
         with pytest.raises(InvalidTimeError)as e:
             pc.execute()
         assert '""' in str(e.value)

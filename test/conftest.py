@@ -12,7 +12,7 @@ def mockdate_tuesday():
     temp = __main__.today
     __main__.today = lambda x=None: date(2017, 9, 19)
     try:
-        yield
+        yield date(2017, 9, 19)
     finally:
         __main__.today = temp
 
