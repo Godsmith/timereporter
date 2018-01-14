@@ -32,39 +32,49 @@ class TestTimeReporterCommand:
         assert last_monday in s
 
     def test_report_once(self):
-        s, _ = main(['9'])
+        s, _ = main('came 9')
         assert '09:00' in s
 
     def test_report_twice(self):
-        main(['9'])
-        s, _ = main(['18'])
+        main('came 9')
+        s, _ = main('left 18')
         assert '09:00' in s
         assert '18:00' in s
 
-    def test_report_then_came_shall_overwrite_came(self):
-        main(['9'])
+    def test_trailing_arguments_error(self):
+        s, _ = main('18')
+        assert 'Error' in s
+        assert '18' in s
+
+    def test_trailing_arguments_error_2(self):
+        s, _ = main('came 9 18')
+        assert 'Error' in s
+        assert '18' in s
+
+    def test_overwrite_came(self):
+        main('came 9')
         s, _ = main('came 10')
         assert '9:00' not in s
         assert '10:00' in s
 
     def test_came_yesterday_monday(self):
-        s, _ = main('9 yesterday')
+        s, _ = main('came 9 yesterday')
         assert '09:00' in s
 
     def test_came_yesterday_sunday(self, mockdate_monday):
-        s, _ = main('9 yesterday')
+        s, _ = main('came 9 yesterday')
         assert '09:00' not in s
 
     def test_came_yesterday_monday_reorder(self):
-        s, _ = main('yesterday 9')
+        s, _ = main('yesterday came 9')
         assert '09:00' in s
 
     def test_weekday(self):
-        main('monday 1')
-        main('tuesday 2')
-        main('wednesday 3')
-        main('thursday 4')
-        s, _ = main('friday 5')
+        main('monday came 1')
+        main('tuesday came 2')
+        main('wednesday came 3')
+        main('thursday came 4')
+        s, _ = main('friday came 5')
         assert '01:00' in s
         assert '02:00' in s
         assert '03:00' in s
@@ -72,42 +82,42 @@ class TestTimeReporterCommand:
         assert '05:00' in s
 
     def test_last_weekday(self):
-        main('last monday 1')
-        main('last friday 5')
+        main('last monday came 1')
+        main('last friday came 5')
         s, _ = main('show last week')
         assert '01:00' in s
         assert '05:00' in s
 
     def test_next_weekday(self):
-        main('next monday 1')
-        main('next friday 5')
+        main('next monday came 1')
+        main('next friday came 5')
         s, _ = main('show next week')
         assert '01:00' in s
         assert '05:00' in s
+
+    def test_next_and_last_weekday(self):
+        s, _ = main('next last monday came 1')
+        assert 'Error' in s
+        assert 'next' in s
 
     def test_empty_lunch(self):
         main('lunch 1')
         s, _ = main('lunch 0m')
         assert '01:00' not in s
 
-    def test_unspecified_then_lunch(self):
-        main('7')
-        s, _ = main('lunch 00:45')
-        assert '07:00' in s
-
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestShow:
     def test_show_day(self):
-        main('9')
+        main('came 9')
         s, _ = main('show day')
         assert '9:00' in s
         assert 'Tuesday' in s
         assert 'Monday' not in s
 
     def test_show_week_html(self, mock_browser):
-        main('9 16')
-        main('yesterday 10 18')
+        main('came 9 left 16')
+        main('yesterday came 10 left 18')
         main('show week html')
         assert mock_browser.url.endswith('.html')
         with open(mock_browser.url) as f:
@@ -119,7 +129,7 @@ class TestShow:
             assert '15,75' in s  # Sum of times
 
     def test_show_month(self):
-        main('9')
+        main('came 9')
         s, _ = main('show september')
         assert '9:00' in s
 
@@ -147,7 +157,7 @@ class TestShow:
 @pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:
     def test_working_time_more_than_working_time_per_day(self):
-        s, _ = main('9 18')
+        s, _ = main('came 9 left 18')
         assert 'EPG Program' in s
         assert '9:00' in s
 
@@ -166,23 +176,23 @@ class TestDefaultProject:
         assert '00:00' in s
 
     def test_working_time_less_than_working_time_per_day(self):
-        s, _ = main('9 16')
+        s, _ = main('came 9 left 16')
         assert '07:00' in s
 
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestFlex:
     def test_0(self):
-        s, _ = main('10 17:45')
+        s, _ = main('came 10 left 17:45')
         assert 'Flex' in s
         assert '0:00' in s
 
     def test_plus_1(self):
-        s, _ = main('10 18:45')
+        s, _ = main('came 10 left 18:45')
         assert '1:00' in s
 
     def test_minus_1(self):
-        s, _ = main('10 16:45')
+        s, _ = main('came 10 left 16:45')
         assert '-01:00' in s
 
 
@@ -191,7 +201,7 @@ class TestWithoutEnvironmentVariable:
         timereporter.__main__.default_path = lambda: tmpdir.join(
             'timereporter.yaml')
 
-        s, _ = main('9')
+        s, _ = main('came 9')
 
         assert '9:00' in s
 
@@ -199,13 +209,13 @@ class TestWithoutEnvironmentVariable:
 @pytest.mark.usefixtures('temp_logfile')
 class TestUndo:
     def test_undo(self):
-        s, _ = main('9')
+        s, _ = main('came 9')
         assert '9:00' in s
         s, _ = main('undo')
         assert '9:00' not in s
 
     def test_redo(self):
-        main('9')
+        main('came 9')
         main('undo')
         s, _ = main('redo')
         assert '9:00' in s
@@ -283,7 +293,7 @@ class TestProject:
         assert '9:00' in s
 
     def test_project_taking_time_from_default_project(self):
-        main('9 16:45 0m')
+        main('came 9 left 16:45 lunch 0m')
         main('project new "EPG Support"')
         s, _ = main('project EP 4')
         assert '4:00' in s
@@ -293,7 +303,7 @@ class TestProject:
 @pytest.mark.usefixtures('temp_logfile')
 class TestNonWorkingProject:
     def test_non_working_project(self):
-        main('9 15:00 0m')
+        main('came 9 left 15:00 lunch 0m')
         main('project new "Parental leave" --no-work')
         s, _ = main('project Par 2')
         assert '02:00' in s  # Parental leave

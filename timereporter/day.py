@@ -36,23 +36,14 @@ class Day:
         args = self._to_argument_list(args)
         args = self._format_minutes(args)
 
-        if args[0] in ('came', 'left', 'lunch'):
-            setattr(self, args[0], TimeParser.parse(args[1]))
-            return
-
-        # Assume all args are time
-        try:
-            self.lunch = TimeParser.try_parse_minutes(args[0])
-        except TimeParserError:
-            self._came_or_left = TimeParser.parse(args[0])
-            if len(args) > 1:
-                self._came = TimeParser.parse(args[0])
-                first, second = (
-                    TimeParser.parse(args[0]), TimeParser.parse(args[1]))
-                times = sorted([first, second])
-                self._came, self._left = times
-            if len(args) > 2:
-                self.lunch = TimeParser.parse(args[2])
+        trailing_args = list(args)
+        for i, arg in enumerate(args):
+            if arg in ('came', 'left', 'lunch'):
+                setattr(self, arg, TimeParser.parse(args[i + 1]))
+                trailing_args.remove(arg)
+                trailing_args.remove(args[i + 1])
+        if trailing_args:
+            raise TrailingArgumentsError(trailing_args)
 
     @staticmethod
     def _to_argument_list(args):
@@ -64,13 +55,10 @@ class Day:
     @staticmethod
     def _format_minutes(args):
         # Change 45 min and 45 m to 45m
-        to_delete = len(args)
         for i, _ in enumerate(args):
             if args[i] == 'm' or args[i] == 'min':
                 args[i - 1] = args[i - 1] + 'm'
-                to_delete = i
-        args = args[0:to_delete] + args[to_delete:]
-        return args
+        return [arg for arg in args if arg not in ('m', 'min')]
 
     def __add__(self, other):
         if not isinstance(other, Day):
@@ -213,14 +201,22 @@ class Day:
         return time_.hour * 3600 + time_.minute * 60 + time_.second
 
 
-class DayAddError(Exception):
+class DayError(Exception):
+    """Base class for day errors"""
+
+
+class DayAddError(DayError):
     """Raised when trying to add a Day to another class
     """
     pass
 
 
-class DayLoadingError(Exception):
-    """Raised when trying to load a Day with the wrong types"""
+class TrailingArgumentsError(DayError):
+    """Raised when too many arguments"""
+
+    def __init__(self, trailing_args):
+        super().__init__(f'Error: Trailing arguments: '
+                         f'{", ".join(trailing_args)}.')
 
 
 @camelRegistry.dumper(Day, 'day', version=1)

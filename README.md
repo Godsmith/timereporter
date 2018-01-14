@@ -52,9 +52,8 @@ default value is 27900 seconds.
 
 ### Report time on default project
   
-    t [<day>] <time> [<time>] [<time>]
-    t [<day>] [came | left | lunch] <time>
-    t [last | next] <weekday> <time>
+    t [<day> | [last | next] <weekday>] [came <time>] [left <time>] [lunch
+    <time>]
 
 `<time>` must be in one of the following formats: `9`, `9:00`, `0900`...
 
@@ -110,7 +109,7 @@ By default, Saturday and Sunday are not shown, but this can be changed by adding
     t (help | --help | -h)
 
 ##   Examples
-    t last friday 9 17 45m
+    t last friday came 9 left 17 lunch 45m
 
 Reports a working time from 09:00 to 17:00 last Friday.
 
@@ -132,7 +131,7 @@ Shows Monday-Friday of last week in the browser.
 
     t show october --show-weekend
 
-Shows all days of october in the console.
+Shows all days of October in the console.
 
 
 

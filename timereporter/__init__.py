@@ -2,10 +2,8 @@
 
 Usage:
   Report time on default project
-    t [<day>] <time> [<time>] [<time>]
-    t [<day>] [came | left | lunch] <time>
-    t [last | next] <weekday> <time>
-    t [<day>] <time> [<time>] [<time>]
+    t [<day> | [last | next] <weekday>] [came <time>] [left <time>] [lunch
+    <time>]
 
   Create a new project
     t project new [--no-work] <project>

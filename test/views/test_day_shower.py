@@ -22,7 +22,7 @@ class TestDayShower:
     def test_added(self):
         c = Calendar()
         wednesday = today + timedelta(days=-today.weekday() + 2)
-        c = c.add(Day('8 18 45m', wednesday))
+        c = c.add(Day('came 8 left 18 lunch 45m', wednesday))
         s = DayShower.show_days(c, today, 5)
         assert '08:00' in s
         assert '18:00' in s

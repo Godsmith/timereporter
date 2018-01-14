@@ -14,13 +14,13 @@ class Command:
         self.calendar = calendar
         self.date = date_
         self.args = args
-        self.options = self._parse_options()
-
         if self.args is None:
             self.args = []
         # TODO: use the new argument splitter method instead
         elif isinstance(self.args, str):
             self.args = self.args.split()
+        self.options = self._parse_options()
+
 
     def _parse_options(self):
         options = {}

@@ -112,6 +112,7 @@ class InvalidShowCommandError(Exception):
     pass
 
 
+# TODO: this is not catched in __main__.
 class NoDaysError(Exception):
     """Raised when trying to operate on a calendar without any days"""
 

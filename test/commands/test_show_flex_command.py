@@ -37,6 +37,8 @@ class TestShowFlexCommand:
         s, _ = main('show flex --from=2017-01-01 --to=2017-01-01')
         assert '01:00' in s
 
+    # TODO: change this to a main() test instead, it will show the error is
+    # not caught
     def test_empty_calendar(self):
         calendar = Calendar()
         command = ShowFlexCommand(calendar, date(2017, 1, 1), 'show flex')
@@ -45,7 +47,8 @@ class TestShowFlexCommand:
 
     def test_earliest_date_in_calendar(self):
         calendar = Calendar()
-        pc = TimeReporterCommand(calendar, date(2017, 1, 1), '8 17'.split())
+        pc = TimeReporterCommand(calendar,
+                                 date(2017, 1, 1), 'came 8 lunch 17'.split())
         calendar, _ = pc.execute()
         command = ShowFlexCommand(calendar, date(2017, 1, 1), 'show flex')
 

@@ -9,6 +9,7 @@ from timereporter.date_arg_parser import DateArgParser, MultipleDateError
 from timereporter.commands.command_factory import CommandFactory
 from timereporter.commands.project_command import ProjectError
 from timereporter.commands.show_commands import InvalidShowCommandError
+from timereporter.day import DayError
 from timereporter.calendar_printer import CalendarPrinter
 
 TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
@@ -46,7 +47,7 @@ def main(args=None):
             data = new_calendar.dump()
             f.write(data)
         return to_print, 0
-    except (TimeParserError, CalendarError,
+    except (TimeParserError, CalendarError, DayError,
             ProjectError, InvalidShowCommandError) as err:
         return str(err), 1
 
