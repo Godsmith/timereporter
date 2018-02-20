@@ -59,14 +59,14 @@ default value is 27900 seconds.
 
 Additionally, lunch times can also be in one of the following formats: `45m`, `45 min`, ... 
 
-`<day>` must be one of
+`<day>` must be one or more of
 - `yesterday`,
 - `monday`, `Tuesday`, ..., or
 - an ISO 8601 date, e.g. `2017-04-01`.
 
 If `<day>` is not set, today's date will be used.
 
-`<weekday>` must be one of `monday`, `Tuesday`, ...,
+`<weekday>` must be one or more of `monday`, `Tuesday`, ...,
 
 ### Create a new project
 

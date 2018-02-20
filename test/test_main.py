@@ -320,6 +320,14 @@ class TestNonWorkingProject:
         assert '--no-work' not in s
 
 
+@pytest.mark.usefixtures('temp_logfile')
+class TestMultipleProjectDays:
+    def test_two_days(self):
+        main('project new "EPG Support"')
+        s, _ = main('project "EPG Support" 2:00 monday tuesday')
+        assert s.count('02:00') == 2
+
+
 class TestSplitArguments:
     def test_no_quotes(self):
         assert split_arguments('1 2 3') == ['1', '2', '3']
@@ -333,6 +341,7 @@ class TestSplitArguments:
 
     def test_two_sets_of_quotes(self):
         assert split_arguments('1 "2 3" "4 5"') == ['1', '2 3', '4 5']
+
 
 class TestUnexpectedOption:
     def test_catch_error(self):

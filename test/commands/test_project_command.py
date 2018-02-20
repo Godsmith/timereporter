@@ -111,6 +111,4 @@ class TestReportTimeByProjectNumber:
             pc.execute()
         assert '""' in str(e.value)
 
-class TestMultipleDays:
-    pass
 

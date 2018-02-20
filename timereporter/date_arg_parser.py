@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from typing import Union
 
 from timereporter.mydatetime import timedelta
 
@@ -10,32 +11,27 @@ class DateArgParser:
     def parse(self, args):
         dates = list(
             date for date in map(self.to_date, args) if date is not None)
-        if len(dates) > 1:
-            raise MultipleDateError(
-                f'The command contains multiple date strings: '
-                f'{[str(date_) for date_ in dates]}')
-        elif len(dates) == 1:
-            date_ = dates[0]
-        else:
-            date_ = self.today
+        if not dates:
+            dates = [self.today]
 
         if 'last' in args:
-            date_ -= timedelta(weeks=1)
+            dates = list(date_ - timedelta(weeks=1) for date_ in dates)
             args.remove('last')
         elif 'next' in args:
-            date_ += timedelta(weeks=1)
+            dates = list(date_ + timedelta(weeks=1) for date_ in dates)
             args.remove('next')
 
         args = [arg for arg in args if self.to_date(arg) is None]
 
-        return date_, args
+        return dates, args
 
-    def to_date(self, str_: str) -> date:
+    def to_date(self, str_: str) -> Union[date, None]:
         """Parses a string to a datetime.date.
 
         :param str_: a string on the form on the form YYYY-MM-DD, 'yesterday',
                      'monday' or 'Monday'
-        :return: a datetime.date() object for the supplied date
+        :return: a datetime.date() object for the supplied date, or None if
+                 the date could not be parsed.
         """
         if self._is_date(str_):
             return datetime.strptime(str_, '%Y-%m-%d').date()
@@ -59,8 +55,3 @@ class DateArgParser:
             return False
 
 
-class MultipleDateError(Exception):
-    """Raised when multiple strings that can be parsed as a date are detected
-    in a command
-    """
-    pass

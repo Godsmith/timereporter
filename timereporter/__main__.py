@@ -5,7 +5,7 @@ from datetime import date
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
 from timereporter.calendar import Calendar
-from timereporter.date_arg_parser import DateArgParser, MultipleDateError
+from timereporter.date_arg_parser import DateArgParser
 from timereporter.commands.command_factory import CommandFactory
 from timereporter.commands.project_command import ProjectError
 from timereporter.commands.show_commands import ShowCommandError
@@ -32,15 +32,14 @@ def main(args=None):
     except (UnreadableCamelFileError, DirectoryDoesNotExistError) as err:
         return err, 1
 
-    try:
-        parser = DateArgParser(today())
-        date_, args = parser.parse(args)
-    except MultipleDateError as err:
-        return err, 1
+    parser = DateArgParser(today())
+    dates, args = parser.parse(args)
 
     try:
-        command = CommandFactory.get_command(calendar, date_, args)
-        new_calendar, view = command.execute()
+        new_calendar = calendar
+        for date_ in dates:
+            command = CommandFactory.get_command(new_calendar, date_, args)
+            new_calendar, view = command.execute()
 
         to_print = CalendarPrinter(calendar, new_calendar, view).to_print()
 
