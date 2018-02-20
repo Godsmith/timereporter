@@ -1,6 +1,6 @@
 import pytest
 from timereporter.__main__ import main
-from timereporter.commands.command import UnexpectedOptionException
+from timereporter.commands.command import CommandError
 from timereporter.commands.show_commands import ShowFlexCommand, NoDaysError
 from timereporter.commands.time_reporter_command import TimeReporterCommand
 from timereporter.calendar import Calendar

@@ -21,7 +21,6 @@ class Command:
             self.args = self.args.split()
         self.options = self._parse_options()
 
-
     def _parse_options(self):
         options = {}
         new_args = []
@@ -32,7 +31,7 @@ class Command:
                 options[name] = value
 
                 if name not in self.valid_options():
-                    raise UnexpectedOptionException(name)
+                    raise UnexpectedOptionError(name)
             else:
                 new_args.append(arg)
         self.args = new_args
@@ -55,9 +54,13 @@ class Command:
         return self.calendar
 
 
-class UnexpectedOptionException(Exception):
+class CommandError(Exception):
+    pass
+
+
+class UnexpectedOptionError(CommandError):
     """Raised when there is an option not expected by the command."""
 
     def __init__(self, option):
         # TODO: this should print the help for the command instead
-        super().__init__(f'Unexpected option: {option}')
+        super().__init__(f'Error: unexpected option: {option}')

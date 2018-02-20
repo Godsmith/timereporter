@@ -333,3 +333,8 @@ class TestSplitArguments:
 
     def test_two_sets_of_quotes(self):
         assert split_arguments('1 "2 3" "4 5"') == ['1', '2 3', '4 5']
+
+class TestUnexpectedOption:
+    def test_catch_error(self):
+        s, _ = main('t Tuesday --project Temp 7:45')
+        assert "unexpected" in s
