@@ -14,6 +14,7 @@ class ShowWeekendCommand(Command):
     def valid_options(self):
         return ['--show-weekend']
 
+
 class ShowWeekCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
@@ -52,7 +53,8 @@ class ShowMonthHtmlCommand(ShowWeekendCommand):
                 args[2] == 'html')
 
     def view(self):
-        return BrowserMonthView(self.date, self.args[1], '--show-weekend' in self.options)
+        return BrowserMonthView(self.date, self.args[1],
+                                '--show-weekend' in self.options)
 
 
 class ShowMonthCommand(ShowWeekendCommand):
@@ -65,7 +67,8 @@ class ShowMonthCommand(ShowWeekendCommand):
                 args[1] in ConsoleMonthView.MONTHS)
 
     def view(self):
-        return ConsoleMonthView(self.date, self.args[1], '--show-weekend' in self.options)
+        return ConsoleMonthView(self.date, self.args[1],
+                                '--show-weekend' in self.options)
 
 
 class ShowFlexCommand(Command):
@@ -82,12 +85,18 @@ class ShowFlexCommand(Command):
     def view(self):
         # TODO: handle errors in to_date
         if '--to' in self.options:
-            to = datetime.strptime(self.options['--to'], '%Y-%m-%d').date()
+            try:
+                to = datetime.strptime(self.options['--to'], '%Y-%m-%d').date()
+            except ValueError:
+                raise InvalidArgumentError('--to', self.options['--to'])
         else:
             to = self.date
 
         if '--from' in self.options:
-            from_ = datetime.strptime(self.options['--from'], '%Y-%m-%d').date()
+            try:
+                from_ = datetime.strptime(self.options['--from'], '%Y-%m-%d').date()
+            except ValueError:
+                raise InvalidArgumentError('--from', self.options['--from'])
         else:
             from_ = self._earliest_date_in_calendar()
 
@@ -108,8 +117,18 @@ class ShowErrorHandler(Command):
         return False
 
 
-class InvalidShowCommandError(Exception):
+class ShowCommandError(Exception):
     pass
+
+
+class InvalidShowCommandError(ShowCommandError):
+    pass
+
+
+class InvalidArgumentError(ShowCommandError):
+    def __init__(self, argument, value):
+        super().__init__(f'Error: invalid value "{value}" for argument '
+                         f'"{argument}".')
 
 
 # TODO: this is not catched in __main__.

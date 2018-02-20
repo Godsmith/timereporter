@@ -53,3 +53,13 @@ class TestShowFlexCommand:
         command = ShowFlexCommand(calendar, date(2017, 1, 1), 'show flex')
 
         assert command._earliest_date_in_calendar() == date(2017, 1, 1)
+
+@pytest.mark.usefixtures('temp_logfile')
+class TestInvalidStrings:
+    def test_to(self):
+        s, _ = main('show flex --to=NONSENSE')
+        assert 'NONSENSE' in s
+
+    def test_from(self):
+        s, _ = main('show flex --from=NONSENSE')
+        assert 'NONSENSE' in s
