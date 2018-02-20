@@ -20,9 +20,9 @@ def main(args=None):
     """
     args = _to_argument_list(args)
 
-    if len(args) == 1:
-        if args[0] in ('help', '--help', '-h'):
-            return sys.modules[__loader__.name.split('.')[0]].__doc__, 0
+    if '--help' in args or '-h' in args or (
+            len(args) > 0 and args[0] == 'help'):
+        return sys.modules[__loader__.name.split('.')[0]].__doc__, 0
 
     path = os.environ.get(TIMEREPORTER_FILE, default_path())
 

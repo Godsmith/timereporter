@@ -21,6 +21,10 @@ class TestHelp:
         s, _ = main([arg])
         assert 'Usage:' in s
 
+    def test_dash_dash_help_even_when_other_commands(self):
+        s, _ = main('show flex --help')
+        assert 'Usage:' in s
+
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestTimeReporterCommand:
