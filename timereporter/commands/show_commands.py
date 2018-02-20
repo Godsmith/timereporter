@@ -83,24 +83,20 @@ class ShowFlexCommand(Command):
         return '--to --from'.split()
 
     def view(self):
-        # TODO: handle errors in to_date
-        if '--to' in self.options:
-            try:
-                to = datetime.strptime(self.options['--to'], '%Y-%m-%d').date()
-            except ValueError:
-                raise InvalidArgumentError('--to', self.options['--to'])
-        else:
-            to = self.date
-
-        if '--from' in self.options:
-            try:
-                from_ = datetime.strptime(self.options['--from'], '%Y-%m-%d').date()
-            except ValueError:
-                raise InvalidArgumentError('--from', self.options['--from'])
-        else:
-            from_ = self._earliest_date_in_calendar()
-
+        to = self._get_option_as_date('--to', self.date)
+        from_ = self._get_option_as_date('--from',
+                                         self._earliest_date_in_calendar())
         return FlexView(from_, to)
+
+    def _get_option_as_date(self, option, default):
+        if option in self.options:
+            try:
+                return datetime.strptime(self.options[option],
+                                         '%Y-%m-%d').date()
+            except ValueError:
+                raise InvalidArgumentError(option, self.options[option])
+        else:
+            return default
 
     def _earliest_date_in_calendar(self):
         # TODO: move to Calendar

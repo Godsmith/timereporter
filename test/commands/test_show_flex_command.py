@@ -56,10 +56,10 @@ class TestShowFlexCommand:
 
 @pytest.mark.usefixtures('temp_logfile')
 class TestInvalidStrings:
-    def test_to(self):
+    def test_to(self, setup):
         s, _ = main('show flex --to=NONSENSE')
         assert 'NONSENSE' in s
 
-    def test_from(self):
+    def test_from(self, setup):
         s, _ = main('show flex --from=NONSENSE')
         assert 'NONSENSE' in s
