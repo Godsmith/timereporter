@@ -61,12 +61,12 @@ Additionally, lunch times can also be in one of the following formats: `45m`, `4
 
 `<day>` must be one of
 - `yesterday`,
-- `monday`, `tuesday`, ..., or
+- `monday`, `Tuesday`, ..., or
 - an ISO 8601 date, e.g. `2017-04-01`.
 
 If `<day>` is not set, today's date will be used.
 
-`<weekday>` must be one of `monday`, `tuesday`, ...,
+`<weekday>` must be one of `monday`, `Tuesday`, ...,
 
 ### Create a new project
 
