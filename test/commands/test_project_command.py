@@ -36,21 +36,21 @@ class TestProjectCommand:
             pc = ProjectCommand(Calendar(), mockdate_tuesday, 'project new'.split())
             pc.execute()
 
-    def test_trailing_args_creating_new_error(self, mockdate_tuesday):
+    def test_unexpected_option_creating_new_error(self, mockdate_tuesday):
         with pytest.raises(UnexpectedOptionError):
             pc = ProjectCommand(Calendar(),
                                 mockdate_tuesday,
                                 'project new Hello World'.split())
             pc.execute()
 
-    def test_trailing_args_reporting_name_error(self, mockdate_tuesday):
+    def test_unexpected_option_reporting_name_error(self, mockdate_tuesday):
         with pytest.raises(UnexpectedOptionError):
             pc = ProjectCommand(Calendar(),
                                 mockdate_tuesday,
                                 'project Hello World 7'.split())
             pc.execute()
 
-    def test_trailing_args_reporting_number_error(self, mockdate_tuesday):
+    def test_unexpected_option_reporting_number_error(self, mockdate_tuesday):
         with pytest.raises(UnexpectedOptionError):
             pc = ProjectCommand(Calendar(),
                                 mockdate_tuesday,
