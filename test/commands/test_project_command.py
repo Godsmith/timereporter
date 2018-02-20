@@ -4,7 +4,8 @@ from timereporter.commands.project_command import ProjectCommand, \
     ProjectNameDoesNotExistError, AmbiguousProjectNameError, \
     InvalidProjectNumberError, InvalidTimeError, \
     CannotReportOnDefaultProjectError, NoProjectNameError, \
-    AmbiguousProjectNumberError, TrailingArgumentsError
+    AmbiguousProjectNumberError
+from timereporter.commands.command import UnexpectedOptionError
 from timereporter.calendar import Calendar
 
 
@@ -36,21 +37,21 @@ class TestProjectCommand:
             pc.execute()
 
     def test_trailing_args_creating_new_error(self, mockdate_tuesday):
-        with pytest.raises(TrailingArgumentsError):
+        with pytest.raises(UnexpectedOptionError):
             pc = ProjectCommand(Calendar(),
                                 mockdate_tuesday,
                                 'project new Hello World'.split())
             pc.execute()
 
     def test_trailing_args_reporting_name_error(self, mockdate_tuesday):
-        with pytest.raises(TrailingArgumentsError):
+        with pytest.raises(UnexpectedOptionError):
             pc = ProjectCommand(Calendar(),
                                 mockdate_tuesday,
                                 'project Hello World 7'.split())
             pc.execute()
 
     def test_trailing_args_reporting_number_error(self, mockdate_tuesday):
-        with pytest.raises(TrailingArgumentsError):
+        with pytest.raises(UnexpectedOptionError):
             pc = ProjectCommand(Calendar(),
                                 mockdate_tuesday,
                                 'project 1 2 7'.split())

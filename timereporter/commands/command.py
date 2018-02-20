@@ -61,6 +61,10 @@ class CommandError(Exception):
 class UnexpectedOptionError(CommandError):
     """Raised when there is an option not expected by the command."""
 
-    def __init__(self, option):
+    def __init__(self, option: Union[str, list]):
+        suffix = ''
+        if isinstance(option, list):
+            option = ', '.join(option)
+            suffix = 's'
         # TODO: this should print the help for the command instead
-        super().__init__(f'Error: unexpected option: {option}')
+        super().__init__(f'Error: unexpected option{suffix}: {option}')

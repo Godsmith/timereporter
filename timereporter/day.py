@@ -215,7 +215,7 @@ class TrailingArgumentsError(DayError):
     """Raised when too many arguments"""
 
     def __init__(self, trailing_args):
-        super().__init__(f'Error: Trailing arguments: '
+        super().__init__(f'Error: Unexpected arguments: '
                          f'{", ".join(trailing_args)}.')
 
 

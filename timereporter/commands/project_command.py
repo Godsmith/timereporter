@@ -1,5 +1,5 @@
 from timereporter.day import Day
-from timereporter.commands.command import Command
+from timereporter.commands.command import Command, UnexpectedOptionError
 from timereporter.calendar import Calendar
 from timereporter.views.view import View
 
@@ -26,7 +26,7 @@ class ProjectCommand(Command):
 
     def _report_on_project_name(self):
         if len(self.args) > 2:
-            raise TrailingArgumentsError(self.args[2:])
+            raise UnexpectedOptionError(self.args[2:])
         project_name = self.args[0]
         project_name_matches = self._project_name_matches(project_name)
         if not project_name_matches:
@@ -45,7 +45,7 @@ class ProjectCommand(Command):
         if len(self.args) == 1:
             raise NoProjectNameError()
         if len(self.args) > 2:
-            raise TrailingArgumentsError(self.args[2:])
+            raise UnexpectedOptionError(self.args[2:])
         project_name = ' '.join(self.args[1:])
         return self.calendar.add_project(project_name,
                                          work='--no-work' not in self.options)
@@ -65,7 +65,7 @@ class ProjectCommand(Command):
 
     def _report_on_project_number(self):
         if len(self.args) > 2:
-            raise TrailingArgumentsError(self.args[2:])
+            raise UnexpectedOptionError(self.args[2:])
         self._validate_report_on_project_number(self.args)
         day = Day(date_=self.date,
                   project_name=self._project_name(int(self.args[0])),
@@ -159,10 +159,3 @@ class CannotReportOnDefaultProjectError(ProjectError):
     def __init__(self):
         super().__init__('Error: Cannot report on default project.')
 
-
-class TrailingArgumentsError(ProjectError):
-    """Raised when trying to report on default project
-    """
-
-    def __init__(self, arguments):
-        super().__init__(f'Error: trailing arguments "{" ".join(arguments)}"')
