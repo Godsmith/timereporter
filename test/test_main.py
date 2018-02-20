@@ -69,6 +69,10 @@ class TestTimeReporterCommand:
         s, _ = main('yesterday came 9')
         assert '09:00' in s
 
+    def test_came_weekday_capital_letter(self):
+        s, _ = main('Monday came 9')
+        assert '09:00' in s
+
     def test_weekday(self):
         main('monday came 1')
         main('tuesday came 2')

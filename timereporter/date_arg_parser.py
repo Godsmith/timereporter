@@ -33,7 +33,8 @@ class DateArgParser:
     def to_date(self, str_: str) -> date:
         """Parses a string to a datetime.date.
 
-        :param str_: a string on the form on the form YYYY-MM-DD or 'yesterday'
+        :param str_: a string on the form on the form YYYY-MM-DD, 'yesterday',
+                     'monday' or 'Monday'
         :return: a datetime.date() object for the supplied date
         """
         if self._is_date(str_):
@@ -43,7 +44,7 @@ class DateArgParser:
 
         try:
             index = 'monday tuesday wednesday thursday friday'.split().index(
-                str_)
+                str_.lower())
             return self.today + timedelta(days=-self.today.weekday() + index)
 
         except ValueError:
