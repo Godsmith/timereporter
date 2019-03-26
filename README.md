@@ -3,7 +3,6 @@ Report working time from the command line.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/2qfkospugig8y9m6?svg=true)](https://ci.appveyor.com/project/Godsmith/timereporter)
 [![codecov](https://codecov.io/gh/Godsmith/timereporter/branch/master/graph/badge.svg)](https://codecov.io/gh/Godsmith/timereporter)
-[![Lintly](https://lintly.com/gh/Godsmith/timereporter/badge.svg)](https://lintly.com/gh/Godsmith/timereporter/)
 
 ## Requirements
 
