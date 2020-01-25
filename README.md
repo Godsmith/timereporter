@@ -133,4 +133,6 @@ Shows Monday-Friday of last week in the browser.
 Shows all days of October in the console.
 
 
+## Running tests
 
+pytest test
