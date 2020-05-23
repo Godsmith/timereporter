@@ -2,9 +2,8 @@ import pytest
 
 import timereporter.__main__
 from timereporter.__main__ import DirectoryDoesNotExistError, \
-    UnreadableCamelFileError, main, get_calendar, split_arguments, \
+    UnreadableCamelFileError, main, split_arguments, \
     OddNumberOfQuotesError
-from timereporter.calendar import Calendar
 from timereporter.mydatetime import timedelta
 
 
