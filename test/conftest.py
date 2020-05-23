@@ -3,6 +3,7 @@ from datetime import date
 import pytest
 import shutil
 
+import timereporter
 import timereporter.__main__ as __main__
 from timereporter.views.browser_shower import BrowserShower
 
@@ -68,6 +69,12 @@ def custom_log_path(tmpdir):
 
     os.environ = before
 
+@pytest.fixture
+def mock_default_path(tmpdir, monkeypatch):
+    default_path = tmpdir.join('timereporter.yaml')
+    monkeypatch.setattr(timereporter.__main__, 'default_path', lambda: default_path)
+    return default_path
+
 
 @pytest.fixture
 def mock_browser():
@@ -83,11 +90,3 @@ def mock_browser():
     BrowserShower.webbrowser = lambda _: mock_browser
     yield mock_browser
     BrowserShower.webbrowser = temp
-
-
-@pytest.fixture
-def empty_os_environ():
-    osenviron = os.environ
-    os.environ = {'USERPROFILE': osenviron['USERPROFILE']}
-    yield
-    os.environ = osenviron

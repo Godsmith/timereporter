@@ -198,14 +198,11 @@ class TestFlex:
         assert '-01:00' in s
 
 
-class TestWithoutEnvironmentVariable:
-    def test_existing_directory_no_file(self, empty_os_environ, tmpdir):
-        timereporter.__main__.default_path = lambda: tmpdir.join(
-            'timereporter.yaml')
+def test_default_path(mock_default_path, monkeypatch):
+    monkeypatch.setenv('USERPROFILE', str(mock_default_path))
 
-        s, _ = main('came 9')
-
-        assert '9:00' in s
+    s, _ = main('came 9')
+    assert '9:00' in s
 
 
 class TestUndo:
