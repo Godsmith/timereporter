@@ -46,6 +46,15 @@ def temp_logfile(tmpdir_factory):
     os.environ = before
 
 
+@pytest.fixture()
+def non_existing_log_path():
+    path = '/does/not/exist'
+    before = dict(os.environ)
+    os.environ['TIMEREPORTER_FILE'] = path
+    yield path
+    os.environ = before
+
+
 @pytest.fixture
 def custom_log_path(tmpdir):
     before = dict(os.environ)

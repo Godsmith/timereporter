@@ -230,20 +230,20 @@ class TestUndo:
         assert '8:00' in s
 
 
-class TestGetCalendar:
-    def test_unreadable_file(self, empty_os_environ, tmpdir):
-        file = tmpdir.join('timereporter.yaml')
-        file.write('')
-        path = tmpdir.join('timereporter.yaml')
+class TestInvalidFile:
+    def test_unreadable_file(self, temp_logfile):
+        temp_logfile.write('')
 
-        with pytest.raises(UnreadableCamelFileError):
-            get_calendar(path)
+        err, code = main('')
 
-    def test_not_working_path(self, empty_os_environ):
-        path = "C:\\does\\not\\exist"
+        assert type(err) is UnreadableCamelFileError
+        assert code == 1
 
-        with pytest.raises(DirectoryDoesNotExistError):
-            get_calendar(path)
+    def test_not_working_path(self, non_existing_log_path):
+        err, code = main('')
+
+        assert type(err) is DirectoryDoesNotExistError
+        assert code == 1
 
 
 class TestProject:
