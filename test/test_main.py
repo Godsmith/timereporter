@@ -3,7 +3,7 @@ import pytest
 import timereporter.__main__
 from timereporter.__main__ import DirectoryDoesNotExistError, \
     UnreadableCamelFileError, main, split_arguments, \
-    OddNumberOfQuotesError
+    OddNumberOfQuotesError, default_path
 from timereporter.mydatetime import timedelta
 
 
@@ -197,12 +197,24 @@ class TestFlex:
         s, _ = main('came 10 left 16:45')
         assert '-01:00' in s
 
+class TestDefaultPath:
+    def test_use_default_path_when_no_variable(self, mock_default_path, monkeypatch):
+        monkeypatch.setenv('USERPROFILE', str(mock_default_path))
 
-def test_default_path(mock_default_path, monkeypatch):
-    monkeypatch.setenv('USERPROFILE', str(mock_default_path))
+        s, _ = main('came 9')
+        assert '9:00' in s
 
-    s, _ = main('came 9')
-    assert '9:00' in s
+    def test_windows(self, monkeypatch):
+        monkeypatch.setenv('USERPROFILE', 'foo')
+        monkeypatch.delenv('HOME', raising=False)
+
+        assert default_path() == 'foo/Dropbox/timereporter.yaml'
+
+    def test_linux(self, monkeypatch):
+        monkeypatch.delenv('USERPROFILE', raising=False)
+        monkeypatch.setenv('HOME', 'foo')
+
+        assert default_path() == 'foo/Dropbox/timereporter.yaml'
 
 
 class TestUndo:
