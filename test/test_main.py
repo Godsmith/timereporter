@@ -12,6 +12,10 @@ class TestMain:
         s, exit_code = main()
         assert exit_code == 0
 
+    def test_called_with_wrong_argument_type(self):
+        with pytest.raises(AssertionError):
+            main(1)
+
 
 class TestHelp:
     @pytest.mark.parametrize('arg', ['help', '--help', '-h', ])
@@ -242,13 +246,13 @@ class TestInvalidFile:
     def test_unreadable_file(self, temp_logfile):
         temp_logfile.write('')
 
-        err, code = main('')
+        err, code = main()
 
         assert type(err) is UnreadableCamelFileError
         assert code == 1
 
     def test_not_working_path(self, non_existing_log_path):
-        err, code = main('')
+        err, code = main()
 
         assert type(err) is DirectoryDoesNotExistError
         assert code == 1
