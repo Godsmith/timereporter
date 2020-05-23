@@ -4,17 +4,16 @@ import timereporter.__main__
 from timereporter.__main__ import DirectoryDoesNotExistError, \
     UnreadableCamelFileError, main, get_calendar, split_arguments, \
     OddNumberOfQuotesError
+from timereporter.calendar import Calendar
 from timereporter.mydatetime import timedelta
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestMain:
     def test_exit_code(self):
         s, exit_code = main()
         assert exit_code == 0
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestHelp:
     @pytest.mark.parametrize('arg', ['help', '--help', '-h', ])
     def test_help(self, arg):
@@ -26,7 +25,6 @@ class TestHelp:
         assert 'Usage:' in s
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestTimeReporterCommand:
     def test_show_last_week(self):
         s, _ = main('show last week')
@@ -114,7 +112,6 @@ class TestTimeReporterCommand:
         assert '01:00' not in s
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestShow:
     def test_show_day(self):
         main('came 9')
@@ -162,7 +159,6 @@ class TestShow:
         assert 'Error: invalid show command.' in s
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestDefaultProject:
     def test_working_time_more_than_working_time_per_day(self):
         s, _ = main('came 9 left 18')
@@ -188,7 +184,6 @@ class TestDefaultProject:
         assert '07:00' in s
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestFlex:
     def test_0(self):
         s, _ = main('came 10 left 17:45')
@@ -214,7 +209,6 @@ class TestWithoutEnvironmentVariable:
         assert '9:00' in s
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestUndo:
     def test_undo(self):
         s, _ = main('came 9')
@@ -252,7 +246,6 @@ class TestGetCalendar:
             get_calendar(path)
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestProject:
     def test_basic(self):
         s, _ = main('project new "EPG Support"')
@@ -308,7 +301,6 @@ class TestProject:
         assert '3:45' in s
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestNonWorkingProject:
     def test_non_working_project(self):
         main('came 9 left 15:00 lunch 0m')
@@ -320,7 +312,6 @@ class TestNonWorkingProject:
         assert '--no-work' not in s
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestMultipleProjectDays:
     def test_two_days(self):
         main('project new "EPG Support"')

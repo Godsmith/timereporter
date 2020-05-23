@@ -37,7 +37,7 @@ def mockdate_oct_24():
         __main__.today = temp
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def temp_logfile(tmpdir_factory):
     fn = tmpdir_factory.mktemp('data').join('timereporter.yaml')
     before = dict(os.environ)

@@ -1,3 +1,4 @@
+import pytest
 from timereporter.__main__ import main
 
 

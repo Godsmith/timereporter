@@ -19,6 +19,6 @@ class TestCrash:
             assert "1,25" not in s
             assert "25,25" in s
 
-    def test_came_9_t_17(self, temp_logfile):
+    def test_came_9_t_17(self):
         main('came 9')
         main('17')

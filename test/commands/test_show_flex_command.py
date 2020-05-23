@@ -19,7 +19,6 @@ def setup():
     main('2017-01-02 left 18:45')
 
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestShowFlexCommand:
     def test_without_args(self, setup):
         s, _ = main('show flex')
@@ -54,7 +53,6 @@ class TestShowFlexCommand:
 
         assert command._earliest_date_in_calendar() == date(2017, 1, 1)
 
-@pytest.mark.usefixtures('temp_logfile')
 class TestInvalidStrings:
     def test_to(self, setup):
         s, _ = main('show flex --to=NONSENSE')
