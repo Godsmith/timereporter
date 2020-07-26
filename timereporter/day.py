@@ -1,9 +1,10 @@
 """Supply the Day class and associated exceptions."""
 from collections import defaultdict
-from datetime import datetime, date
+from datetime import datetime
+import datetime
 from typing import List, Dict
 
-from timereporter.timeparser import TimeParser, TimeParserError
+from timereporter.timeparser import TimeParser
 from timereporter.mydatetime import timedelta, time
 from timereporter.camel_registry import camelRegistry
 from typing import Union
@@ -20,7 +21,7 @@ class Day:
     def __init__(
         self,
         args: Union[List[str], str] = None,
-        date_: date = None,
+        date_: datetime.date = None,
         project_name: str = None,
         project_time: str = None,
     ):

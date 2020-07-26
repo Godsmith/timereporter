@@ -2,8 +2,6 @@ import pytest
 
 import timereporter.__main__
 from timereporter.__main__ import (
-    DirectoryDoesNotExistError,
-    UnreadableCamelFileError,
     main,
     split_arguments,
     OddNumberOfQuotesError,
@@ -19,7 +17,7 @@ class TestMain:
 
 
 class TestHelp:
-    @pytest.mark.parametrize("arg", ["help", "--help", "-h",])
+    @pytest.mark.parametrize("arg", ["help", "--help", "-h"])
     def test_help(self, arg):
         s, _ = main([arg])
         assert "Usage:" in s

@@ -1,7 +1,7 @@
 import sys
 import os
 from datetime import date
-from typing import List, Tuple, Iterable, Union
+from typing import List, Tuple, Union
 
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
@@ -20,6 +20,8 @@ TIMEREPORTER_FILE = "TIMEREPORTER_FILE"
 def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
     """This is executed when running "python timereporter".
     """
+    if not arg_or_args:
+        arg_or_args = []
     args = _to_argument_list(arg_or_args)
 
     if "--help" in args or "-h" in args or (len(args) > 0 and args[0] == "help"):
@@ -101,10 +103,8 @@ def _can_file_be_created_at(path):
 def _to_argument_list(arg_or_args: Union[List[str], str]) -> List[str]:
     if isinstance(arg_or_args, list):
         return arg_or_args
-    if isinstance(arg_or_args, str):
-        return split_arguments(arg_or_args)
     else:
-        return []
+        return split_arguments(arg_or_args)
 
 
 # TODO: Extract class and make usable by Command to make tests less error prone
