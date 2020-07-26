@@ -2,11 +2,11 @@ before_build:
   - choco install codecov
 
 build_script:
-  - C:\Python36\Scripts\pip.exe install -r requirements.txt
-  - C:\Python36\python.exe setup.py install
+  - C:\Python38\Scripts\pip.exe install -r requirements.txt
+  - C:\Python38\python.exe setup.py install
 
 test_script:
-  - C:\PYTHON36\python.exe -m pytest --cov . --cov-report xml test timereporter
+  - C:\PYTHON38\python.exe -m pytest --cov . --cov-report xml test timereporter
 
 after_test:
   - codecov -f coverage.xml
