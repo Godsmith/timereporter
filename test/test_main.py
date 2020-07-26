@@ -17,10 +17,6 @@ class TestMain:
         s, exit_code = main()
         assert exit_code == 0
 
-    def test_called_with_wrong_argument_type(self):
-        with pytest.raises(TypeError):
-            main(1)
-
 
 class TestHelp:
     @pytest.mark.parametrize("arg", ["help", "--help", "-h",])
