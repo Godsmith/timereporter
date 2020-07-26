@@ -255,13 +255,16 @@ class TestInvalidFile:
 
         err, code = main()
 
-        assert type(err) is UnreadableCamelFileError
+        assert "not readable. Remove it to create a new one." in err
         assert code == 1
 
     def test_not_working_path(self, non_existing_log_path):
         err, code = main()
 
-        assert type(err) is DirectoryDoesNotExistError
+        assert (
+            "The directory for the specified path /does/not/exist does not exist."
+            in err
+        )
         assert code == 1
 
 

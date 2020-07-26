@@ -14,6 +14,8 @@ class CalendarPrinter:
             return self.highlight_difference_in_lines(
                 self.view.show(self.old_calendar), self.view.show(self.new_calendar)
             )
+        else:
+            return ''
 
     def highlight_difference_in_lines(self, old, new):
         # TODO: fix for projects which add a line

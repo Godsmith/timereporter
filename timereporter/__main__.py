@@ -1,6 +1,7 @@
 import sys
 import os
 from datetime import date
+from typing import Tuple
 
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
@@ -16,20 +17,20 @@ from timereporter.calendar_printer import CalendarPrinter
 TIMEREPORTER_FILE = "TIMEREPORTER_FILE"
 
 
-def main(args=None):
+def main(args=None) -> Tuple[str, int]:
     """This is executed when running "python timereporter".
     """
     args = _to_argument_list(args)
 
     if "--help" in args or "-h" in args or (len(args) > 0 and args[0] == "help"):
-        return sys.modules[__loader__.name.split(".")[0]].__doc__, 0
+        return sys.modules[__loader__.name.split(".")[0]].__doc__ or "", 0
 
     path = os.environ.get(TIMEREPORTER_FILE, default_path())
 
     try:
         calendar = get_calendar(path)
     except (UnreadableCamelFileError, DirectoryDoesNotExistError) as err:
-        return err, 1
+        return str(err), 1
 
     parser = DateArgParser(today())
     dates, args = parser.parse(args)
