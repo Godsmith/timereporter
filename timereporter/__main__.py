@@ -1,7 +1,7 @@
 import sys
 import os
 from datetime import date
-from typing import List, Tuple, Iterable
+from typing import List, Tuple, Iterable, Union
 
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
@@ -17,10 +17,10 @@ from timereporter.calendar_printer import CalendarPrinter
 TIMEREPORTER_FILE = "TIMEREPORTER_FILE"
 
 
-def main(args: List[str] = None) -> Tuple[str, int]:
+def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
     """This is executed when running "python timereporter".
     """
-    args = _to_argument_list(args)
+    args = _to_argument_list(arg_or_args)
 
     if "--help" in args or "-h" in args or (len(args) > 0 and args[0] == "help"):
         return sys.modules[__loader__.name.split(".")[0]].__doc__ or "", 0
@@ -98,11 +98,11 @@ def _can_file_be_created_at(path):
         return False
 
 
-def _to_argument_list(args) -> List[str]:
-    if isinstance(args, list):
-        return args
-    if isinstance(args, str):
-        return split_arguments(args)
+def _to_argument_list(arg_or_args: Union[List[str], str]) -> List[str]:
+    if isinstance(arg_or_args, list):
+        return arg_or_args
+    if isinstance(arg_or_args, str):
+        return split_arguments(arg_or_args)
     else:
         return []
 
