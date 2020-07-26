@@ -73,7 +73,6 @@ class TestToday:
 class TestUndo:
     def test_only_came(self):
         c = Calendar()
-        c.today = today
         c = c.add(Day("came 9", today))
         assert "09:00" in DayShower.show_days(c, today, 1)
         c = c.undo()
@@ -81,7 +80,6 @@ class TestUndo:
 
     def test_came_left_lunch(self):
         c = Calendar()
-        c.today = today
         c = c.add(Day("came 9 left 15 lunch 30m", today))
         assert "30" in DayShower.show_days(c, today, 1)
         c = c.undo()
@@ -91,7 +89,6 @@ class TestUndo:
 class TestRedo:
     def test_basic(self):
         c = Calendar()
-        Calendar.today = today
         c = c.add(Day("came 9 left 15 lunch 30m", today))
         c = c.undo()
         c = c.redo()
@@ -101,7 +98,6 @@ class TestRedo:
 class TestProject:
     def test_basic(self):
         c = Calendar()
-        Calendar.today = today
         c = c.add(Day(date_=today, project_name="EPG Support", project_time="08:00"))
         c = c.add_project("EPG Support")
         s = DayShower.show_days(c, today, 1)
@@ -130,7 +126,6 @@ class TestNoWorkProject:
 class TestSerialization:
     def test_time(self):
         c = Calendar()
-        Calendar.today = today
         c = c.add(Day("came 9 left 15", today))
         data = c.dump()
         c2 = Calendar.load(data)
@@ -139,7 +134,6 @@ class TestSerialization:
 
     def test_project(self):
         c = Calendar()
-        Calendar.today = today
         c = c.add(Day(date_=today, project_name="EPG Support", project_time="08:00"))
         c = c.add_project("EPG Support")
         data = c.dump()
@@ -152,7 +146,6 @@ class TestSerialization:
 class TestEditDefaultProject:
     def test_edit_default_project(self):
         c = Calendar(default_project_name="Hello world")
-        Calendar.today = today
         s = DayShower.show_days(c, today, 1)
         assert "Hello world" in s
 
@@ -167,7 +160,6 @@ class TestEditDefaultProject:
 class TestEditDefaultWorkingTimePerDay:
     def test_basic(self):
         c = Calendar(target_hours_per_day=timedelta(hours=8.00))
-        Calendar.today = today
         c = c.add(Day("came 9 left 18", today))
         s = DayShower.show_days(c, today, 1)
         assert re.search("Flex *01:00", s)
