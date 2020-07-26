@@ -17,18 +17,19 @@ class Day:
     intervals.
     """
 
-    def __init__(self,
-                 args: Union[List[str], str] = None,
-                 date_: date = None,
-                 project_name: str = None,
-                 project_time: str = None):
+    def __init__(
+        self,
+        args: Union[List[str], str] = None,
+        date_: date = None,
+        project_name: str = None,
+        project_time: str = None,
+    ):
         self.date = date_
         self._came = self._left = self._came_or_left = self._lunch = None
         self._projects = defaultdict(timedelta)
 
         if project_name:
-            self._projects[project_name] = TimeParser.parse_timedelta(
-                project_time)
+            self._projects[project_name] = TimeParser.parse_timedelta(project_time)
 
         if not args:
             return
@@ -38,7 +39,7 @@ class Day:
 
         trailing_args = list(args)
         for i, arg in enumerate(args):
-            if arg in ('came', 'left', 'lunch'):
+            if arg in ("came", "left", "lunch"):
                 setattr(self, arg, TimeParser.parse(args[i + 1]))
                 trailing_args.remove(arg)
                 trailing_args.remove(args[i + 1])
@@ -56,15 +57,15 @@ class Day:
     def _format_minutes(args):
         # Change 45 min and 45 m to 45m
         for i, _ in enumerate(args):
-            if args[i] == 'm' or args[i] == 'min':
-                args[i - 1] = args[i - 1] + 'm'
-        return [arg for arg in args if arg not in ('m', 'min')]
+            if args[i] == "m" or args[i] == "min":
+                args[i - 1] = args[i - 1] + "m"
+        return [arg for arg in args if arg not in ("m", "min")]
 
     def __add__(self, other):
         if not isinstance(other, Day):
-            raise DayAddError('Cannot add Day to another class')
+            raise DayAddError("Cannot add Day to another class")
         if self.date and other.date and self.date != other.date:
-            raise DayAddError('Cannot add two days with different dates')
+            raise DayAddError("Cannot add two days with different dates")
         new_day = Day(self.date)
 
         new_day._came_or_left = self.came_or_left
@@ -79,15 +80,17 @@ class Day:
 
         if other.came_or_left:
             if self.came_or_left:
-                new_day.came, new_day.left = sorted([self.came_or_left,
-                                                     other.came_or_left])
+                new_day.came, new_day.left = sorted(
+                    [self.came_or_left, other.came_or_left]
+                )
             elif not self.came and not self.left:
                 new_day._came_or_left = other.came_or_left
             elif self.came and not self.left:
                 new_day._left = other.came_or_left
             else:
                 if self._difference(other.came, self.came) < self._difference(
-                        other.came, self.left):
+                    other.came, self.left
+                ):
                     new_day.came = other.came
                     new_day.left = self.left
                 else:
@@ -98,10 +101,13 @@ class Day:
 
     def __eq__(self, other):
         return (self.came, self.left, self.lunch) == (
-            other.came, other.left, other.lunch)
+            other.came,
+            other.left,
+            other.lunch,
+        )
 
     def __repr__(self):
-        return f'Day({self.came}-{self.left}, {self.lunch})'
+        return f"Day({self.came}-{self.left}, {self.lunch})"
 
     @classmethod
     def _to_time(cls, t: Union[time, timedelta, None]) -> Union[time, None]:
@@ -114,8 +120,7 @@ class Day:
         return time(hour=hour, minute=minute)
 
     @classmethod
-    def _to_timedelta(cls, t: Union[time, timedelta, None]) \
-            -> Union[timedelta, None]:
+    def _to_timedelta(cls, t: Union[time, timedelta, None]) -> Union[timedelta, None]:
         if t is None:
             return None
         if isinstance(t, timedelta):
@@ -125,8 +130,8 @@ class Day:
     @classmethod
     def _difference(cls, time1, time2):
         return abs(
-            datetime.combine(date.min, time1) - datetime.combine(date.min,
-                                                                 time2))
+            datetime.combine(date.min, time1) - datetime.combine(date.min, time2)
+        )
 
     @property
     def came(self):
@@ -189,8 +194,7 @@ class Day:
     def working_time(self) -> timedelta:
         if self.came and self.left:
             lunch = self.lunch if self.lunch else timedelta()
-            seconds_at_work = self.to_seconds(self.left) - self.to_seconds(
-                self.came)
+            seconds_at_work = self.to_seconds(self.left) - self.to_seconds(self.came)
             working_time_excluding_lunch = timedelta(seconds=seconds_at_work)
             return working_time_excluding_lunch - lunch
         else:
@@ -208,6 +212,7 @@ class DayError(Exception):
 class DayAddError(DayError):
     """Raised when trying to add a Day to another class
     """
+
     pass
 
 
@@ -215,11 +220,12 @@ class TrailingArgumentsError(DayError):
     """Raised when too many arguments"""
 
     def __init__(self, trailing_args):
-        super().__init__(f'Error: Unexpected arguments: '
-                         f'{", ".join(trailing_args)}.')
+        super().__init__(
+            f"Error: Unexpected arguments: " f'{", ".join(trailing_args)}.'
+        )
 
 
-@camelRegistry.dumper(Day, 'day', version=1)
+@camelRegistry.dumper(Day, "day", version=1)
 def _dump_day(day):
     return dict(
         date=day.date,
@@ -227,17 +233,17 @@ def _dump_day(day):
         left=day.left,
         came_or_left=day._came_or_left,
         lunch=day.lunch,
-        projects=day._projects
+        projects=day._projects,
     )
 
 
-@camelRegistry.loader('day', version=1)
+@camelRegistry.loader("day", version=1)
 def _load_day(data, version):
     day = Day()
-    day.date = data.get('date', None)
-    day.came = data['came']
-    day.left = data.get('left', data.get('went', None))
-    day._came_or_left = data.get('came_or_left', None)
-    day.lunch = data['lunch']
-    day._projects = data['projects']
+    day.date = data.get("date", None)
+    day.came = data["came"]
+    day.left = data.get("left", data.get("went", None))
+    day._came_or_left = data.get("came_or_left", None)
+    day.lunch = data["lunch"]
+    day._projects = data["projects"]
     return day

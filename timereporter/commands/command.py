@@ -8,9 +8,7 @@ from timereporter.views.console_week_view import ConsoleWeekView
 
 
 class Command:
-    def __init__(self, calendar: Calendar,
-                 date_: date,
-                 args: Union[list, str, None]):
+    def __init__(self, calendar: Calendar, date_: date, args: Union[list, str, None]):
         self.calendar = calendar
         self.date = date_
         self.args = args
@@ -25,9 +23,9 @@ class Command:
         options = {}
         new_args = []
         for arg in self.args:
-            if arg.startswith('--'):
-                name = arg.split('=')[0]
-                value = arg.split('=')[1] if '=' in arg else True
+            if arg.startswith("--"):
+                name = arg.split("=")[0]
+                value = arg.split("=")[1] if "=" in arg else True
                 options[name] = value
 
                 if name not in self.valid_options():
@@ -62,9 +60,9 @@ class UnexpectedOptionError(CommandError):
     """Raised when there is an option not expected by the command."""
 
     def __init__(self, option: Union[str, list]):
-        suffix = ''
+        suffix = ""
         if isinstance(option, list):
-            option = ', '.join(option)
-            suffix = 's'
+            option = ", ".join(option)
+            suffix = "s"
         # TODO: this should print the help for the command instead
-        super().__init__(f'Error: unexpected option{suffix}: {option}')
+        super().__init__(f"Error: unexpected option{suffix}: {option}")

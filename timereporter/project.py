@@ -10,14 +10,11 @@ class Project:
         return self.name
 
 
-@camelRegistry.dumper(Project, 'project', version=1)
+@camelRegistry.dumper(Project, "project", version=1)
 def _dump_project(project):
-    return dict(
-        name=project.name,
-        work=project.work
-    )
+    return dict(name=project.name, work=project.work)
 
 
-@camelRegistry.loader('project', version=1)
+@camelRegistry.loader("project", version=1)
 def _load_project(data, version):
     return Project(**data)

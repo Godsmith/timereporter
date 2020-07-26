@@ -4,9 +4,20 @@ from timereporter.mydatetime import timedelta
 
 
 class ConsoleMonthView(WeekView):
-    MONTHS = ['january', 'february', 'march', 'april', 'may', 'june',
-              'july', 'august', 'september', 'october', 'november',
-              'december']
+    MONTHS = [
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december",
+    ]
 
     def __init__(self, date, month: str, show_weekend=False):
         super().__init__(date, show_weekend)
@@ -16,27 +27,30 @@ class ConsoleMonthView(WeekView):
             self.last_month_index = 12
 
     def show(self, calendar):
-        week_strings = [DayShower.show_days(calendar, monday, self.day_count)
-                        for monday in self._mondays()]
-        return '\n'.join(self._trim(week_strings))
+        week_strings = [
+            DayShower.show_days(calendar, monday, self.day_count)
+            for monday in self._mondays()
+        ]
+        return "\n".join(self._trim(week_strings))
 
     def _mondays(self):
         first_monday = self._closest_monday_to_first_day_of_target_month()
-        mondays = [first_monday + timedelta(days=days)
-                   for days in range(0, 38, 7)  # Max 31+7 days first-last Mon
-                   if (first_monday + timedelta(days=days)).month
-                   in (self.month_index, self.last_month_index)]
+        mondays = [
+            first_monday + timedelta(days=days)
+            for days in range(0, 38, 7)  # Max 31+7 days first-last Mon
+            if (first_monday + timedelta(days=days)).month
+            in (self.month_index, self.last_month_index)
+        ]
         return mondays
 
     def _trim(self, strings):
-        return list(map(lambda x: x[:x.rfind('\n')],
-                        strings[:-1])) + strings[-1:]
+        return list(map(lambda x: x[: x.rfind("\n")], strings[:-1])) + strings[-1:]
 
     def _closest_monday_to_first_day_of_target_month(self):
-        first_day_of_month = self._first_day_of_month(
-            self._date_in_correct_year())
+        first_day_of_month = self._first_day_of_month(self._date_in_correct_year())
         closest_monday = first_day_of_month + timedelta(
-            days=-first_day_of_month.weekday())
+            days=-first_day_of_month.weekday()
+        )
         return closest_monday
 
     def _date_in_correct_year(self):

@@ -13,7 +13,7 @@ from timereporter.commands.command import CommandError
 from timereporter.day import DayError
 from timereporter.calendar_printer import CalendarPrinter
 
-TIMEREPORTER_FILE = 'TIMEREPORTER_FILE'
+TIMEREPORTER_FILE = "TIMEREPORTER_FILE"
 
 
 def main(args=None):
@@ -21,9 +21,8 @@ def main(args=None):
     """
     args = _to_argument_list(args)
 
-    if '--help' in args or '-h' in args or (
-            len(args) > 0 and args[0] == 'help'):
-        return sys.modules[__loader__.name.split('.')[0]].__doc__, 0
+    if "--help" in args or "-h" in args or (len(args) > 0 and args[0] == "help"):
+        return sys.modules[__loader__.name.split(".")[0]].__doc__, 0
 
     path = os.environ.get(TIMEREPORTER_FILE, default_path())
 
@@ -43,46 +42,54 @@ def main(args=None):
 
         to_print = CalendarPrinter(calendar, new_calendar, view).to_print()
 
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             data = new_calendar.dump()
             f.write(data)
         return to_print, 0
-    except (TimeParserError, CalendarError, DayError,
-            ProjectError, ShowCommandError, CommandError) as err:
+    except (
+        TimeParserError,
+        CalendarError,
+        DayError,
+        ProjectError,
+        ShowCommandError,
+        CommandError,
+    ) as err:
         return str(err), 1
 
 
 def default_path():
-    if 'USERPROFILE' in os.environ:
-        home_directory = os.environ['USERPROFILE']
+    if "USERPROFILE" in os.environ:
+        home_directory = os.environ["USERPROFILE"]
     else:
-        home_directory = os.environ['HOME']
-    return f'{home_directory}/Dropbox/timereporter.yaml'
+        home_directory = os.environ["HOME"]
+    return f"{home_directory}/Dropbox/timereporter.yaml"
 
 
 def get_calendar(path):
     try:
-        with open(path, 'r') as f:
+        with open(path, "r") as f:
             data = f.read()
             calendar = Calendar.load(data)
             if not isinstance(calendar, Calendar):
                 raise UnreadableCamelFileError(
-                    f'File found at {path} not readable. Remove it to '
-                    f'create a new one.')
+                    f"File found at {path} not readable. Remove it to "
+                    f"create a new one."
+                )
     except FileNotFoundError:
         if _can_file_be_created_at(path):
             calendar = Calendar()
         else:
             raise DirectoryDoesNotExistError(
-                f'The directory for the specified path {path} does not exist. '
-                f'Specify a custom path by setting the %TIMEREPORTER_FILE% '
-                f'environment variable.')
+                f"The directory for the specified path {path} does not exist. "
+                f"Specify a custom path by setting the %TIMEREPORTER_FILE% "
+                f"environment variable."
+            )
     return calendar
 
 
 def _can_file_be_created_at(path):
     try:
-        with open(path, 'w'):
+        with open(path, "w"):
             pass
         os.remove(path)
         return True
@@ -105,7 +112,7 @@ def split_arguments(string):
     """
     if string.count('"') % 2 == 1:
         # This should only happen in tests, since it is not allowed by Bash.
-        raise OddNumberOfQuotesError('Error: malformed command.')
+        raise OddNumberOfQuotesError("Error: malformed command.")
 
     args = []
     current_word = []
@@ -116,7 +123,7 @@ def split_arguments(string):
                 inside_quote = False
             else:
                 inside_quote = True
-        elif char == ' ':
+        elif char == " ":
             if not inside_quote:
                 args = _add_current_word(args, current_word)
                 current_word = []
@@ -127,7 +134,7 @@ def split_arguments(string):
 
 
 def _add_current_word(args, current_word):
-    return args + [''.join(current_word).replace('"', '')]
+    return args + ["".join(current_word).replace('"', "")]
 
 
 def today() -> date:  # pragma: no cover
@@ -152,7 +159,7 @@ class OddNumberOfQuotesError(Exception):
     pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     to_print, exit_code = main(sys.argv[1:])
     print(to_print)
     exit(exit_code)

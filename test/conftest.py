@@ -40,18 +40,18 @@ def mockdate_oct_24():
 
 @pytest.fixture(autouse=True)
 def temp_logfile(tmpdir_factory):
-    fn = tmpdir_factory.mktemp('data').join('timereporter.yaml')
+    fn = tmpdir_factory.mktemp("data").join("timereporter.yaml")
     before = dict(os.environ)
-    os.environ['TIMEREPORTER_FILE'] = str(fn)
+    os.environ["TIMEREPORTER_FILE"] = str(fn)
     yield fn
     os.environ = before
 
 
 @pytest.fixture()
 def non_existing_log_path():
-    path = '/does/not/exist'
+    path = "/does/not/exist"
     before = dict(os.environ)
-    os.environ['TIMEREPORTER_FILE'] = path
+    os.environ["TIMEREPORTER_FILE"] = path
     yield path
     os.environ = before
 
@@ -61,18 +61,19 @@ def custom_log_path(tmpdir):
     before = dict(os.environ)
 
     def fn(path):
-        temp_path = tmpdir.mkdir('custom_log_path').join('timereporter.yaml')
+        temp_path = tmpdir.mkdir("custom_log_path").join("timereporter.yaml")
         shutil.copyfile(path, temp_path)
-        os.environ['TIMEREPORTER_FILE'] = str(temp_path)
+        os.environ["TIMEREPORTER_FILE"] = str(temp_path)
 
     yield fn
 
     os.environ = before
 
+
 @pytest.fixture
 def mock_default_path(tmpdir, monkeypatch):
-    default_path = tmpdir.join('timereporter.yaml')
-    monkeypatch.setattr(timereporter.__main__, 'default_path', lambda: default_path)
+    default_path = tmpdir.join("timereporter.yaml")
+    monkeypatch.setattr(timereporter.__main__, "default_path", lambda: default_path)
     return default_path
 
 
@@ -80,7 +81,7 @@ def mock_default_path(tmpdir, monkeypatch):
 def mock_browser():
     class MockBrowser:
         def __init__(self):
-            self.url = ''  # type: str
+            self.url = ""  # type: str
 
         def open(self, url: str):
             self.url = url

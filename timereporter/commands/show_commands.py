@@ -12,22 +12,22 @@ from timereporter.views.flex_view import FlexView
 
 class ShowWeekendCommand(Command):
     def valid_options(self):
-        return ['--show-weekend']
+        return ["--show-weekend"]
 
 
 class ShowWeekCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
-        return args and args[:2] == 'show week'.split()
+        return args and args[:2] == "show week".split()
 
     def view(self):
-        return ConsoleWeekView(self.date, '--show-weekend' in self.options)
+        return ConsoleWeekView(self.date, "--show-weekend" in self.options)
 
 
 class ShowDayCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
-        return args and args[:2] == 'show day'.split()
+        return args and args[:2] == "show day".split()
 
     def view(self):
         return ConsoleDayView(self.date)
@@ -36,10 +36,10 @@ class ShowDayCommand(ShowWeekendCommand):
 class ShowWeekHtmlCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
-        return args and args[:3] == 'show week html'.split()
+        return args and args[:3] == "show week html".split()
 
     def view(self):
-        return BrowserWeekView(self.date, '--show-weekend' in self.options)
+        return BrowserWeekView(self.date, "--show-weekend" in self.options)
 
 
 class ShowMonthHtmlCommand(ShowWeekendCommand):
@@ -47,14 +47,17 @@ class ShowMonthHtmlCommand(ShowWeekendCommand):
     def can_handle(cls, args) -> bool:
         if len(args) < 3:
             return False
-        return (args and
-                args[0] == 'show' and
-                args[1] in ConsoleMonthView.MONTHS and
-                args[2] == 'html')
+        return (
+            args
+            and args[0] == "show"
+            and args[1] in ConsoleMonthView.MONTHS
+            and args[2] == "html"
+        )
 
     def view(self):
-        return BrowserMonthView(self.date, self.args[1],
-                                '--show-weekend' in self.options)
+        return BrowserMonthView(
+            self.date, self.args[1], "--show-weekend" in self.options
+        )
 
 
 class ShowMonthCommand(ShowWeekendCommand):
@@ -62,13 +65,12 @@ class ShowMonthCommand(ShowWeekendCommand):
     def can_handle(cls, args) -> bool:
         if len(args) != 2:
             return False
-        return (args and
-                args[0] == 'show' and
-                args[1] in ConsoleMonthView.MONTHS)
+        return args and args[0] == "show" and args[1] in ConsoleMonthView.MONTHS
 
     def view(self):
-        return ConsoleMonthView(self.date, self.args[1],
-                                '--show-weekend' in self.options)
+        return ConsoleMonthView(
+            self.date, self.args[1], "--show-weekend" in self.options
+        )
 
 
 class ShowFlexCommand(Command):
@@ -76,23 +78,20 @@ class ShowFlexCommand(Command):
     def can_handle(cls, args) -> bool:
         if len(args) not in (2, 3, 4):
             return False
-        return (args[0] == 'show' and
-                args[1] == 'flex')
+        return args[0] == "show" and args[1] == "flex"
 
     def valid_options(self):
-        return '--to --from'.split()
+        return "--to --from".split()
 
     def view(self):
-        to = self._get_option_as_date('--to', self.date)
-        from_ = self._get_option_as_date('--from',
-                                         self._earliest_date_in_calendar())
+        to = self._get_option_as_date("--to", self.date)
+        from_ = self._get_option_as_date("--from", self._earliest_date_in_calendar())
         return FlexView(from_, to)
 
     def _get_option_as_date(self, option, default):
         if option in self.options:
             try:
-                return datetime.strptime(self.options[option],
-                                         '%Y-%m-%d').date()
+                return datetime.strptime(self.options[option], "%Y-%m-%d").date()
             except ValueError:
                 raise InvalidArgumentError(option, self.options[option])
         else:
@@ -108,8 +107,8 @@ class ShowFlexCommand(Command):
 class ShowErrorHandler(Command):
     @classmethod
     def can_handle(cls, args) -> bool:
-        if args and args[0] == 'show':
-            raise InvalidShowCommandError('Error: invalid show command.')
+        if args and args[0] == "show":
+            raise InvalidShowCommandError("Error: invalid show command.")
         return False
 
 
@@ -123,8 +122,9 @@ class InvalidShowCommandError(ShowCommandError):
 
 class InvalidArgumentError(ShowCommandError):
     def __init__(self, argument, value):
-        super().__init__(f'Error: invalid value "{value}" for argument '
-                         f'"{argument}".')
+        super().__init__(
+            f'Error: invalid value "{value}" for argument ' f'"{argument}".'
+        )
 
 
 # TODO: this is not catched in __main__.
@@ -132,4 +132,4 @@ class NoDaysError(Exception):
     """Raised when trying to operate on a calendar without any days"""
 
     def __init__(self):
-        super().__init__('Error: No days in calendar.')
+        super().__init__("Error: No days in calendar.")

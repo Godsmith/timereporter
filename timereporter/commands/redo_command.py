@@ -6,7 +6,7 @@ from timereporter.views.view import View
 class RedoCommand(Command):
     @classmethod
     def can_handle(cls, args) -> bool:
-        return args == ['redo']
+        return args == ["redo"]
 
     def new_calendar(self) -> (Calendar, View):
         return self.calendar.redo()

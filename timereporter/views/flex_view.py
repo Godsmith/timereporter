@@ -17,5 +17,4 @@ class FlexView(View):
             if date_ == self.to:
                 break
             date_ += timedelta(days=1)
-        return f'Total flex from {self.from_} to {self.to}: ' \
-               f'{total_flex}'
+        return f"Total flex from {self.from_} to {self.to}: " f"{total_flex}"
