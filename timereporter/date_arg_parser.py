@@ -1,15 +1,15 @@
 from datetime import date, datetime
-from typing import Union
+from typing import List, Tuple, Union
 
 from timereporter.mydatetime import timedelta
 
 
 class DateArgParser:
-    def __init__(self, today):
+    def __init__(self, today: date):
         self.today = today
 
-    def parse(self, args):
-        dates = list(date for date in map(self.to_date, args) if date is not None)
+    def parse(self, args) -> Tuple[List[date], List[str]]:
+        dates = [date for date in map(self.to_date, args) if date is not None]
         if not dates:
             dates = [self.today]
 

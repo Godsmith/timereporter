@@ -1,6 +1,5 @@
 """Supply the Day class and associated exceptions."""
 from collections import defaultdict
-from datetime import datetime
 import datetime
 from typing import List, Dict
 
@@ -29,21 +28,21 @@ class Day:
         self._came = self._left = self._came_or_left = self._lunch = None
         self._projects = defaultdict(timedelta)
 
-        if project_name:
+        if project_name and project_time:
             self._projects[project_name] = TimeParser.parse_timedelta(project_time)
 
         if not args:
             return
 
-        args = self._to_argument_list(args)
-        args = self._format_minutes(args)
+        args_list = self._to_argument_list(args)
+        args_list = self._format_minutes(args_list)
 
-        trailing_args = list(args)
-        for i, arg in enumerate(args):
+        trailing_args = list(args_list)
+        for i, arg in enumerate(args_list):
             if arg in ("came", "left", "lunch"):
-                setattr(self, arg, TimeParser.parse(args[i + 1]))
+                setattr(self, arg, TimeParser.parse(args_list[i + 1]))
                 trailing_args.remove(arg)
-                trailing_args.remove(args[i + 1])
+                trailing_args.remove(args_list[i + 1])
         if trailing_args:
             raise TrailingArgumentsError(trailing_args)
 
@@ -67,7 +66,7 @@ class Day:
             raise DayAddError("Cannot add Day to another class")
         if self.date and other.date and self.date != other.date:
             raise DayAddError("Cannot add two days with different dates")
-        new_day = Day(self.date)
+        new_day = Day(date_=self.date)
 
         new_day._came_or_left = self.came_or_left
 
@@ -131,7 +130,8 @@ class Day:
     @classmethod
     def _difference(cls, time1, time2):
         return abs(
-            datetime.combine(date.min, time1) - datetime.combine(date.min, time2)
+            datetime.datetime.combine(datetime.date.min, time1)
+            - datetime.datetime.combine(datetime.date.min, time2)
         )
 
     @property
@@ -170,7 +170,7 @@ class Day:
         return self._projects
 
     @came.setter
-    def came(self, value: time):
+    def came(self, value):
         """Set at which time the user came to work this day
 
         :param value:

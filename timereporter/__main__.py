@@ -39,6 +39,7 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
 
     try:
         new_calendar = calendar
+        view = None
         for date_ in dates:
             command = CommandFactory.get_command(new_calendar, date_, args)
             new_calendar, view = command.execute()
