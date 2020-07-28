@@ -15,7 +15,7 @@ class CalendarPrinter:
                 self.view.show(self.old_calendar), self.view.show(self.new_calendar)
             )
         else:
-            return ''
+            return ""
 
     def highlight_difference_in_lines(self, old, new):
         # TODO: fix for projects which add a line
@@ -55,7 +55,7 @@ class CalendarPrinter:
             self.changed_indices = self.changed_indices | new_indices
 
         new_row = "".join(self.new_char(i) for i, _ in enumerate(self.padded_new))
-        return new_row.replace(Style.RESET_ALL + Style.BRIGHT, "")
+        return new_row.replace(Style.RESET_ALL + Style.BRIGHT, "")  # type: ignore
 
     def _legal_index(self, j):
         return 0 <= j < len(self.padded_new)

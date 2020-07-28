@@ -76,7 +76,7 @@ class DayShower:
                 ["Lunch"] + lunch_times,
                 [f"1. {calendar.default_project_name}"] + default_project_times,
                 *project_rows,
-                ["Flex"] + flex_times,
+                ["Flex", *flex_times],
             ],
             tablefmt=table_format,
         )
