@@ -24,3 +24,11 @@ class TestCrash:
     def test_came_9_t_17(self):
         main("came 9")
         main("17")
+
+    def test_came_followed_by_nothing_shall_not_crash(self):
+        out, _ = main("came")
+        assert 'Expected time after "came"' in out
+
+    def test_came_followed_by_non_time_shall_give_readable_error_message(self):
+        out, _ = main("came foo")
+        assert 'Could not parse "foo" as time' in out

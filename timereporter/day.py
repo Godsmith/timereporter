@@ -40,7 +40,10 @@ class Day:
         trailing_args = list(args_list)
         for i, arg in enumerate(args_list):
             if arg in ("came", "left", "lunch"):
-                setattr(self, arg, TimeParser.parse(args_list[i + 1]))
+                try:
+                    setattr(self, arg, TimeParser.parse(args_list[i + 1]))
+                except IndexError:
+                    raise ActionNotFollowedByTimeError(arg)
                 trailing_args.remove(arg)
                 trailing_args.remove(args_list[i + 1])
         if trailing_args:
@@ -224,6 +227,13 @@ class TrailingArgumentsError(DayError):
         super().__init__(
             f"Error: Unexpected arguments: " f'{", ".join(trailing_args)}.'
         )
+
+
+class ActionNotFollowedByTimeError(DayError):
+    """Raised when came, left or lunch is not followed by something that can be interpreted as a time"""
+
+    def __init__(self, arg):
+        super().__init__(f'Error: Expected time after "{arg}".')
 
 
 @camelRegistry.dumper(Day, "day", version=1)
