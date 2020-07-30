@@ -1,6 +1,7 @@
 """Supply the TimeParser class and related exceptions
 """
 import re
+from typing import Union
 
 from timereporter.mydatetime import timedelta, time
 
@@ -10,21 +11,26 @@ class TimeParser:
     """
 
     @classmethod
-    def parse(cls, str_: str) -> time:
-        """Parses a string on the format specified below to a
-        datetime.time object.
+    def parse(cls, str_: str) -> Union[time, timedelta]:
+        """Parses a string on the format specified below.
 
         If the string is not on the specified format, a TimeParserError
         is raised.
 
         :param str_: A string on the form H, HH:MM, H:MM,
         HHMM, HMM, M m, MM m, M min or MM min
-        :return: a datetime.time object corresponding to the input string
+        :return: a datetime.time or datetime.timedelta object corresponding to the input string
         """
         try:
             return cls.try_parse_minutes(str_)
         except TimeParserError:
             pass
+
+        hours, minutes = cls._parse(str_)
+        return time(hour=hours, minute=minutes)
+
+    @classmethod
+    def _parse(cls, str_: str):
 
         if not re.match(r"^\d{1,2}:?\d?\d?$", str_):
             raise TimeParserError(
@@ -44,12 +50,12 @@ class TimeParser:
         if int(minutes) > 59 or int(hours) > 23:
             raise TimeParserError(f"Illegal time formatting: {str_}")
 
-        return time(hour=hours, minute=minutes)
+        return hours, minutes
 
     @classmethod
     def parse_timedelta(cls, str_: str) -> timedelta:
-        time_ = cls.parse(str_)
-        return timedelta(hours=time_.hour, minutes=time_.minute)
+        hours, minutes = cls._parse(str_)
+        return timedelta(hours=hours, minutes=minutes)
 
     @classmethod
     def try_parse_minutes(cls, str_) -> timedelta:
