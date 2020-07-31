@@ -29,7 +29,7 @@ class Day:
         self._projects = defaultdict(timedelta)
 
         if project_name and project_time:
-            self._projects[project_name] = TimeParser.parse_timedelta(project_time)
+            self._projects[project_name] = TimeParser.as_timedelta(project_time)
 
         if not args:
             return
@@ -41,11 +41,11 @@ class Day:
         for i, arg in enumerate(args_list):
             try:
                 if arg == "came":
-                    self.came = TimeParser.parse_time(args_list[i + 1])
+                    self.came = TimeParser.as_time(args_list[i + 1])
                 elif arg == "left":
-                    self.left = TimeParser.parse_time(args_list[i + 1])
+                    self.left = TimeParser.as_time(args_list[i + 1])
                 elif arg == "lunch":
-                    self.lunch = TimeParser.parse_timedelta(args_list[i + 1])
+                    self.lunch = TimeParser.as_timedelta(args_list[i + 1])
                 else:
                     continue
                 trailing_args.remove(arg)

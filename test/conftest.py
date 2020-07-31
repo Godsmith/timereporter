@@ -73,12 +73,12 @@ def custom_log_path(tmpdir):
 @pytest.fixture
 def mock_default_path(tmpdir, monkeypatch):
     default_path = tmpdir.join("timereporter.yaml")
-    monkeypatch.setattr(timereporter.__main__, "default_path", lambda: default_path)
+    monkeypatch.setattr(timereporter.__main__, "default_path", lambda: default_path)  # type: ignore
     return default_path
 
 
 @pytest.fixture
-def mock_browser():
+def mock_browser(monkeypatch):
     class MockBrowser:
         def __init__(self):
             self.url = ""  # type: str
