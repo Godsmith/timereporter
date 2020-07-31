@@ -11,7 +11,7 @@ class TimeParser:
     """
 
     @classmethod
-    def parse(cls, str_: str) -> Union[time, timedelta]:
+    def as_time(cls, str_: str) -> Union[time, timedelta]:
         """Parses a string on the format specified below.
 
         If the string is not on the specified format, a TimeParserError
@@ -21,21 +21,16 @@ class TimeParser:
         HHMM, HMM, M m, MM m, M min or MM min
         :return: a datetime.time or datetime.timedelta object corresponding to the input string
         """
-        try:
-            return cls.try_parse_minutes(str_)
-        except TimeParserError:
-            pass
-
-        hours, minutes = cls._parse(str_)
+        hours, minutes = cls._to_hours_and_minutes(str_)
         return time(hour=hours, minute=minutes)
 
     @classmethod
-    def _parse(cls, str_: str):
+    def _to_hours_and_minutes(cls, str_: str):
 
         if not re.match(r"^\d{1,2}:?\d?\d?$", str_):
             raise TimeParserError(
                 f'Error: Could not parse "{str_}" as time. Time must be on the '
-                f"form H, HH:MM, H:MM, HHMM, HMM, M m, MM m, M min or MM min"
+                f"form H, HH:MM, H:MM, HHMM, HMM."
             )
         if len(str_) > 2:
             minutes = int(str_[-2:])
@@ -53,21 +48,7 @@ class TimeParser:
         return hours, minutes
 
     @classmethod
-    def parse_timedelta(cls, str_: str) -> timedelta:
-        hours, minutes = cls._parse(str_)
-        return timedelta(hours=hours, minutes=minutes)
-
-    @classmethod
-    def try_parse_minutes(cls, str_) -> timedelta:
-        """Parses a string specifying a certain number of minutes
-        and returns a datetime.time object
-
-        If the string is not on the specified format, a TimeParserError is
-        raised.
-
-        :param str_: a string on the form MMm, MM m, MMmin, MM min
-        :return: a datetime.time object representing a number of minutes
-        """
+    def as_timedelta(cls, str_: str) -> timedelta:
         if "m" in str_:
             try:
                 minutes = int(str_.split("m")[0])
@@ -76,7 +57,14 @@ class TimeParser:
                 return timedelta(hours=hours, minutes=minutes)
             except ValueError:
                 pass
-        raise TimeParserError
+        try:
+            hours, minutes = cls._to_hours_and_minutes(str_)
+            return timedelta(hours=hours, minutes=minutes)
+        except TimeParserError:
+            raise TimeParserError(
+                f'Error: Could not parse "{str_}" as time interval. Time intervals must be on the '
+                f"form H, HH:MM, H:MM, HHMM, HMM, M m, MM m, M min or MM min"
+            )
 
 
 class TimeParserError(Exception):

@@ -39,13 +39,19 @@ class Day:
 
         trailing_args = list(args_list)
         for i, arg in enumerate(args_list):
-            if arg in ("came", "left", "lunch"):
-                try:
-                    setattr(self, arg, TimeParser.parse(args_list[i + 1]))
-                except IndexError:
-                    raise ActionNotFollowedByTimeError(arg)
+            try:
+                if arg == "came":
+                    self.came = TimeParser.parse_time(args_list[i + 1])
+                elif arg == "left":
+                    self.left = TimeParser.parse_time(args_list[i + 1])
+                elif arg == "lunch":
+                    self.lunch = TimeParser.parse_timedelta(args_list[i + 1])
+                else:
+                    continue
                 trailing_args.remove(arg)
                 trailing_args.remove(args_list[i + 1])
+            except IndexError:
+                raise ActionNotFollowedByTimeError(arg)
         if trailing_args:
             raise TrailingArgumentsError(trailing_args)
 

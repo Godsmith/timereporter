@@ -100,10 +100,6 @@ class TestFormatCorrection:
         d = Day("lunch 01:00")
         assert d.lunch == timedelta(minutes=60)
 
-    def test_day_fix_wrong_came_error(self):
-        d = Day("came 45m")
-        assert d.came == time(hour=0, minute=45)
-
 
 class TestTo:
     def test_to_time(self):
