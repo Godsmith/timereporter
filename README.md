@@ -1,4 +1,5 @@
 # timereporter
+
 Report working time from the command line.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/2qfkospugig8y9m6?svg=true)](https://ci.appveyor.com/project/Godsmith/timereporter)
@@ -10,7 +11,7 @@ Python 3.6+, Windows/Linux/Mac.
 
 ## Installation
 
-Clone the repo and run `python setup.py install` in the root folder.
+`pip install timereporter`
 
 ### Yaml file path
 
@@ -135,4 +136,4 @@ Shows all days of October in the console.
 
 ## Running tests
 
-pytest test
+`poetry run pytest`
