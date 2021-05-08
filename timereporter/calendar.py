@@ -45,8 +45,7 @@ class Calendar:
         return days
 
     def add(self, day: Day):
-        """Add a day to the calendar.
-        """
+        """Add a day to the calendar."""
         new_days = self._raw_days + [day]
         return Calendar(
             raw_days=new_days,
@@ -57,8 +56,7 @@ class Calendar:
         )
 
     def add_project(self, project_name: str, work=True):
-        """Adds a project with the specified project name to the calendar
-        """
+        """Adds a project with the specified project name to the calendar"""
         return Calendar(
             raw_days=self._raw_days[:],
             redo_list=[],
@@ -68,8 +66,7 @@ class Calendar:
         )
 
     def undo(self):
-        """Undo the last edit to the calendar.
-        """
+        """Undo the last edit to the calendar."""
         new_redo_list = self.redo_list + self._raw_days[-1:]
         return Calendar(
             raw_days=self._raw_days[:-1],
@@ -80,8 +77,7 @@ class Calendar:
         )
 
     def redo(self):
-        """Redo the last undo made to the calendar.
-        """
+        """Redo the last undo made to the calendar."""
         new_days = self._raw_days + self.redo_list[-1:]
         return Calendar(
             raw_days=new_days,

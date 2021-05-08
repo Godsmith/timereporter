@@ -5,9 +5,7 @@ from timereporter.views.browser_shower import BrowserShower
 
 class BrowserWeekView(WeekView):
     def show(self, calendar):
-        """Shows a table overview of the specified week in the browser.
-
-        """
+        """Shows a table overview of the specified week in the browser."""
         BrowserShower().show(calendar, self.day_count, [self._closest_monday()])
 
     def _closest_monday(self):

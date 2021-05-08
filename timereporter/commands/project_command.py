@@ -98,13 +98,11 @@ class ProjectCommand(Command):
 
 
 class ProjectError(Exception):
-    """Raised when trying to report on a non-existing project name.
-    """
+    """Raised when trying to report on a non-existing project name."""
 
 
 class ProjectNameDoesNotExistError(ProjectError):
-    """Raised when trying to report on a non-existing project name.
-    """
+    """Raised when trying to report on a non-existing project name."""
 
     def __init__(self, project_name):
         super().__init__(f'Error: Project "{project_name}" does not exist.')
@@ -138,32 +136,28 @@ class AmbiguousProjectNumberError(ProjectError):
 
 
 class NoProjectNameError(ProjectError):
-    """Raised when project name is not specified
-    """
+    """Raised when project name is not specified"""
 
     def __init__(self):
         super().__init__("Error: No <project-name> or <project-number> specified.")
 
 
 class InvalidProjectNumberError(ProjectError):
-    """Raised when the project number specified does not exist
-    """
+    """Raised when the project number specified does not exist"""
 
     def __init__(self, project_number):
         super().__init__(f'Error: No project number "{project_number}".')
 
 
 class InvalidTimeError(ProjectError):
-    """Raised when the supplied time is not valid
-    """
+    """Raised when the supplied time is not valid"""
 
     def __init__(self, time):
         super().__init__(f'Error: Invalid time: "{time}"')
 
 
 class CannotReportOnDefaultProjectError(ProjectError):
-    """Raised when trying to report on default project
-    """
+    """Raised when trying to report on default project"""
 
     def __init__(self):
         super().__init__("Error: Cannot report on default project.")

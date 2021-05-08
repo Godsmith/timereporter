@@ -7,8 +7,7 @@ from timereporter.mydatetime import timedelta, time
 
 
 class TimeParser:
-    """Parses strings on special formats to datetime.* objects
-    """
+    """Parses strings on special formats to datetime.* objects"""
 
     @classmethod
     def as_time(cls, str_: str) -> Union[time, timedelta]:

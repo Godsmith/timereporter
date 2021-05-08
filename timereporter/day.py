@@ -220,8 +220,7 @@ class DayError(Exception):
 
 
 class DayAddError(DayError):
-    """Raised when trying to add a Day to another class
-    """
+    """Raised when trying to add a Day to another class"""
 
     pass
 

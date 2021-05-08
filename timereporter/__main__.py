@@ -18,8 +18,7 @@ TIMEREPORTER_FILE = "TIMEREPORTER_FILE"
 
 
 def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
-    """This is executed when running "python timereporter".
-    """
+    """This is executed when running "python timereporter"."""
     if not arg_or_args:
         arg_or_args = []
     args = _to_argument_list(arg_or_args)
@@ -110,8 +109,7 @@ def _to_argument_list(arg_or_args: Union[List[str], str]) -> List[str]:
 
 # TODO: Extract class and make usable by Command to make tests less error prone
 def split_arguments(string):
-    """Splits a string into arguments. Quotes can enclose spaces.
-    """
+    """Splits a string into arguments. Quotes can enclose spaces."""
     if string.count('"') % 2 == 1:
         # This should only happen in tests, since it is not allowed by Bash.
         raise OddNumberOfQuotesError("Error: malformed command.")
