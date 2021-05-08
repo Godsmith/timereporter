@@ -134,6 +134,12 @@ Shows Monday-Friday of last week in the browser.
 Shows all days of October in the console.
 
 
-## Running tests
+## Development
+
+### Running tests
 
 `poetry run pytest`
+
+### Publishing a new version
+
+`poetry publish --build`
