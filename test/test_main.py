@@ -26,13 +26,16 @@ class TestHelp:
         s, _ = main("show flex --help")
         assert "Usage:" in s
 
+    def test_location_of_yaml_file_is_printed(self):
+        s, _ = main("--help")
+        assert "timereporter.yaml" in s
+
 
 class TestTimeReporterCommand:
     def test_show_last_week(self):
         s, _ = main("show last week")
         last_monday = str(
-            timereporter.__main__.today()
-            + timedelta(days=-timereporter.__main__.today().weekday(), weeks=-1)
+            timereporter.__main__.today() + timedelta(days=-timereporter.__main__.today().weekday(), weeks=-1)
         )
         assert last_monday in s
 
@@ -213,13 +216,13 @@ class TestDefaultPath:
         monkeypatch.setenv("USERPROFILE", "foo")
         monkeypatch.delenv("HOME", raising=False)
 
-        assert default_path() == "foo/Dropbox/timereporter.yaml"
+        assert default_path() == r"foo\Dropbox\timereporter.yaml"
 
     def test_linux(self, monkeypatch):
         monkeypatch.delenv("USERPROFILE", raising=False)
         monkeypatch.setenv("HOME", "foo")
 
-        assert default_path() == "foo/Dropbox/timereporter.yaml"
+        assert default_path() == r"foo\Dropbox\timereporter.yaml"
 
 
 class TestUndo:
@@ -255,10 +258,7 @@ class TestInvalidFile:
     def test_not_working_path(self, non_existing_log_path):
         err, code = main()
 
-        assert (
-            "The directory for the specified path /does/not/exist does not exist."
-            in err
-        )
+        assert "The directory for the specified path /does/not/exist does not exist." in err
         assert code == 1
 
 

@@ -1,5 +1,7 @@
 """timereporter. Report working time from the command line.
 
+Using {yaml_file_location}.
+
 Usage:
   Report time on default project
     t [<day> | [last | next] <weekday>] [came <time>] [left <time>] [lunch

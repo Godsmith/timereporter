@@ -1,6 +1,7 @@
 import sys
 import os
 from datetime import date
+from pathlib import Path
 from typing import List, Tuple, Union
 
 from timereporter.calendar import CalendarError
@@ -23,10 +24,12 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
         arg_or_args = []
     args = _to_argument_list(arg_or_args)
 
-    if "--help" in args or "-h" in args or (len(args) > 0 and args[0] == "help"):
-        return sys.modules[__loader__.name.split(".")[0]].__doc__ or "", 0
-
     path = os.environ.get(TIMEREPORTER_FILE, default_path())
+
+    if "--help" in args or "-h" in args or (len(args) > 0 and args[0] == "help"):
+        init_file_docstring = sys.modules[__loader__.name.split(".")[0]].__doc__
+        help_text = init_file_docstring.format(yaml_file_location=path)
+        return help_text, 0
 
     try:
         calendar = get_calendar(path)
@@ -60,12 +63,12 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
         return str(err), 1
 
 
-def default_path():
+def default_path() -> str:
     if "USERPROFILE" in os.environ:
-        home_directory = os.environ["USERPROFILE"]
+        home_directory = Path(os.environ["USERPROFILE"])
     else:
-        home_directory = os.environ["HOME"]
-    return f"{home_directory}/Dropbox/timereporter.yaml"
+        home_directory = Path(os.environ["HOME"])
+    return str(home_directory / "Dropbox" / "timereporter.yaml")
 
 
 def get_calendar(path):
@@ -74,10 +77,7 @@ def get_calendar(path):
             data = f.read()
             calendar = Calendar.load(data)
             if not isinstance(calendar, Calendar):
-                raise UnreadableCamelFileError(
-                    f"File found at {path} not readable. Remove it to "
-                    f"create a new one."
-                )
+                raise UnreadableCamelFileError(f"File found at {path} not readable. Remove it to " f"create a new one.")
     except FileNotFoundError:
         if _can_file_be_created_at(path):
             calendar = Calendar()
