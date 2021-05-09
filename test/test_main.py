@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 import timereporter.__main__
@@ -216,13 +218,13 @@ class TestDefaultPath:
         monkeypatch.setenv("USERPROFILE", "foo")
         monkeypatch.delenv("HOME", raising=False)
 
-        assert default_path() == r"foo\Dropbox\timereporter.yaml"
+        assert default_path() == str(Path("foo") / "Dropbox" / "timereporter.yaml")
 
     def test_linux(self, monkeypatch):
         monkeypatch.delenv("USERPROFILE", raising=False)
         monkeypatch.setenv("HOME", "foo")
 
-        assert default_path() == r"foo\Dropbox\timereporter.yaml"
+        assert default_path() == str(Path("foo") / "Dropbox" / "timereporter.yaml")
 
 
 class TestUndo:
