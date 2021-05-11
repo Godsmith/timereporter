@@ -2,6 +2,8 @@
 
 Report working time from the command line.
 
+
+![example workflow](https://github.com/Godsmith/timereporter/actions/workflows/python-app.yml/badge.svg)
 [![Build status](https://ci.appveyor.com/api/projects/status/2qfkospugig8y9m6?svg=true)](https://ci.appveyor.com/project/Godsmith/timereporter)
 [![codecov](https://codecov.io/gh/Godsmith/timereporter/branch/master/graph/badge.svg)](https://codecov.io/gh/Godsmith/timereporter)
 
