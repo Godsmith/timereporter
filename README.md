@@ -107,6 +107,24 @@ By default, Saturday and Sunday are not shown, but this can be changed by adding
 ###   Undo/redo
     t (undo | redo)
 
+###   Aliases
+
+Add an alias
+
+    t alias slw show last week
+
+Use an alias
+
+    t slw  # same as "t show last week"
+
+List aliases
+
+    t alias
+
+Remove an alias
+
+    t --remove slw
+
 ###   Show help text
     t (help | --help | -h)
 

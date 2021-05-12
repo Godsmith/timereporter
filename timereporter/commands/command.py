@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Dict
 from datetime import date
 from typing import List
 
@@ -19,7 +19,7 @@ class Command:
             self.args = self.args.split()
         self.options = self._parse_options()
 
-    def _parse_options(self):
+    def _parse_options(self) -> Dict[str, str]:
         options = {}
         new_args = []
         for arg in self.args:

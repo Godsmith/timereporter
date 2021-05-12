@@ -4,6 +4,7 @@ from datetime import date
 from pathlib import Path
 from typing import List, Tuple, Union
 
+from timereporter.commands.alias_command import AliasError
 from timereporter.calendar import CalendarError
 from timereporter.timeparser import TimeParserError
 from timereporter.calendar import Calendar
@@ -36,6 +37,11 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
     except (UnreadableCamelFileError, DirectoryDoesNotExistError) as err:
         return str(err), 1
 
+    # This is a bit ugly, but it is the best way I have found to be able to remove aliases with an alias command.
+    # If this if clause is not here, an alias will be expanded when trying to remove it.
+    if "alias" not in args:
+        args = _expand_aliases(args, calendar)
+
     parser = DateArgParser(today())
     dates, args = parser.parse(args)
 
@@ -52,15 +58,18 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
             data = new_calendar.dump()
             f.write(data)
         return to_print, 0
-    except (
-        TimeParserError,
-        CalendarError,
-        DayError,
-        ProjectError,
-        ShowCommandError,
-        CommandError,
-    ) as err:
+    except (TimeParserError, CalendarError, DayError, ProjectError, ShowCommandError, CommandError, AliasError) as err:
         return str(err), 1
+
+
+def _expand_aliases(args: List[str], calendar: Calendar) -> List[str]:
+    args_with_expanded_aliases = []
+    for arg in args:
+        if arg in calendar.aliases:
+            args_with_expanded_aliases.extend(calendar.aliases[arg].split())
+        else:
+            args_with_expanded_aliases.append(arg)
+    return args_with_expanded_aliases
 
 
 def default_path() -> str:

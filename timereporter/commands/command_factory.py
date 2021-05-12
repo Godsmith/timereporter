@@ -1,3 +1,4 @@
+from timereporter.commands.alias_command import AliasCommand
 from timereporter.commands.undo_command import UndoCommand
 from timereporter.commands.redo_command import RedoCommand
 from timereporter.commands.time_reporter_command import TimeReporterCommand
@@ -15,6 +16,7 @@ from timereporter.commands.show_commands import (
 
 class CommandFactory:
     COMMANDS_IN_ORDER = (
+        AliasCommand,
         ProjectCommand,
         ShowWeekHtmlCommand,  # Must be before ShowWeekCommand
         ShowWeekCommand,

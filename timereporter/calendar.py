@@ -26,12 +26,14 @@ class Calendar:
         redo_list=None,
         target_hours_per_day=DEFAULT_TARGET_HOURS_PER_DAY,
         default_project_name=DEFAULT_PROJECT_NAME,
+        aliases=None,
     ):
         self._raw_days = [] if raw_days is None else raw_days
         self.redo_list = [] if redo_list is None else redo_list
         self.projects = [] if projects is None else projects
         self.target_hours_per_day = target_hours_per_day
         self.default_project_name = default_project_name
+        self._aliases = aliases or {}  # type: Dict[str, str]
 
     @property
     def days(self) -> Dict[date, Day]:
@@ -53,6 +55,7 @@ class Calendar:
             projects=self.projects[:],
             target_hours_per_day=self.target_hours_per_day,
             default_project_name=self.default_project_name,
+            aliases=self.aliases.copy(),
         )
 
     def add_project(self, project_name: str, work=True):
@@ -63,6 +66,7 @@ class Calendar:
             projects=self.projects + [Project(project_name, work)],
             target_hours_per_day=self.target_hours_per_day,
             default_project_name=self.default_project_name,
+            aliases=self.aliases.copy(),
         )
 
     def undo(self):
@@ -74,6 +78,7 @@ class Calendar:
             projects=self.projects[:],
             target_hours_per_day=self.target_hours_per_day,
             default_project_name=self.default_project_name,
+            aliases=self.aliases.copy(),
         )
 
     def redo(self):
@@ -85,14 +90,43 @@ class Calendar:
             projects=self.projects[:],
             target_hours_per_day=self.target_hours_per_day,
             default_project_name=self.default_project_name,
+            aliases=self.aliases.copy(),
+        )
+
+    @property
+    def aliases(self):
+        return self._aliases
+
+    def add_alias(self, short: str, full: str):
+        """Add a new alias"""
+        aliases = self.aliases.copy()
+        aliases[short] = full
+        return Calendar(
+            raw_days=self._raw_days[:],
+            redo_list=[],
+            projects=self.projects,
+            target_hours_per_day=self.target_hours_per_day,
+            default_project_name=self.default_project_name,
+            aliases=aliases,
+        )
+
+    def remove_alias(self, short: str):
+        """Add a new alias"""
+        aliases = self.aliases.copy()
+        del aliases[short]
+        return Calendar(
+            raw_days=self._raw_days[:],
+            redo_list=[],
+            projects=self.projects,
+            target_hours_per_day=self.target_hours_per_day,
+            default_project_name=self.default_project_name,
+            aliases=aliases,
         )
 
     def default_project_time(self, date_):
         project_time_sum = timedelta()
         for project_name in self.days[date_].projects:
-            project = [
-                project for project in self.projects if project.name == project_name
-            ][0]
+            project = [project for project in self.projects if project.name == project_name][0]
             if project.work:
                 project_time_sum += self.days[date_].projects[project_name]
 
@@ -108,14 +142,9 @@ class Calendar:
         minus the target hours per day.
         """
         working_time = self.days[date_].working_time
-        no_work_projects_names = [
-            project.name for project in self.projects if not project.work
-        ]
+        no_work_projects_names = [project.name for project in self.projects if not project.work]
         no_work_project_time = sum(
-            [
-                self.days[date_].projects[project_name]
-                for project_name in no_work_projects_names
-            ],
+            [self.days[date_].projects[project_name] for project_name in no_work_projects_names],
             timedelta(),
         )
         if working_time:
@@ -139,6 +168,7 @@ def _dump_calendar(calendar):
         projects=calendar.projects,
         default_project_name=calendar.default_project_name,
         target_hours_per_day=calendar.target_hours_per_day,
+        aliases=calendar.aliases,
     )
 
 
@@ -153,9 +183,7 @@ def _load_calendar(data, version):
             day = date_and_day.day
             day.date = date_and_day.date
             data["raw_days"].append(day)
-    default_project_name = data.get(
-        "default_project_name", Calendar.DEFAULT_PROJECT_NAME
-    )
+    default_project_name = data.get("default_project_name", Calendar.DEFAULT_PROJECT_NAME)
     target_hours_per_day = data.get(
         "target_hours_per_day",
         data.get("working_hours_per_day", Calendar.DEFAULT_TARGET_HOURS_PER_DAY),
@@ -166,6 +194,7 @@ def _load_calendar(data, version):
         projects=data["projects"],
         default_project_name=default_project_name,
         target_hours_per_day=target_hours_per_day,
+        aliases=data.get("aliases", {}),
     )
 
 
