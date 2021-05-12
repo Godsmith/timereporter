@@ -3,11 +3,14 @@ from datetime import date
 from typing import List
 
 from timereporter.calendar import Calendar
+from timereporter.mydatetime import timedelta
 from timereporter.views.view import View
 from timereporter.views.console_week_view import ConsoleWeekView
 
 
 class Command:
+    TIMEDELTA = timedelta(weeks=1)
+
     def __init__(self, calendar: Calendar, date_: date, args: Union[list, str, None]):
         self.calendar = calendar
         self.date = date_
@@ -17,6 +20,10 @@ class Command:
         # TODO: use the new argument splitter method instead
         elif isinstance(self.args, str):
             self.args = self.args.split()
+        if "last" in self.args:
+            self.date -= self.TIMEDELTA
+        elif "next" in self.args:
+            self.date += self.TIMEDELTA
         self.options = self._parse_options()
 
     def _parse_options(self) -> Dict[str, str]:
@@ -37,6 +44,12 @@ class Command:
 
     @classmethod
     def can_handle(cls, args) -> bool:
+        args = [arg for arg in args if not arg.startswith("--")]
+        args = [arg for arg in args if arg not in ("last", "next")]
+        return cls._can_handle(args)
+
+    @classmethod
+    def _can_handle(cls, args: List[str]) -> bool:
         raise NotImplementedError
 
     def valid_options(self) -> List[str]:

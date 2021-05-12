@@ -19,7 +19,7 @@ class AliasError(Exception):
 
 class AliasCommand(Command):
     @classmethod
-    def can_handle(cls, args) -> bool:
+    def _can_handle(cls, args) -> bool:
         return args and args[0] == "alias"
 
     def valid_options(self):

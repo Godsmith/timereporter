@@ -89,7 +89,7 @@ enough. `imp` for `My important project`, for example.
 See also Report time on default project.
 
 ###   Show reported time
-    t show [last | next] week [html] [--show-weekend]
+    t show [last | next] [week | month] [html] [--show-weekend]
     t show <month> [html] [--show-weekend]
     t
 

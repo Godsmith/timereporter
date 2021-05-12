@@ -11,7 +11,7 @@ class TimeReporterCommand(Command):
     """
 
     @classmethod
-    def can_handle(cls, args) -> bool:
+    def _can_handle(cls, args) -> bool:
         return True
 
     def new_calendar(self) -> Calendar:

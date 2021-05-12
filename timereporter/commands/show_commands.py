@@ -17,27 +17,16 @@ class ShowWeekendCommand(Command):
 
 class ShowWeekCommand(ShowWeekendCommand):
     @classmethod
-    def can_handle(cls, args) -> bool:
-        args = args[:]
-        if "last" in args:
-            args.remove("last")
-        if "next" in args:
-            args.remove("next")
-        return args and args[:2] == "show week".split()
+    def _can_handle(cls, args) -> bool:
+        return args == "show week".split()
 
     def view(self):
-        date_ = self.date
-        if "last" in self.args:
-            date_ = self.date - timedelta(weeks=1)
-        elif "next" in self.args:
-            date_ = self.date + timedelta(weeks=1)
-
-        return ConsoleWeekView(date_, "--show-weekend" in self.options)
+        return ConsoleWeekView(self.date, "--show-weekend" in self.options)
 
 
 class ShowDayCommand(ShowWeekendCommand):
     @classmethod
-    def can_handle(cls, args) -> bool:
+    def _can_handle(cls, args) -> bool:
         return args and args[:2] == "show day".split()
 
     def view(self):
@@ -46,21 +35,16 @@ class ShowDayCommand(ShowWeekendCommand):
 
 class ShowWeekHtmlCommand(ShowWeekendCommand):
     @classmethod
-    def can_handle(cls, args) -> bool:
-        args = args[:]
-        if "last" in args:
-            args.remove("last")
-        if "next" in args:
-            args.remove("next")
-        return args and args[:3] == "show week html".split()
+    def _can_handle(cls, args) -> bool:
+        return args == "show week html".split()
 
     def view(self):
         return BrowserWeekView(self.date, "--show-weekend" in self.options)
 
 
-class ShowMonthHtmlCommand(ShowWeekendCommand):
+class ShowSpecificMonthHtmlCommand(ShowWeekendCommand):
     @classmethod
-    def can_handle(cls, args) -> bool:
+    def _can_handle(cls, args) -> bool:
         if len(args) < 3:
             return False
         return args and args[0] == "show" and args[1] in ConsoleMonthView.MONTHS and args[2] == "html"
@@ -69,9 +53,9 @@ class ShowMonthHtmlCommand(ShowWeekendCommand):
         return BrowserMonthView(self.date, self.args[1], "--show-weekend" in self.options)
 
 
-class ShowMonthCommand(ShowWeekendCommand):
+class ShowSpecificMonthCommand(ShowWeekendCommand):
     @classmethod
-    def can_handle(cls, args) -> bool:
+    def _can_handle(cls, args) -> bool:
         if len(args) != 2:
             return False
         return args and args[0] == "show" and args[1] in ConsoleMonthView.MONTHS
@@ -80,9 +64,34 @@ class ShowMonthCommand(ShowWeekendCommand):
         return ConsoleMonthView(self.date, self.args[1], "--show-weekend" in self.options)
 
 
+class ShowMonthCommand(ShowWeekendCommand):
+    # Close enough to a month
+    TIMEDELTA = timedelta(days=30)
+
+    @classmethod
+    def _can_handle(cls, args) -> bool:
+        return args == "show month".split()
+
+    def view(self):
+        return ConsoleMonthView(
+            self.date, ConsoleMonthView.MONTHS[self.date.month - 1], "--show-weekend" in self.options
+        )
+
+
+class ShowMonthHtmlCommand(ShowMonthCommand):
+    @classmethod
+    def _can_handle(cls, args) -> bool:
+        return args == "show month html".split()
+
+    def view(self):
+        return BrowserMonthView(
+            self.date, ConsoleMonthView.MONTHS[self.date.month - 1], "--show-weekend" in self.options
+        )
+
+
 class ShowFlexCommand(Command):
     @classmethod
-    def can_handle(cls, args) -> bool:
+    def _can_handle(cls, args) -> bool:
         if len(args) not in (2, 3, 4):
             return False
         return args[0] == "show" and args[1] == "flex"
@@ -113,7 +122,7 @@ class ShowFlexCommand(Command):
 
 class ShowErrorHandler(Command):
     @classmethod
-    def can_handle(cls, args) -> bool:
+    def _can_handle(cls, args) -> bool:
         if args and args[0] == "show":
             raise InvalidShowCommandError("Error: invalid show command.")
         return False

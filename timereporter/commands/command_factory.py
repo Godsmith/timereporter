@@ -7,10 +7,12 @@ from timereporter.commands.show_commands import (
     ShowWeekHtmlCommand,
     ShowWeekCommand,
     ShowDayCommand,
-    ShowMonthCommand,
-    ShowMonthHtmlCommand,
+    ShowSpecificMonthCommand,
+    ShowSpecificMonthHtmlCommand,
     ShowErrorHandler,
     ShowFlexCommand,
+    ShowMonthCommand,
+    ShowMonthHtmlCommand,
 )
 
 
@@ -21,8 +23,10 @@ class CommandFactory:
         ShowWeekHtmlCommand,  # Must be before ShowWeekCommand
         ShowWeekCommand,
         ShowDayCommand,
-        ShowMonthCommand,
         ShowMonthHtmlCommand,
+        ShowMonthCommand,
+        ShowSpecificMonthCommand,
+        ShowSpecificMonthHtmlCommand,
         ShowFlexCommand,
         ShowErrorHandler,
         UndoCommand,
