@@ -34,6 +34,7 @@ class Calendar:
         self.target_hours_per_day = target_hours_per_day
         self.default_project_name = default_project_name
         self._aliases = aliases or {}  # type: Dict[str, str]
+        self._days = None
 
     @property
     def days(self) -> Dict[date, Day]:
@@ -41,10 +42,11 @@ class Calendar:
 
         :return: A dictionary (date, Day) with all the Days in the calendar.
         """
-        days = defaultdict(Day)
-        for day in self._raw_days:
-            days[day.date] += day
-        return days
+        if not self._days:
+            self._days = defaultdict(Day)
+            for day in self._raw_days:
+                self._days[day.date] += day
+        return self._days
 
     def add(self, day: Day):
         """Add a day to the calendar."""
