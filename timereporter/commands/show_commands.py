@@ -18,10 +18,21 @@ class ShowWeekendCommand(Command):
 class ShowWeekCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
+        args = args[:]
+        if "last" in args:
+            args.remove("last")
+        if "next" in args:
+            args.remove("next")
         return args and args[:2] == "show week".split()
 
     def view(self):
-        return ConsoleWeekView(self.date, "--show-weekend" in self.options)
+        date_ = self.date
+        if "last" in self.args:
+            date_ = self.date - timedelta(weeks=1)
+        elif "next" in self.args:
+            date_ = self.date + timedelta(weeks=1)
+
+        return ConsoleWeekView(date_, "--show-weekend" in self.options)
 
 
 class ShowDayCommand(ShowWeekendCommand):
@@ -36,6 +47,11 @@ class ShowDayCommand(ShowWeekendCommand):
 class ShowWeekHtmlCommand(ShowWeekendCommand):
     @classmethod
     def can_handle(cls, args) -> bool:
+        args = args[:]
+        if "last" in args:
+            args.remove("last")
+        if "next" in args:
+            args.remove("next")
         return args and args[:3] == "show week html".split()
 
     def view(self):
@@ -47,17 +63,10 @@ class ShowMonthHtmlCommand(ShowWeekendCommand):
     def can_handle(cls, args) -> bool:
         if len(args) < 3:
             return False
-        return (
-            args
-            and args[0] == "show"
-            and args[1] in ConsoleMonthView.MONTHS
-            and args[2] == "html"
-        )
+        return args and args[0] == "show" and args[1] in ConsoleMonthView.MONTHS and args[2] == "html"
 
     def view(self):
-        return BrowserMonthView(
-            self.date, self.args[1], "--show-weekend" in self.options
-        )
+        return BrowserMonthView(self.date, self.args[1], "--show-weekend" in self.options)
 
 
 class ShowMonthCommand(ShowWeekendCommand):
@@ -68,9 +77,7 @@ class ShowMonthCommand(ShowWeekendCommand):
         return args and args[0] == "show" and args[1] in ConsoleMonthView.MONTHS
 
     def view(self):
-        return ConsoleMonthView(
-            self.date, self.args[1], "--show-weekend" in self.options
-        )
+        return ConsoleMonthView(self.date, self.args[1], "--show-weekend" in self.options)
 
 
 class ShowFlexCommand(Command):
@@ -122,9 +129,7 @@ class InvalidShowCommandError(ShowCommandError):
 
 class InvalidArgumentError(ShowCommandError):
     def __init__(self, argument, value):
-        super().__init__(
-            f'Error: invalid value "{value}" for argument ' f'"{argument}".'
-        )
+        super().__init__(f'Error: invalid value "{value}" for argument ' f'"{argument}".')
 
 
 # TODO: this is not catched in __main__.

@@ -102,6 +102,11 @@ class TestTimeReporterCommand:
         assert "01:00" in s
         assert "05:00" in s
 
+    def test_last_weekday_multiple(self):
+        main("last monday friday came 1")
+        s, _ = main("show last week")
+        assert s.count("01:00") == 2
+
     def test_next_weekday(self):
         main("next monday came 1")
         main("next friday came 5")

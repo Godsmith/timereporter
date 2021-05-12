@@ -7,20 +7,27 @@ from timereporter.mydatetime import timedelta
 class DateArgParser:
     def __init__(self, today: date):
         self.today = today
+        self.contains_last = False
+        self.contains_next = False
+        self.last_shall_be_removed = False
+        self.next_shall_be_removed = False
 
     def parse(self, args) -> Tuple[List[date], List[str]]:
+        if "last" in args:
+            self.contains_last = True
+        elif "next" in args:
+            self.contains_next = True
+
         dates = [date for date in map(self.to_date, args) if date is not None]
         if not dates:
             dates = [self.today]
 
-        if "last" in args:
-            dates = list(date_ - timedelta(weeks=1) for date_ in dates)
-            args.remove("last")
-        elif "next" in args:
-            dates = list(date_ + timedelta(weeks=1) for date_ in dates)
-            args.remove("next")
-
         args = [arg for arg in args if self.to_date(arg) is None]
+
+        if self.last_shall_be_removed:
+            args.remove("last")
+        if self.next_shall_be_removed:
+            args.remove("next")
 
         return dates, args
 
@@ -38,10 +45,15 @@ class DateArgParser:
             return self.today - timedelta(days=1)
 
         try:
-            index = "monday tuesday wednesday thursday friday".split().index(
-                str_.lower()
-            )
-            return self.today + timedelta(days=-self.today.weekday() + index)
+            index = "monday tuesday wednesday thursday friday".split().index(str_.lower())
+            date_ = self.today + timedelta(days=-self.today.weekday() + index)
+            if self.contains_next:
+                date_ += timedelta(weeks=1)
+                self.next_shall_be_removed = True
+            if self.contains_last:
+                date_ -= timedelta(weeks=1)
+                self.last_shall_be_removed = True
+            return date_
 
         except ValueError:
             pass
