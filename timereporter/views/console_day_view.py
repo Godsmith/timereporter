@@ -8,4 +8,4 @@ class ConsoleDayView(View):
 
         :param date_ : the date of the day to show.
         """
-        return DayShower.show_days(calendar, self.date, day_count=1)
+        return DayShower(calendar).show_days(self.date, day_count=1)

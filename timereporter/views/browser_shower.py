@@ -9,12 +9,12 @@ from timereporter.mydatetime import timedeltaDecimal
 class BrowserShower:
     def show(self, calendar, day_count, mondays):
         week_strings = [
-            DayShower.show_days(
-                calendar=calendar,
+            DayShower(
+                calendar, timedelta_conversion_function=timedeltaDecimal.from_timedelta
+            ).show_days(
                 first_date=monday,
                 day_count=day_count,
                 table_format="unsafehtml",
-                timedelta_conversion_function=timedeltaDecimal.from_timedelta,
                 flex_multiplier=-1,
                 show_earned_flex=False,
                 show_sum=True,

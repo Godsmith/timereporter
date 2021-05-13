@@ -28,7 +28,7 @@ class ConsoleMonthView(WeekView):
 
     def show(self, calendar):
         week_strings = [
-            DayShower.show_days(calendar, monday, self.day_count)
+            DayShower(calendar).show_days(monday, self.day_count)
             for monday in self._mondays()
         ]
         return "\n".join(self._trim(week_strings))

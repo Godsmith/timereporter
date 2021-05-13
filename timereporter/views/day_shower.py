@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List
+from typing import List, Union
 
 from tabulate import tabulate
 
@@ -7,14 +7,15 @@ from timereporter.mydatetime import timedelta
 
 
 class DayShower:
-    @classmethod
+    def __init__(self, calendar, timedelta_conversion_function=lambda x: x):
+        self.calendar = calendar
+        self.timedelta_conversion_function = timedelta_conversion_function
+
     def show_days(
-        cls,
-        calendar,
+        self,
         first_date: date,
         day_count,
         table_format="simple",
-        timedelta_conversion_function=lambda x: x,
         flex_multiplier=1,
         show_earned_flex=True,
         show_sum=False,
@@ -31,30 +32,12 @@ class DayShower:
         weekdays = "Monday Tuesday Wednesday Thursday Friday Saturday " "Sunday".split()
         weekdays_to_show = [weekdays[date_.weekday() % 7] for date_ in dates]
 
-        came_times = [calendar.days[date_].came for date_ in dates]
-        leave_times = [calendar.days[date_].left for date_ in dates]
-        lunch_times = [calendar.days[date_].lunch for date_ in dates]
+        came_times = [self.calendar.days[date_].came for date_ in dates]
+        leave_times = [self.calendar.days[date_].left for date_ in dates]
+        lunch_times = [self.calendar.days[date_].lunch for date_ in dates]
 
-        sum_ = timedelta()
-        project_rows = [[project] for project in calendar.projects]
-        for i, project in enumerate(calendar.projects):
-            project_times = [
-                timedelta_conversion_function(
-                    calendar.days[date_].projects[project.name]
-                )
-                for date_ in dates
-            ]
-            project_rows[i] = [f"{i+2}. {project}"] + project_times
-            sum_ += sum(project_times, timedelta())
-
-        default_project_times = [
-            timedelta_conversion_function(calendar.default_project_time(date_))
-            for date_ in dates
-        ]
-        sum_ += sum(default_project_times, timedelta())
-
-        flex_times = [calendar.flex(date_) for date_ in dates]
-        flex_times = [timedelta_conversion_function(flex) for flex in flex_times]
+        flex_times = [self.calendar.flex(date_) for date_ in dates]
+        flex_times = [self.timedelta_conversion_function(flex) for flex in flex_times]
         flex_times = list(
             map(lambda x: None if x is None else x * flex_multiplier, flex_times)
         )
@@ -62,19 +45,21 @@ class DayShower:
             flex_times = list(
                 map(lambda x: None if x is None or x <= timedelta() else x, flex_times)
             )
-        sum_ += sum(flex_times, timedelta())
 
+        project_rows = self._project_rows(dates)
+
+        sum_ = timedelta()
+        for project_row in project_rows:
+            sum_ += sum(project_row[1:], timedelta())
+        sum_ += sum(flex_times, timedelta())
         if show_sum:
-            sum_cell = ["Sum: %s" % timedelta_conversion_function(sum_)]
+            sum_cell = ["Sum: %s" % self.timedelta_conversion_function(sum_)]
         else:
             sum_cell = [""]
 
-        project_rows = [
-            [f"1. {calendar.default_project_name}"] + default_project_times
-        ] + project_rows
         if table_format == "unsafehtml":
             project_rows = [
-                cls._add_copy_to_clipboard_button(row) for row in project_rows
+                self._add_copy_to_clipboard_button(row) for row in project_rows
             ]
 
         return tabulate(
@@ -89,6 +74,30 @@ class DayShower:
             ],
             tablefmt=table_format,
         )
+
+    def _project_rows(self, dates) -> List[List[Union[str, timedelta]]]:
+        project_rows = [[project] for project in self.calendar.projects]
+        for i, project in enumerate(self.calendar.projects):
+            project_times = [
+                self.timedelta_conversion_function(
+                    self.calendar.days[date_].projects[project.name]
+                )
+                for date_ in dates
+            ]
+            project_rows[i] = [f"{i+2}. {project}"] + project_times
+
+        default_project_times = [
+            self.timedelta_conversion_function(
+                self.calendar.default_project_time(date_)
+            )
+            for date_ in dates
+        ]
+
+        project_rows = [
+            [f"1. {self.calendar.default_project_name}"] + default_project_times
+        ] + project_rows
+
+        return project_rows
 
     @classmethod
     def _add_copy_to_clipboard_button(cls, row: List[str]):
