@@ -1,4 +1,6 @@
 from datetime import date
+from typing import List
+
 from tabulate import tabulate
 
 from timereporter.mydatetime import timedelta
@@ -67,6 +69,10 @@ class DayShower:
         else:
             sum_cell = [""]
 
+        project_rows = [[f"1. {calendar.default_project_name}"] + default_project_times] + project_rows
+        if table_format == "unsafehtml":
+            project_rows = [cls._add_copy_to_clipboard_button(row) for row in project_rows]
+
         return tabulate(
             [
                 sum_cell + dates,
@@ -74,9 +80,17 @@ class DayShower:
                 ["Came"] + came_times,
                 ["Left"] + leave_times,
                 ["Lunch"] + lunch_times,
-                [f"1. {calendar.default_project_name}"] + default_project_times,
                 *project_rows,
                 ["Flex", *flex_times],
             ],
             tablefmt=table_format,
         )
+
+    @classmethod
+    def _add_copy_to_clipboard_button(cls, row: List[str]):
+        text_to_copy = "\t".join(str(time_) for time_ in row[1:])
+        return [cls._copy_to_clipboard_button_html(row[0], text_to_copy)] + row[1:]
+
+    @staticmethod
+    def _copy_to_clipboard_button_html(button_name: str, text_to_copy: str) -> str:
+        return f'<button onclick="copyToClipboard(\'{text_to_copy}\')">{button_name}</button>'
