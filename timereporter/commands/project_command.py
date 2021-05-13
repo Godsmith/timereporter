@@ -32,7 +32,9 @@ class ProjectCommand(Command):
         if not project_name_matches:
             raise ProjectNameDoesNotExistError(project_name)
         elif len(project_name_matches) > 1:
-            raise AmbiguousProjectNameError(project_name, self._project_rows(project_name_matches))
+            raise AmbiguousProjectNameError(
+                project_name, self._project_rows(project_name_matches)
+            )
         else:
             day = Day(
                 date_=self.date,
@@ -47,11 +49,14 @@ class ProjectCommand(Command):
         if len(self.args) > 2:
             raise UnexpectedOptionError(self.args[2:])
         project_name = " ".join(self.args[1:])
-        return self.calendar.add_project(project_name, work="--no-work" not in self.options)
+        return self.calendar.add_project(
+            project_name, work="--no-work" not in self.options
+        )
 
     def _project_rows(self, project_names):
         project_numbers_and_names = [
-            str(self._project_number(project_name)) + ". " + project_name for project_name in project_names
+            str(self._project_number(project_name)) + ". " + project_name
+            for project_name in project_names
         ]
         return "\n  ".join(project_numbers_and_names)
 
@@ -84,8 +89,12 @@ class ProjectCommand(Command):
         elif len(args) != 2:
             raise InvalidTimeError(" ".join(args[1:]))
         elif self._project_name_matches(str(project_number)):
-            project_names = [self._project_name(project_number)] + self._project_name_matches(str(project_number))
-            raise AmbiguousProjectNumberError(project_number, self._project_rows(project_names))
+            project_names = [
+                self._project_name(project_number)
+            ] + self._project_name_matches(str(project_number))
+            raise AmbiguousProjectNumberError(
+                project_number, self._project_rows(project_names)
+            )
 
 
 class ProjectError(Exception):

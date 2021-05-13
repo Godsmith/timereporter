@@ -45,7 +45,9 @@ class DateArgParser:
             return self.today - timedelta(days=1)
 
         try:
-            index = "monday tuesday wednesday thursday friday".split().index(str_.lower())
+            index = "monday tuesday wednesday thursday friday".split().index(
+                str_.lower()
+            )
             date_ = self.today + timedelta(days=-self.today.weekday() + index)
             if self.contains_next:
                 date_ += timedelta(weeks=1)

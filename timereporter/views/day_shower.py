@@ -69,9 +69,13 @@ class DayShower:
         else:
             sum_cell = [""]
 
-        project_rows = [[f"1. {calendar.default_project_name}"] + default_project_times] + project_rows
+        project_rows = [
+            [f"1. {calendar.default_project_name}"] + default_project_times
+        ] + project_rows
         if table_format == "unsafehtml":
-            project_rows = [cls._add_copy_to_clipboard_button(row) for row in project_rows]
+            project_rows = [
+                cls._add_copy_to_clipboard_button(row) for row in project_rows
+            ]
 
         return tabulate(
             [
@@ -93,4 +97,4 @@ class DayShower:
 
     @staticmethod
     def _copy_to_clipboard_button_html(button_name: str, text_to_copy: str) -> str:
-        return f'<button onclick="copyToClipboard(\'{text_to_copy}\')">{button_name}</button>'
+        return f"<button onclick=\"copyToClipboard('{text_to_copy}')\">{button_name}</button>"

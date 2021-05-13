@@ -5,7 +5,9 @@ from timereporter.__main__ import main
 
 
 def test_use_alias_raises_no_error(custom_log_path):
-    custom_log_path(Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml")
+    custom_log_path(
+        Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml"
+    )
 
     _, err = main("slw")
 
@@ -13,7 +15,9 @@ def test_use_alias_raises_no_error(custom_log_path):
 
 
 def test_list_aliases(custom_log_path):
-    custom_log_path(Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml")
+    custom_log_path(
+        Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml"
+    )
 
     out, _ = main("alias")
 
@@ -23,7 +27,9 @@ def test_list_aliases(custom_log_path):
 
 class TestAdd:
     def test_add_alias(self, custom_log_path):
-        custom_log_path(Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml")
+        custom_log_path(
+            Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml"
+        )
         main("alias hello came 7:45")
 
         _, err = main("hello")
@@ -31,7 +37,9 @@ class TestAdd:
         assert err == 0
 
     def test_add_alias_but_no_definition_throws_error(self, custom_log_path):
-        custom_log_path(Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml")
+        custom_log_path(
+            Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml"
+        )
         out, err = main("alias hello")
 
         assert err == 1
@@ -46,7 +54,9 @@ class TestRemove:
         assert "Error: alias 'foo' does not exist." in out
 
     def test_remove(self, custom_log_path):
-        custom_log_path(Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml")
+        custom_log_path(
+            Path(os.path.realpath(__file__)).parent / "_fixtures" / "alias.yaml"
+        )
         main("alias --remove slw")
         out, err = main("alias")
 

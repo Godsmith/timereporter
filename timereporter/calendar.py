@@ -128,7 +128,9 @@ class Calendar:
     def default_project_time(self, date_):
         project_time_sum = timedelta()
         for project_name in self.days[date_].projects:
-            project = [project for project in self.projects if project.name == project_name][0]
+            project = [
+                project for project in self.projects if project.name == project_name
+            ][0]
             if project.work:
                 project_time_sum += self.days[date_].projects[project_name]
 
@@ -144,9 +146,14 @@ class Calendar:
         minus the target hours per day.
         """
         working_time = self.days[date_].working_time
-        no_work_projects_names = [project.name for project in self.projects if not project.work]
+        no_work_projects_names = [
+            project.name for project in self.projects if not project.work
+        ]
         no_work_project_time = sum(
-            [self.days[date_].projects[project_name] for project_name in no_work_projects_names],
+            [
+                self.days[date_].projects[project_name]
+                for project_name in no_work_projects_names
+            ],
             timedelta(),
         )
         if working_time:
@@ -185,7 +192,9 @@ def _load_calendar(data, version):
             day = date_and_day.day
             day.date = date_and_day.date
             data["raw_days"].append(day)
-    default_project_name = data.get("default_project_name", Calendar.DEFAULT_PROJECT_NAME)
+    default_project_name = data.get(
+        "default_project_name", Calendar.DEFAULT_PROJECT_NAME
+    )
     target_hours_per_day = data.get(
         "target_hours_per_day",
         data.get("working_hours_per_day", Calendar.DEFAULT_TARGET_HOURS_PER_DAY),

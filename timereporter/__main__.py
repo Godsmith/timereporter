@@ -58,7 +58,15 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
             data = new_calendar.dump()
             f.write(data)
         return to_print, 0
-    except (TimeParserError, CalendarError, DayError, ProjectError, ShowCommandError, CommandError, AliasError) as err:
+    except (
+        TimeParserError,
+        CalendarError,
+        DayError,
+        ProjectError,
+        ShowCommandError,
+        CommandError,
+        AliasError,
+    ) as err:
         return str(err), 1
 
 
@@ -86,7 +94,10 @@ def get_calendar(path):
             data = f.read()
             calendar = Calendar.load(data)
             if not isinstance(calendar, Calendar):
-                raise UnreadableCamelFileError(f"File found at {path} not readable. Remove it to " f"create a new one.")
+                raise UnreadableCamelFileError(
+                    f"File found at {path} not readable. Remove it to "
+                    f"create a new one."
+                )
     except FileNotFoundError:
         if _can_file_be_created_at(path):
             calendar = Calendar()

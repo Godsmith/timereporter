@@ -47,10 +47,17 @@ class ShowSpecificMonthHtmlCommand(ShowWeekendCommand):
     def _can_handle(cls, args) -> bool:
         if len(args) < 3:
             return False
-        return args and args[0] == "show" and args[1] in ConsoleMonthView.MONTHS and args[2] == "html"
+        return (
+            args
+            and args[0] == "show"
+            and args[1] in ConsoleMonthView.MONTHS
+            and args[2] == "html"
+        )
 
     def view(self):
-        return BrowserMonthView(self.date, self.args[1], "--show-weekend" in self.options)
+        return BrowserMonthView(
+            self.date, self.args[1], "--show-weekend" in self.options
+        )
 
 
 class ShowSpecificMonthCommand(ShowWeekendCommand):
@@ -61,7 +68,9 @@ class ShowSpecificMonthCommand(ShowWeekendCommand):
         return args and args[0] == "show" and args[1] in ConsoleMonthView.MONTHS
 
     def view(self):
-        return ConsoleMonthView(self.date, self.args[1], "--show-weekend" in self.options)
+        return ConsoleMonthView(
+            self.date, self.args[1], "--show-weekend" in self.options
+        )
 
 
 class ShowMonthCommand(ShowWeekendCommand):
@@ -74,7 +83,9 @@ class ShowMonthCommand(ShowWeekendCommand):
 
     def view(self):
         return ConsoleMonthView(
-            self.date, ConsoleMonthView.MONTHS[self.date.month - 1], "--show-weekend" in self.options
+            self.date,
+            ConsoleMonthView.MONTHS[self.date.month - 1],
+            "--show-weekend" in self.options,
         )
 
 
@@ -85,7 +96,9 @@ class ShowMonthHtmlCommand(ShowMonthCommand):
 
     def view(self):
         return BrowserMonthView(
-            self.date, ConsoleMonthView.MONTHS[self.date.month - 1], "--show-weekend" in self.options
+            self.date,
+            ConsoleMonthView.MONTHS[self.date.month - 1],
+            "--show-weekend" in self.options,
         )
 
 
@@ -138,7 +151,9 @@ class InvalidShowCommandError(ShowCommandError):
 
 class InvalidArgumentError(ShowCommandError):
     def __init__(self, argument, value):
-        super().__init__(f'Error: invalid value "{value}" for argument ' f'"{argument}".')
+        super().__init__(
+            f'Error: invalid value "{value}" for argument ' f'"{argument}".'
+        )
 
 
 # TODO: this is not catched in __main__.
