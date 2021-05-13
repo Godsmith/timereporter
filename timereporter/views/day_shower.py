@@ -36,35 +36,18 @@ class DayShower:
         leave_times = [self.calendar.days[date_].left for date_ in dates]
         lunch_times = [self.calendar.days[date_].lunch for date_ in dates]
 
-        flex_times = [self.calendar.flex(date_) for date_ in dates]
-        flex_times = [self.timedelta_conversion_function(flex) for flex in flex_times]
-        flex_times = list(
-            map(lambda x: None if x is None else x * flex_multiplier, flex_times)
-        )
-        if not show_earned_flex:
-            flex_times = list(
-                map(lambda x: None if x is None or x <= timedelta() else x, flex_times)
-            )
-
         project_rows = self._project_rows(dates)
-
-        sum_ = timedelta()
-        for project_row in project_rows:
-            sum_ += sum(project_row[1:], timedelta())
-        sum_ += sum(flex_times, timedelta())
-        if show_sum:
-            sum_cell = ["Sum: %s" % self.timedelta_conversion_function(sum_)]
-        else:
-            sum_cell = [""]
 
         if table_format == "unsafehtml":
             project_rows = [
                 self._add_copy_to_clipboard_button(row) for row in project_rows
             ]
 
+        flex_times = self._flex_times(dates, flex_multiplier, show_earned_flex)
+
         return tabulate(
             [
-                sum_cell + dates,
+                self._sum_cell(show_sum, project_rows, flex_times) + dates,
                 [""] + weekdays_to_show,
                 ["Came"] + came_times,
                 ["Left"] + leave_times,
@@ -74,6 +57,18 @@ class DayShower:
             ],
             tablefmt=table_format,
         )
+
+    def _flex_times(self, dates, flex_multiplier, show_earned_flex):
+        flex_times = [self.calendar.flex(date_) for date_ in dates]
+        flex_times = [self.timedelta_conversion_function(flex) for flex in flex_times]
+        flex_times = list(
+            map(lambda x: None if x is None else x * flex_multiplier, flex_times)
+        )
+        if not show_earned_flex:
+            flex_times = list(
+                map(lambda x: None if x is None or x <= timedelta() else x, flex_times)
+            )
+        return flex_times
 
     def _project_rows(self, dates) -> List[List[Union[str, timedelta]]]:
         project_rows = [[project] for project in self.calendar.projects]
@@ -98,6 +93,20 @@ class DayShower:
         ] + project_rows
 
         return project_rows
+
+    def _sum_cell(
+        self,
+        show_sum: bool,
+        project_rows: List[List[Union[str, timedelta]]],
+        flex_times: List[timedelta],
+    ):
+        if not show_sum:
+            return [""]
+        sum_ = timedelta()
+        for project_row in project_rows:
+            sum_ += sum(project_row[1:], timedelta())
+        sum_ += sum(flex_times, timedelta())
+        return ["Sum: %s" % self.timedelta_conversion_function(sum_)]
 
     @classmethod
     def _add_copy_to_clipboard_button(cls, row: List[str]):
