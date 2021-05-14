@@ -75,14 +75,15 @@ class TestUndo:
         c = Calendar()
         c = c.add(Day("came 9", today))
         assert "09:00" in DayShower(c).show_days(today, 1)
-        c = c.undo()
+        c, date_ = c.undo()
         assert "09:00" not in DayShower(c).show_days(today, 1)
+        assert date_ == today
 
     def test_came_left_lunch(self):
         c = Calendar()
         c = c.add(Day("came 9 left 15 lunch 30m", today))
         assert "30" in DayShower(c).show_days(today, 1)
-        c = c.undo()
+        c, _ = c.undo()
         assert "30" not in DayShower(c).show_days(today, 1)
 
 
@@ -90,9 +91,15 @@ class TestRedo:
     def test_basic(self):
         c = Calendar()
         c = c.add(Day("came 9 left 15 lunch 30m", today))
-        c = c.undo()
-        c = c.redo()
+        c, _ = c.undo()
+        c, date_ = c.redo()
         assert "30" in DayShower(c).show_days(today, 1)
+        assert date_ == today
+
+    def test_return_none_instead_of_date_if_nothing_to_redo(self):
+        c = Calendar()
+        c, date_ = c.redo()
+        assert date_ is None
 
 
 class TestProject:
