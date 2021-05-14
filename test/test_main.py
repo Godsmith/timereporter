@@ -176,27 +176,6 @@ class TestDefaultPath:
         assert default_path() == str(Path("foo") / "Dropbox" / "timereporter.yaml")
 
 
-class TestUndo:
-    def test_undo(self):
-        s, _ = main("came 9")
-        assert "9:00" in s
-        s, _ = main("undo")
-        assert "9:00" not in s
-
-    def test_redo(self):
-        main("came 9")
-        main("undo")
-        s, _ = main("redo")
-        assert "9:00" in s
-
-    def test_no_redo_after_action(self):
-        main("came 9")
-        main("undo")
-        main("came 8")
-        s, _ = main("redo")  # This shall not overwrite the 8:00
-        assert "8:00" in s
-
-
 class TestInvalidFile:
     def test_unreadable_file(self, temp_logfile):
         temp_logfile.write("")

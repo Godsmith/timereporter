@@ -1,5 +1,7 @@
 from timereporter.calendar import Calendar
 from timereporter.commands.command import Command
+from timereporter.views.console_week_view import ConsoleWeekView
+from timereporter.views.view import View
 
 
 class UndoCommand(Command):
@@ -7,5 +9,6 @@ class UndoCommand(Command):
     def _can_handle(cls, args) -> bool:
         return args == ["undo"]
 
-    def new_calendar(self) -> Calendar:
-        return self.calendar.undo()
+    def execute(self) -> (Calendar, View):
+        calendar, date_ = self.calendar.undo()
+        return calendar, ConsoleWeekView(date_)

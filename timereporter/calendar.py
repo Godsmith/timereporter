@@ -71,17 +71,19 @@ class Calendar:
             aliases=self.aliases.copy(),
         )
 
-    def undo(self):
+    def undo(self) -> ("Calendar", date):
         """Undo the last edit to the calendar."""
         new_redo_list = self.redo_list + self._raw_days[-1:]
-        return Calendar(
-            raw_days=self._raw_days[:-1],
-            redo_list=new_redo_list,
-            projects=self.projects[:],
-            target_hours_per_day=self.target_hours_per_day,
-            default_project_name=self.default_project_name,
-            aliases=self.aliases.copy(),
-        )
+        return (
+            Calendar(
+                raw_days=self._raw_days[:-1],
+                redo_list=new_redo_list,
+                projects=self.projects[:],
+                target_hours_per_day=self.target_hours_per_day,
+                default_project_name=self.default_project_name,
+                aliases=self.aliases.copy(),
+            ),
+        ), self._raw_days[-1].date
 
     def redo(self):
         """Redo the last undo made to the calendar."""
