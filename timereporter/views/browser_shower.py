@@ -26,7 +26,7 @@ class BrowserShower:
     @property
     def _head(self) -> str:
         text = "<head><script>"
-        text += (Path(__file__) / ".." / "copyToClipboard.js").read_text()
+        text += (Path(__file__).parent / "copyToClipboard.js").read_text()
         text += "</script></head>"
         return text
 
