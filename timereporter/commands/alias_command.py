@@ -1,3 +1,5 @@
+import datetime
+
 from timereporter.day import Day
 from timereporter.commands.command import Command, UnexpectedOptionError
 from timereporter.calendar import Calendar
@@ -28,7 +30,7 @@ class AliasCommand(Command):
     def view(self) -> View:
         return _AliasView(self.date)
 
-    def new_calendar(self) -> Calendar:
+    def new_calendar(self, created_at: datetime.datetime) -> Calendar:
         if "--remove" in self.options:
             if len(self.args) != 2:
                 raise AliasError("Error: invalid alias remove command.")

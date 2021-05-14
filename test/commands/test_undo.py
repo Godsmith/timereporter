@@ -14,6 +14,20 @@ class TestUndo:
         s, _ = main("redo")
         assert "9:00" in s
 
+    def test_undo_command_affecting_multiple_days(self):
+        main("monday tuesday came 9")
+        s, _ = main("undo")
+        assert "9:00" not in s
+
+    def test_redo_command_affecting_multiple_days(self):
+        main("monday tuesday came 9")
+        main("undo")
+        s, _ = main("redo")
+        assert s.count("9:00") == 2
+
+    def test_undoing_without_having_anything_to_undo_shall_not_crash(self):
+        main("undo")
+
     def test_no_redo_after_action(self):
         main("came 9")
         main("undo")

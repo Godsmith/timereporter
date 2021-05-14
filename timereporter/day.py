@@ -23,10 +23,12 @@ class Day:
         date_: datetime.date = None,
         project_name: str = None,
         project_time: str = None,
+        created_at: datetime.datetime = datetime.datetime.now(),
     ):
         self.date = date_
         self._came = self._left = self._came_or_left = self._lunch = None
         self._projects = defaultdict(timedelta)
+        self.created_at = created_at
 
         if project_name and project_time:
             self._projects[project_name] = TimeParser.as_timedelta(project_time)
@@ -250,6 +252,7 @@ def _dump_day(day):
         came_or_left=day._came_or_left,
         lunch=day.lunch,
         projects=day._projects,
+        created_at=day.created_at,
     )
 
 
@@ -262,4 +265,5 @@ def _load_day(data, version):
     day._came_or_left = data.get("came_or_left", None)
     day.lunch = data["lunch"]
     day._projects = data["projects"]
+    day.created_at = data.get("created_at", datetime.datetime.now())
     return day

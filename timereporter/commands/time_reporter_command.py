@@ -1,5 +1,7 @@
 """Supply the TimeReporter class, associated exceptions, and a main() method
 """
+import datetime
+
 from timereporter.day import Day
 from timereporter.commands.command import Command
 from timereporter.calendar import Calendar
@@ -14,9 +16,9 @@ class TimeReporterCommand(Command):
     def _can_handle(cls, args) -> bool:
         return True
 
-    def new_calendar(self) -> Calendar:
+    def new_calendar(self, created_at: datetime.datetime) -> Calendar:
         if not self.args:
             return self.calendar
 
-        day = Day(self.args, self.date)
+        day = Day(self.args, self.date, created_at=created_at)
         return self.calendar.add(day)

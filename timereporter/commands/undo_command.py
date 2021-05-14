@@ -1,3 +1,4 @@
+import datetime
 from typing import Tuple
 
 from timereporter.calendar import Calendar
@@ -11,6 +12,9 @@ class UndoCommand(Command):
     def _can_handle(cls, args) -> bool:
         return args == ["undo"]
 
-    def execute(self) -> Tuple[Calendar, View]:
+    def execute(
+        self, created_at: datetime.datetime = datetime.datetime.now()
+    ) -> Tuple[Calendar, View]:
         calendar, date_ = self.calendar.undo()
+        date_ = date_ or self.date
         return calendar, ConsoleWeekView(date_)

@@ -1,4 +1,5 @@
-from typing import Union, Dict
+import datetime
+from typing import Union, Dict, Tuple
 from datetime import date
 from typing import List
 
@@ -56,13 +57,15 @@ class Command:
     def valid_options(self) -> List[str]:
         return []
 
-    def execute(self):
-        return self.new_calendar(), self.view()
+    def execute(
+        self, created_at: datetime.datetime = datetime.datetime.now()
+    ) -> Tuple[Calendar, View]:
+        return self.new_calendar(created_at), self.view()
 
     def view(self) -> View:
         return ConsoleWeekView(self.date)
 
-    def new_calendar(self) -> Calendar:
+    def new_calendar(self, created_at: datetime.datetime) -> Calendar:
         return self.calendar
 
 

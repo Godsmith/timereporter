@@ -1,7 +1,7 @@
 import inspect
 import sys
 import os
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import List, Tuple, Union
 
@@ -49,9 +49,10 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
     try:
         new_calendar = calendar
         view = None
+        timestamp = datetime.now()
         for date_ in dates:
             command = CommandFactory.get_command(new_calendar, date_, args)
-            new_calendar, view = command.execute()
+            new_calendar, view = command.execute(timestamp)
 
         to_print = CalendarPrinter(calendar, new_calendar, view).to_print()
 

@@ -71,12 +71,20 @@ class Calendar:
             aliases=self.aliases.copy(),
         )
 
-    def undo(self) -> Tuple["Calendar", date]:
-        """Undo the last edit to the calendar."""
-        new_redo_list = self.redo_list + self._raw_days[-1:]
+    def undo(self) -> Tuple["Calendar", Optional[date]]:
+        """Undo the last edits with the same created_at to the calendar."""
+        if not self._raw_days:
+            return self, None
+        created_at = self._raw_days[-1].created_at
+        raw_days = self._raw_days[:]
+        days_to_undo = []
+        new_redo_list = self.redo_list
+        while raw_days and raw_days[-1].created_at == created_at:
+            days_to_undo.append(raw_days.pop())
+        new_redo_list.append(days_to_undo)
         return (
             Calendar(
-                raw_days=self._raw_days[:-1],
+                raw_days=raw_days,
                 redo_list=new_redo_list,
                 projects=self.projects[:],
                 target_hours_per_day=self.target_hours_per_day,
@@ -90,7 +98,9 @@ class Calendar:
         """Redo the last undo made to the calendar.
 
         Returns None instead of a date if there is nothing to undo."""
-        new_days = self._raw_days + self.redo_list[-1:]
+        new_days = self._raw_days
+        if self.redo_list:
+            new_days.extend(self.redo_list[-1])
         return (
             Calendar(
                 raw_days=new_days,
@@ -100,7 +110,7 @@ class Calendar:
                 default_project_name=self.default_project_name,
                 aliases=self.aliases.copy(),
             ),
-            self.redo_list[-1].date if self.redo_list else None,
+            self.redo_list[-1][-1].date if self.redo_list else None,
         )
 
     @property

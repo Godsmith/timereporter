@@ -86,6 +86,11 @@ class TestUndo:
         c, _ = c.undo()
         assert "30" not in DayShower(c).show_days(today, 1)
 
+    def test_return_none_instead_of_date_if_nothing_to_undo(self):
+        c = Calendar()
+        c, date_ = c.undo()
+        assert date_ is None
+
 
 class TestRedo:
     def test_basic(self):
