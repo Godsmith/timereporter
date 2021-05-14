@@ -70,7 +70,7 @@ class DayShower:
             )
         return flex_times
 
-    def _project_rows(self, dates) -> List[List[Union[str, timedelta]]]:
+    def _project_rows(self, dates) -> List[List[str]]:
         project_rows = [[project] for project in self.calendar.projects]
         for i, project in enumerate(self.calendar.projects):
             project_times = [
@@ -97,7 +97,7 @@ class DayShower:
     def _sum_cell(
         self,
         show_sum: bool,
-        project_rows: List[List[Union[str, timedelta]]],
+        project_rows: List[List[str]],
         flex_times: List[timedelta],
     ):
         if not show_sum:

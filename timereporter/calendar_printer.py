@@ -1,4 +1,4 @@
-from colorama import init, Style
+from colorama import init, Style  # type: ignore
 
 init()
 

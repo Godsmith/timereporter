@@ -59,6 +59,7 @@ class DateArgParser:
 
         except ValueError:
             pass
+        return None
 
     @classmethod
     def _is_date(cls, date_text):

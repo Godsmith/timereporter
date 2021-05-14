@@ -11,15 +11,15 @@ from timereporter.views.console_week_view import ConsoleWeekView
 class Command:
     TIMEDELTA = timedelta(weeks=1)
 
-    def __init__(self, calendar: Calendar, date_: date, args: Union[list, str, None]):
+    def __init__(self, calendar: Calendar, date_: date, args: Union[list, str]):
         self.calendar = calendar
         self.date = date_
         self.args = args
-        if self.args is None:
-            self.args = []
+
         # TODO: use the new argument splitter method instead
-        elif isinstance(self.args, str):
+        if isinstance(self.args, str):
             self.args = self.args.split()
+
         if "last" in self.args:
             self.date -= self.TIMEDELTA
         elif "next" in self.args:
@@ -29,6 +29,7 @@ class Command:
     def _parse_options(self) -> Dict[str, str]:
         options = {}
         new_args = []
+        assert isinstance(self.args, list)
         for arg in self.args:
             if arg.startswith("--"):
                 name = arg.split("=")[0]

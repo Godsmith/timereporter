@@ -1,12 +1,13 @@
+from typing import List, Tuple
+
 from timereporter.commands.command import Command
 from timereporter.calendar import Calendar
-from timereporter.views.view import View
 
 
 class RedoCommand(Command):
     @classmethod
-    def _can_handle(cls, args) -> bool:
+    def _can_handle(cls, args: List[str]) -> bool:
         return args == ["redo"]
 
-    def new_calendar(self) -> (Calendar, View):
+    def new_calendar(self) -> Calendar:
         return self.calendar.redo()

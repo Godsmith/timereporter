@@ -2,7 +2,7 @@
 """
 from collections import defaultdict, namedtuple
 from typing import Dict, Union
-from camel import Camel
+from camel import Camel  # type: ignore
 from datetime import date
 
 from timereporter.day import Day

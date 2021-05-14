@@ -153,31 +153,6 @@ class Day:
             return self._came_or_left
         return self._came
 
-    @property
-    def left(self):
-        """At which time the user left for home this day
-
-        :return:
-        """
-        return self._left
-
-    @property
-    def came_or_left(self):
-        if not self._came and not self._left:
-            return self._came_or_left
-
-    @property
-    def lunch(self):
-        return self._lunch
-
-    @property
-    def projects(self) -> Dict[str, timedelta]:
-        """Which projects has been worked on and for how long this day
-
-        :return:
-        """
-        return self._projects
-
     @came.setter
     def came(self, value):
         """Set at which time the user came to work this day
@@ -186,6 +161,14 @@ class Day:
         :return:
         """
         self._came = self._to_time(value)
+
+    @property
+    def left(self):
+        """At which time the user left for home this day
+
+        :return:
+        """
+        return self._left
 
     @left.setter
     def left(self, value):
@@ -196,9 +179,26 @@ class Day:
         """
         self._left = self._to_time(value)
 
+    @property
+    def came_or_left(self):
+        if not self._came and not self._left:
+            return self._came_or_left
+
+    @property
+    def lunch(self):
+        return self._lunch
+
     @lunch.setter
     def lunch(self, value):
         self._lunch = self._to_timedelta(value)
+
+    @property
+    def projects(self) -> Dict[str, timedelta]:
+        """Which projects has been worked on and for how long this day
+
+        :return:
+        """
+        return self._projects
 
     @property
     def working_time(self) -> timedelta:

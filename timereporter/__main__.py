@@ -1,3 +1,4 @@
+import inspect
 import sys
 import os
 from datetime import date
@@ -28,7 +29,7 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
     path = os.environ.get(TIMEREPORTER_FILE, default_path())
 
     if "--help" in args or "-h" in args or (len(args) > 0 and args[0] == "help"):
-        init_file_docstring = sys.modules[__loader__.name.split(".")[0]].__doc__
+        init_file_docstring = sys.modules[__package__].__doc__ or ""
         help_text = init_file_docstring.format(yaml_file_location=path)
         return help_text, 0
 

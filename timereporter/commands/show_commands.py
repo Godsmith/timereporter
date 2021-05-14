@@ -1,12 +1,12 @@
-from datetime import date, timedelta, datetime
+from datetime import datetime
 
+from timereporter.mydatetime import timedelta
 from timereporter.views.console_day_view import ConsoleDayView
 from timereporter.views.browser_week_view import BrowserWeekView
 from timereporter.views.console_week_view import ConsoleWeekView
 from timereporter.views.console_month_view import ConsoleMonthView
 from timereporter.views.browser_month_view import BrowserMonthView
 from timereporter.commands.command import Command
-from timereporter.date_arg_parser import DateArgParser
 from timereporter.views.flex_view import FlexView
 
 

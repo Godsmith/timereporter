@@ -1,4 +1,4 @@
-from camel import CamelRegistry
+from camel import CamelRegistry  # type: ignore
 from collections import defaultdict
 
 camelRegistry = CamelRegistry()

@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from timereporter.day import Day
 from timereporter.commands.command import Command, UnexpectedOptionError
 from timereporter.calendar import Calendar
@@ -12,7 +14,7 @@ class ProjectCommand(Command):
     def valid_options(self):
         return ["--no-work"]
 
-    def new_calendar(self) -> (Calendar, View):
+    def new_calendar(self) -> Calendar:
         # TODO: remove this assignment, counterintuitive
         self.args = self.args[1:]  # First is always 'project'
         if not self.args:
