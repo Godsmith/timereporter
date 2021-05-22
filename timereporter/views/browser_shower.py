@@ -14,7 +14,7 @@ class BrowserShower:
             ).show_days(
                 first_date=monday,
                 day_count=day_count,
-                table_format="unsafehtml",
+                table_format="html",
                 flex_multiplier=-1,
                 show_earned_flex=False,
                 show_sum=True,
