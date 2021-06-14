@@ -4,22 +4,25 @@ from typing import List
 
 from tabulate import tabulate
 
-from timereporter.mydatetime import timedelta
+from timereporter.mydatetime import timedelta, timedeltaDecimal
 
 
-class DayShower:
-    def __init__(self, calendar, timedelta_conversion_function=lambda x: x):
+class ConsoleDayShower:
+    TABLE_FORMAT = "simple"
+    FLEX_MULTIPLIER = 1
+    SHOW_EARNED_FLEX = True
+    SHOW_SUM = False
+
+    def __init__(self, calendar):
         self.calendar = calendar
-        self.timedelta_conversion_function = timedelta_conversion_function
+
+    def _timedelta_conversion_function(self, timedelta_: timedelta) -> str:
+        return str(timedelta_)
 
     def show_days(
         self,
         first_date: date,
         day_count,
-        table_format="simple",
-        flex_multiplier=1,
-        show_earned_flex=True,
-        show_sum=False,
     ):
         """Shows a number of days from the calendar in table format.
 
@@ -37,47 +40,48 @@ class DayShower:
         leave_times = [self.calendar.days[date_].left for date_ in dates]
         lunch_times = [self.calendar.days[date_].lunch for date_ in dates]
 
-        flex_row = self._flex_row(dates, flex_multiplier, show_earned_flex)
-        project_rows = self._project_rows(dates)
-        rows = project_rows + [flex_row]
-
-        if table_format == "html":
-            rows = [self._add_copy_to_clipboard_button(row) for row in rows]
+        rows = self._rows(dates)
 
         table = tabulate(
             [
-                self._sum_cell(show_sum, rows) + dates,
+                self._sum_cell(self.SHOW_SUM, rows) + dates,
                 [""] + weekdays_to_show,
                 ["Came"] + came_times,
                 ["Left"] + leave_times,
                 ["Lunch"] + lunch_times,
                 *rows,
             ],
-            tablefmt=table_format,
+            tablefmt=self.TABLE_FORMAT,
         )
 
         return html.unescape(table)
 
-    def _flex_row(self, dates, flex_multiplier, show_earned_flex):
+    def _rows(self, dates: List[timedelta]):
+        return self._project_rows(dates) + [self._flex_row(dates)]
+
+    def _flex_row(self, dates) -> List[str]:
         flex_times = [self.calendar.flex(date_) for date_ in dates]
         flex_times = list(
-            map(lambda x: timedelta() if x is None else x * flex_multiplier, flex_times)
+            map(
+                lambda x: timedelta() if x is None else x * self.FLEX_MULTIPLIER,
+                flex_times,
+            )
         )
-        if not show_earned_flex:
+        if not self.SHOW_EARNED_FLEX:
             flex_times = list(
                 map(
                     lambda x: timedelta() if x is None or x <= timedelta() else x,
                     flex_times,
                 )
             )
-        flex_times = [self.timedelta_conversion_function(flex) for flex in flex_times]
+        flex_times = [self._timedelta_conversion_function(flex) for flex in flex_times]
         return ["Flex"] + flex_times
 
     def _project_rows(self, dates) -> List[List[str]]:
         project_rows = [[project] for project in self.calendar.projects]
         for i, project in enumerate(self.calendar.projects):
             project_times = [
-                self.timedelta_conversion_function(
+                self._timedelta_conversion_function(
                     self.calendar.days[date_].projects[project.name]
                 )
                 for date_ in dates
@@ -85,7 +89,7 @@ class DayShower:
             project_rows[i] = [f"{i+2}. {project}"] + project_times
 
         default_project_times = [
-            self.timedelta_conversion_function(
+            self._timedelta_conversion_function(
                 self.calendar.default_project_time(date_)
             )
             for date_ in dates
@@ -103,7 +107,20 @@ class DayShower:
         sum_ = timedelta()
         for row in rows:
             sum_ += sum(row[1:], timedelta())
-        return ["Sum: %s" % self.timedelta_conversion_function(sum_)]
+        return ["Sum: %s" % self._timedelta_conversion_function(sum_)]
+
+
+class BrowserDayShower(ConsoleDayShower):
+    TABLE_FORMAT = "html"
+    FLEX_MULTIPLIER = -1
+    SHOW_EARNED_FLEX = False
+    SHOW_SUM = True
+
+    def _timedelta_conversion_function(self, timedelta_: timedelta):
+        return timedeltaDecimal.from_timedelta(timedelta_)
+
+    def _rows(self, dates) -> List[List[str]]:
+        return [self._add_copy_to_clipboard_button(row) for row in super()._rows(dates)]
 
     @classmethod
     def _add_copy_to_clipboard_button(cls, row: List[str]):

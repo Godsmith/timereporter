@@ -1,5 +1,5 @@
 from timereporter.views.view import View
-from timereporter.views.day_shower import DayShower
+from timereporter.views.day_shower import ConsoleDayShower
 
 
 class ConsoleDayView(View):
@@ -8,4 +8,4 @@ class ConsoleDayView(View):
 
         :param date_ : the date of the day to show.
         """
-        return DayShower(calendar).show_days(self.date, day_count=1)
+        return ConsoleDayShower(calendar).show_days(self.date, day_count=1)

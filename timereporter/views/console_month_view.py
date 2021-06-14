@@ -1,5 +1,5 @@
 from timereporter.views.week_view import WeekView
-from timereporter.views.day_shower import DayShower
+from timereporter.views.day_shower import ConsoleDayShower
 from timereporter.mydatetime import timedelta
 
 
@@ -28,7 +28,7 @@ class ConsoleMonthView(WeekView):
 
     def show(self, calendar):
         week_strings = [
-            DayShower(calendar).show_days(monday, self.day_count)
+            ConsoleDayShower(calendar).show_days(monday, self.day_count)
             for monday in self._mondays()
         ]
         return "\n".join(self._trim(week_strings))

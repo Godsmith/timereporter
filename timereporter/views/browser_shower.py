@@ -2,22 +2,15 @@ import webbrowser
 import tempfile
 from pathlib import Path
 
-from timereporter.views.day_shower import DayShower
-from timereporter.mydatetime import timedeltaDecimal
+from timereporter.views.day_shower import BrowserDayShower
 
 
 class BrowserShower:
     def show(self, calendar, day_count, mondays):
         week_strings = [
-            DayShower(
-                calendar, timedelta_conversion_function=timedeltaDecimal.from_timedelta
-            ).show_days(
+            BrowserDayShower(calendar).show_days(
                 first_date=monday,
                 day_count=day_count,
-                table_format="html",
-                flex_multiplier=-1,
-                show_earned_flex=False,
-                show_sum=True,
             )
             for monday in mondays
         ]

@@ -6,7 +6,7 @@ from timereporter.mydatetime import timedelta, time
 # TODO: remove nothingtoredoerror
 from timereporter.calendar import Calendar
 from timereporter.day import Day
-from timereporter.views.day_shower import DayShower
+from timereporter.views.day_shower import ConsoleDayShower
 
 today = date(2017, 9, 20)
 
@@ -74,17 +74,17 @@ class TestUndo:
     def test_only_came(self):
         c = Calendar()
         c = c.add(Day("came 9", today))
-        assert "09:00" in DayShower(c).show_days(today, 1)
+        assert "09:00" in ConsoleDayShower(c).show_days(today, 1)
         c, date_ = c.undo()
-        assert "09:00" not in DayShower(c).show_days(today, 1)
+        assert "09:00" not in ConsoleDayShower(c).show_days(today, 1)
         assert date_ == today
 
     def test_came_left_lunch(self):
         c = Calendar()
         c = c.add(Day("came 9 left 15 lunch 30m", today))
-        assert "30" in DayShower(c).show_days(today, 1)
+        assert "30" in ConsoleDayShower(c).show_days(today, 1)
         c, _ = c.undo()
-        assert "30" not in DayShower(c).show_days(today, 1)
+        assert "30" not in ConsoleDayShower(c).show_days(today, 1)
 
     def test_return_none_instead_of_date_if_nothing_to_undo(self):
         c = Calendar()
@@ -98,7 +98,7 @@ class TestRedo:
         c = c.add(Day("came 9 left 15 lunch 30m", today))
         c, _ = c.undo()
         c, date_ = c.redo()
-        assert "30" in DayShower(c).show_days(today, 1)
+        assert "30" in ConsoleDayShower(c).show_days(today, 1)
         assert date_ == today
 
     def test_return_none_instead_of_date_if_nothing_to_redo(self):
@@ -112,7 +112,7 @@ class TestProject:
         c = Calendar()
         c = c.add(Day(date_=today, project_name="EPG Support", project_time="08:00"))
         c = c.add_project("EPG Support")
-        s = DayShower(c).show_days(today, 1)
+        s = ConsoleDayShower(c).show_days(today, 1)
         assert "EPG Support" in s
         assert "08:00" in s
 
@@ -129,7 +129,7 @@ class TestNoWorkProject:
             )
         )
         c = c.add_project("Parental leave", work=False)
-        s = DayShower(c).show_days(today, 1)
+        s = ConsoleDayShower(c).show_days(today, 1)
         assert "Parental leave" in s
         assert "04:00" in s
         assert "07:45" in s
@@ -150,7 +150,7 @@ class TestSerialization:
         c = c.add_project("EPG Support")
         data = c.dump()
         c2 = Calendar.load(data)
-        s = DayShower(c2).show_days(today, 1)
+        s = ConsoleDayShower(c2).show_days(today, 1)
         assert "EPG Support" in s
         assert "08:00" in s
 
@@ -158,14 +158,14 @@ class TestSerialization:
 class TestEditDefaultProject:
     def test_edit_default_project(self):
         c = Calendar(default_project_name="Hello world")
-        s = DayShower(c).show_days(today, 1)
+        s = ConsoleDayShower(c).show_days(today, 1)
         assert "Hello world" in s
 
     def test_serialize(self):
         c = Calendar(default_project_name="Hello world")
         data = c.dump()
         c2 = Calendar.load(data)
-        s = DayShower(c2).show_days(today, 1)
+        s = ConsoleDayShower(c2).show_days(today, 1)
         assert "Hello world" in s
 
 
@@ -173,7 +173,7 @@ class TestEditDefaultWorkingTimePerDay:
     def test_basic(self):
         c = Calendar(target_hours_per_day=timedelta(hours=8.00))
         c = c.add(Day("came 9 left 18", today))
-        s = DayShower(c).show_days(today, 1)
+        s = ConsoleDayShower(c).show_days(today, 1)
         assert re.search("Flex *01:00", s)
 
     def test_serialize(self):
@@ -181,5 +181,5 @@ class TestEditDefaultWorkingTimePerDay:
         c = c.add(Day("came 9 left 18", today))
         data = c.dump()
         c2 = Calendar.load(data)
-        s = DayShower(c2).show_days(today, 1)
+        s = ConsoleDayShower(c2).show_days(today, 1)
         assert re.search("Flex *01:00", s)
