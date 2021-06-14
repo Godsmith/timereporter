@@ -37,72 +37,52 @@ class DayShower:
         leave_times = [self.calendar.days[date_].left for date_ in dates]
         lunch_times = [self.calendar.days[date_].lunch for date_ in dates]
 
+        flex_row = self._flex_row(dates, flex_multiplier, show_earned_flex)
         project_rows = self._project_rows(dates)
+        rows = project_rows + [flex_row]
 
         if table_format == "html":
-            project_rows = [
-                self._add_copy_to_clipboard_button(row) for row in project_rows
-            ]
-
-        flex_times = self._flex_times(dates, flex_multiplier, show_earned_flex)
-        flex_row = ["Flex"] + flex_times
+            rows = [self._add_copy_to_clipboard_button(row) for row in rows]
 
         table = tabulate(
             [
-                self._sum_cell(show_sum, project_rows + [flex_row]) + dates,
+                self._sum_cell(show_sum, rows) + dates,
                 [""] + weekdays_to_show,
                 ["Came"] + came_times,
                 ["Left"] + leave_times,
                 ["Lunch"] + lunch_times,
-                *project_rows,
-                ["Flex", *flex_times],
+                *rows,
             ],
             tablefmt=table_format,
         )
 
         return html.unescape(table)
 
-    def _flex_times(self, dates, flex_multiplier, show_earned_flex):
+    def _flex_row(self, dates, flex_multiplier, show_earned_flex):
         flex_times = [self.calendar.flex(date_) for date_ in dates]
-        flex_times = [self.timedelta_conversion_function(flex) for flex in flex_times]
-        flex_times = list(
-            map(lambda x: None if x is None else x * flex_multiplier, flex_times)
-        )
+        flex_times = list(map(lambda x: timedelta() if x is None else x * flex_multiplier, flex_times))
         if not show_earned_flex:
-            flex_times = list(
-                map(lambda x: None if x is None or x <= timedelta() else x, flex_times)
-            )
-        return flex_times
+            flex_times = list(map(lambda x: timedelta() if x is None or x <= timedelta() else x, flex_times))
+        flex_times = [self.timedelta_conversion_function(flex) for flex in flex_times]
+        return ["Flex"] + flex_times
 
     def _project_rows(self, dates) -> List[List[str]]:
         project_rows = [[project] for project in self.calendar.projects]
         for i, project in enumerate(self.calendar.projects):
             project_times = [
-                self.timedelta_conversion_function(
-                    self.calendar.days[date_].projects[project.name]
-                )
-                for date_ in dates
+                self.timedelta_conversion_function(self.calendar.days[date_].projects[project.name]) for date_ in dates
             ]
             project_rows[i] = [f"{i+2}. {project}"] + project_times
 
         default_project_times = [
-            self.timedelta_conversion_function(
-                self.calendar.default_project_time(date_)
-            )
-            for date_ in dates
+            self.timedelta_conversion_function(self.calendar.default_project_time(date_)) for date_ in dates
         ]
 
-        project_rows = [
-            [f"1. {self.calendar.default_project_name}"] + default_project_times
-        ] + project_rows
+        project_rows = [[f"1. {self.calendar.default_project_name}"] + default_project_times] + project_rows
 
         return project_rows
 
-    def _sum_cell(
-        self,
-        show_sum: bool,
-        rows: List[List[str]]
-    ):
+    def _sum_cell(self, show_sum: bool, rows: List[List[str]]):
         if not show_sum:
             return [""]
         sum_ = timedelta()
