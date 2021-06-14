@@ -60,9 +60,16 @@ class DayShower:
 
     def _flex_row(self, dates, flex_multiplier, show_earned_flex):
         flex_times = [self.calendar.flex(date_) for date_ in dates]
-        flex_times = list(map(lambda x: timedelta() if x is None else x * flex_multiplier, flex_times))
+        flex_times = list(
+            map(lambda x: timedelta() if x is None else x * flex_multiplier, flex_times)
+        )
         if not show_earned_flex:
-            flex_times = list(map(lambda x: timedelta() if x is None or x <= timedelta() else x, flex_times))
+            flex_times = list(
+                map(
+                    lambda x: timedelta() if x is None or x <= timedelta() else x,
+                    flex_times,
+                )
+            )
         flex_times = [self.timedelta_conversion_function(flex) for flex in flex_times]
         return ["Flex"] + flex_times
 
@@ -70,15 +77,23 @@ class DayShower:
         project_rows = [[project] for project in self.calendar.projects]
         for i, project in enumerate(self.calendar.projects):
             project_times = [
-                self.timedelta_conversion_function(self.calendar.days[date_].projects[project.name]) for date_ in dates
+                self.timedelta_conversion_function(
+                    self.calendar.days[date_].projects[project.name]
+                )
+                for date_ in dates
             ]
             project_rows[i] = [f"{i+2}. {project}"] + project_times
 
         default_project_times = [
-            self.timedelta_conversion_function(self.calendar.default_project_time(date_)) for date_ in dates
+            self.timedelta_conversion_function(
+                self.calendar.default_project_time(date_)
+            )
+            for date_ in dates
         ]
 
-        project_rows = [[f"1. {self.calendar.default_project_name}"] + default_project_times] + project_rows
+        project_rows = [
+            [f"1. {self.calendar.default_project_name}"] + default_project_times
+        ] + project_rows
 
         return project_rows
 

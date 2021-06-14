@@ -1,3 +1,6 @@
+[tool.black]
+line-length = 88
+
 [tool.poetry]
 name = "timereporter"
 version = "0.1.2"
