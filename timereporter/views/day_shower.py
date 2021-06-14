@@ -45,10 +45,11 @@ class DayShower:
             ]
 
         flex_times = self._flex_times(dates, flex_multiplier, show_earned_flex)
+        flex_row = ["Flex"] + flex_times
 
         table = tabulate(
             [
-                self._sum_cell(show_sum, project_rows, flex_times) + dates,
+                self._sum_cell(show_sum, project_rows + [flex_row]) + dates,
                 [""] + weekdays_to_show,
                 ["Came"] + came_times,
                 ["Left"] + leave_times,
@@ -100,15 +101,13 @@ class DayShower:
     def _sum_cell(
         self,
         show_sum: bool,
-        project_rows: List[List[str]],
-        flex_times: List[timedelta],
+        rows: List[List[str]]
     ):
         if not show_sum:
             return [""]
         sum_ = timedelta()
-        for project_row in project_rows:
-            sum_ += sum(project_row[1:], timedelta())
-        sum_ += sum(flex_times, timedelta())
+        for row in rows:
+            sum_ += sum(row[1:], timedelta())
         return ["Sum: %s" % self.timedelta_conversion_function(sum_)]
 
     @classmethod
