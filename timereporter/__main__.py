@@ -50,15 +50,18 @@ def main(arg_or_args: Union[List[str], str] = None) -> Tuple[str, int]:
         new_calendar = calendar
         view = None
         timestamp = datetime.now()
+        write_to_disk = False
         for date_ in dates:
             command = CommandFactory.get_command(new_calendar, date_, args)
             new_calendar, view = command.execute(timestamp)
+            write_to_disk = command.WRITE_TO_DISK
 
         to_print = CalendarPrinter(calendar, new_calendar, view).to_print()
 
-        with open(path, "w") as f:
-            data = new_calendar.dump()
-            f.write(data)
+        if write_to_disk:
+            with open(path, "w") as f:
+                data = new_calendar.dump()
+                f.write(data)
         return to_print, 0
     except (
         TimeParserError,

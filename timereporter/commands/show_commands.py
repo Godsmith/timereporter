@@ -10,7 +10,11 @@ from timereporter.commands.command import Command
 from timereporter.views.flex_view import FlexView
 
 
-class ShowWeekendCommand(Command):
+class ShowCommand(Command):
+    WRITE_TO_DISK = False
+
+
+class ShowWeekendCommand(ShowCommand):
     def valid_options(self):
         return ["--show-weekend"]
 
@@ -18,6 +22,9 @@ class ShowWeekendCommand(Command):
 class ShowWeekCommand(ShowWeekendCommand):
     @classmethod
     def _can_handle(cls, args) -> bool:
+        # This command handles the case when no arguments are provided
+        if not args:
+            return True
         return args == "show week".split()
 
     def view(self):
@@ -102,7 +109,7 @@ class ShowMonthHtmlCommand(ShowMonthCommand):
         )
 
 
-class ShowFlexCommand(Command):
+class ShowFlexCommand(ShowCommand):
     @classmethod
     def _can_handle(cls, args) -> bool:
         if len(args) not in (2, 3, 4):
@@ -133,7 +140,7 @@ class ShowFlexCommand(Command):
         return min(date_ for date_, _ in self.calendar.days.items())
 
 
-class ShowErrorHandler(Command):
+class ShowErrorHandler(ShowCommand):
     @classmethod
     def _can_handle(cls, args) -> bool:
         if args and args[0] == "show":

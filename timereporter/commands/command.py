@@ -11,6 +11,7 @@ from timereporter.views.console_week_view import ConsoleWeekView
 
 class Command:
     TIMEDELTA = timedelta(weeks=1)
+    WRITE_TO_DISK = True
 
     def __init__(self, calendar: Calendar, date_: date, args: Union[list, str]):
         self.calendar = calendar

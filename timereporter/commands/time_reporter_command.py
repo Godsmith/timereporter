@@ -17,8 +17,5 @@ class TimeReporterCommand(Command):
         return True
 
     def new_calendar(self, created_at: datetime.datetime) -> Calendar:
-        if not self.args:
-            return self.calendar
-
         day = Day(self.args, self.date, created_at=created_at)
         return self.calendar.add(day)
