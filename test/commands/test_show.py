@@ -52,6 +52,13 @@ class TestShow:
         s, _ = main("show aksldfj")
         assert "Error: invalid show command." in s
 
+    def test_show_shall_not_write_to_disk(self, temp_yamlfile):
+        main("came 9")
+        modified_time_before = temp_yamlfile.stat().mtime
+        main("show week")
+        modified_time_after = temp_yamlfile.stat().mtime
+        assert modified_time_after == modified_time_before
+
 
 class TestShowHtml:
     def test_show_week_html(self, mock_browser):
