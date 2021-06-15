@@ -21,6 +21,7 @@ pytest-cov = ">=2.5.1"
 pytest-mock = ">=1.6.3"
 black = {extras = ["d"], version = "^21.5b0"}
 mypy = "^0.812"
+pre-commit = "^2.13.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

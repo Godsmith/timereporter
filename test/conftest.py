@@ -11,7 +11,7 @@ from timereporter.views.browser_shower import BrowserShower
 @pytest.fixture(autouse=True)
 def mockdate_tuesday():
     temp = __main__.today
-    __main__.today = lambda x=None: date(2017, 9, 19)
+    __main__.today = lambda: date(2017, 9, 19)
     try:
         yield date(2017, 9, 19)
     finally:
@@ -21,7 +21,7 @@ def mockdate_tuesday():
 @pytest.fixture
 def mockdate_monday():
     temp = __main__.today
-    __main__.today = lambda x=None: date(2017, 9, 18)
+    __main__.today = lambda: date(2017, 9, 18)
     try:
         yield
     finally:
@@ -31,7 +31,7 @@ def mockdate_monday():
 @pytest.fixture
 def mockdate_oct_24():
     temp = __main__.today
-    __main__.today = lambda x=None: date(2017, 10, 24)
+    __main__.today = lambda: date(2017, 10, 24)
     try:
         yield
     finally:
@@ -39,7 +39,7 @@ def mockdate_oct_24():
 
 
 @pytest.fixture(autouse=True)
-def temp_logfile(tmpdir_factory):
+def temp_yamlfile(tmpdir_factory):
     fn = tmpdir_factory.mktemp("data").join("timereporter.yaml")
     before = dict(os.environ)
     os.environ["TIMEREPORTER_FILE"] = str(fn)

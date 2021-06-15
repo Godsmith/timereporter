@@ -2,7 +2,7 @@ from datetime import date
 import html
 from typing import List
 
-from tabulate import tabulate
+from tabulate import tabulate  # type: ignore
 
 from timereporter.mydatetime import timedelta, timedeltaDecimal
 
@@ -56,7 +56,7 @@ class ConsoleDayShower:
 
         return html.unescape(table)
 
-    def _rows(self, dates: List[timedelta]):
+    def _rows(self, dates: List[date]):
         return self._project_rows(dates) + [self._flex_row(dates)]
 
     def _flex_row(self, dates) -> List[str]:

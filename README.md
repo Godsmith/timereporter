@@ -53,13 +53,13 @@ default value is 27900 seconds.
 ## Usage
 
 ### Report time on default project
-  
+
     t [<day> | [last | next] <weekday>] [came <time>] [left <time>] [lunch
     <time>]
 
 `<time>` must be in one of the following formats: `9`, `9:00`, `0900`...
 
-Additionally, lunch times can also be in one of the following formats: `45m`, `45 min`, ... 
+Additionally, lunch times can also be in one of the following formats: `45m`, `45 min`, ...
 
 `<day>` must be one or more of
 - `yesterday`,
@@ -85,7 +85,7 @@ working time for that day. This can be used e.g. for part-time parental leave.
 
 There is no need to spell out the entire `<project-name>`, a part of it is
 enough. `imp` for `My important project`, for example.
-    
+
 See also Report time on default project.
 
 ###   Show reported time

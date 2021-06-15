@@ -177,8 +177,8 @@ class TestDefaultPath:
 
 
 class TestInvalidFile:
-    def test_unreadable_file(self, temp_logfile):
-        temp_logfile.write("")
+    def test_unreadable_file(self, temp_yamlfile):
+        temp_yamlfile.write("")
 
         err, code = main()
 
