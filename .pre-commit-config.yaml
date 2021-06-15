@@ -4,13 +4,17 @@ repos:
     hooks:
     -   id: check-merge-conflict
     -   id: debug-statements
--   repo: https://github.com/psf/black
-    rev: 21.6b0
+-   repo: local
     hooks:
     -   id: black
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.902
-    hooks:
+        name: black
+        entry: black --no-color --check
+        language: system
+        types: [python]
+        require_serial: true  # Otherwise the hook will run multiple times
     -   id: mypy
-        additional_dependencies: [pytest==6.2.4, tabulate==0.8.9]
-        args: []
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        require_serial: true  # Otherwise the hook will run multiple times 
