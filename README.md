@@ -156,6 +156,10 @@ Shows all days of October in the console.
 
 ## Development
 
+### Install pre-commit hooks
+
+`poetry run pre-commit install`
+
 ### Running tests
 
 `poetry run pytest`
